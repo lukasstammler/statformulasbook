@@ -1,0 +1,279 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup-01, include=FALSE}
+rm(list = ls())
+
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.align = "center")
+
+library(openintro)
+library(tidyverse)
+library(knitr)
+library(patchwork)
+library(kableExtra)
+
+ggred <- "#F8766D"
+ggblue <- "#00BFC4"
+ggreen <- "#7CAE00"
+ggviolet <- "#C77CFF"
+```
+
+# Deskriptive Statistik {#Deskriptive}
+
+## Kennzahlen der zentralen Tendenz und der Streuung
+
+### Umfang
+
+$n$ = Stichprobenumfang\
+$N$ = Umfang der Population
+
+### Arithmetisches Mittel, Mittelwert
+
+$\bar{x}$ = Stichprobenmittelwert\
+$\mu$ = Populationsmittelwert   
+
+```{=tex}
+\begin{equation}
+  \bar{x} = \frac{\sum_{i=1}^n x_i}{n}
+  (#eq:mittelwert)
+\end{equation}
+```
+
+mit  
+
+$x_j:$ Messwert der i-ten Beobachtungseinheit in der Stichprobe  
+$n:$ Anzahl der Beobachtungseinheiten
+
+```{r mean-code}
+x <- c(2, 3, 4, 4, 5, 6)    # Beispieldaten in Variable x speichern
+n <- length(x)              # Anzahl Beobachtungseinheiten n
+sum(x)/n                    # Mittelwert berechnen
+
+mean(x)                     # R-Funktion
+```
+
+### Median
+
+wenn $n$ ungerade
+
+```{=tex}
+\begin{equation}
+  \tilde{x} = x_{\frac{n+1}{2}}
+  (#eq:median1)
+\end{equation}
+```
+
+wenn $n$ gerade
+
+```{=tex}
+\begin{equation}
+  \tilde{x} = \frac{1}{2}(x_{\frac{n}{2}} + {x_{\frac{n}{2}+1}})
+  (#eq:median2)
+\end{equation}
+```
+
+Beispiel:
+
+```{r median-expl}
+x <- c(2, 3, 4, 4, 5, 6, 10)  # Beispieldaten in Variable x speichern
+median(x)                     # R-Funktion
+```
+
+### Varianz
+
+$s^2$ = Stichprobenvarianz  
+$\sigma^2$ = Varianz der Population   
+
+Berechnung der Varianz in der Stichprobe zur Schätzung der Populationsvarianz   
+
+\begin{equation}
+  s^2 = \frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n-1}
+  (#eq:varsample)
+\end{equation}
+
+Berechnung der Varianz in der Population   
+
+\begin{equation}
+  \sigma^2 = \frac{\sum_{i=1}^n (x_i - \mu)^2}{n}
+  (#eq:varpop)
+\end{equation}
+
+```{r var-expl}
+x <- c(2, 3, 4, 4, 5, 6, 10)      # Beispieldaten für eine Stichprobe
+n <- length(x)                    # Stichprobenumfang n 
+m <- mean(x)                      # Mittelwert von x berechnen
+sum((x - m)^2)/(n - 1)            # Varianz berechnen
+
+var(x)                            # R-Funktion
+```
+
+### Standardabweichung  
+
+$s$ = Standardabweichung der Stichprobe  
+$\sigma$ = Standardabweichung der Population  
+
+Berechnung der Standardabweichung für eine Stichprobe   
+
+\begin{equation}
+  s = \sqrt{s^2} = \sqrt{\frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n-1}}
+  (#eq:ssample)
+\end{equation}   
+
+Berechnung der Standardabweichung für eine Population
+
+\begin{equation}
+  \sigma = \sqrt{\sigma^2} = \sqrt{\frac{\sum_{i=1}^n (x_i - \mu)^2}{n}}
+  (#eq:spop)
+\end{equation}
+
+```{r}
+x <- c(2, 3, 4, 4, 5, 6, 10)      # Beispieldaten für eine Stichprobe
+n <- length(x)                    # Stichprobenumfang n 
+m <- mean(x)                      # Mittelwert von x berechnen
+varianz <- sum((x - m)^2)/(n - 1) # Varianz berechnen
+sqrt(varianz)                     # Standardabweichung als Quadratwurzel der Varianz
+
+sd(x)                             # R-Funktion
+```
+
+### Minimum, Maximum und Variationsbreite   
+
+```{r}
+x <- c(2, 3, 4, 4, 5, 6, 10)      # Beispieldaten für eine Stichprobe
+
+min(x)                            # Minimum der Variablen x
+max(x)                            # Maximum der Variablen x
+max(x) - min(x)                   # Variationsbreite der Variablen x
+```
+
+
+## Grafiken
+
+Auf Grund der Flexibilität wird der Code für Grafiken im Ggplot-Format [@R-ggplot2] angegeben. Um die Grafiken in `R` zu reproduzieren muss package `ggplot2` installiert und geladen sein.  
+
+```{r, eval=FALSE}
+install.packages("ggplot2")       # ggplot2 package installieren (einmalig)
+library(ggplot2)                  # ggplot2 library laden
+```
+
+
+### Histogramm  
+
+Voraussetzung: Daten sind quantitativ  
+
+```{r hist-fig, fig.cap="Ein Histogramm mit ggplot2", fig.dim=c(5, 4)}
+# Beispieldatensatz mit Zufallszahlen aus Normalverteilung erzeugen
+set.seed(1111)
+daten <- data.frame(
+  Werte <- rnorm(100, mean = 10, sd = 3) 
+)
+
+# einfaches Histogramm
+ggplot(data = daten, aes(x = Werte)) +
+  geom_histogram() +
+  xlab("Werte") +
+  ylab("Anzahl") +
+  ggtitle("Mein erstes Histogramm", subtitle = "100 Werte aus N(M = 10, s = 3)")  
+```
+
+
+```{r}
+library(kableExtra)
+options(knitr.table.format = "latex")
+```
+
+
+```{r hist2-fig, fig.cap="Noch ein Histogramm mit ggplot2", fig.dim=c(5, 4)}
+# Klassenbreite auf 2 anpassen und Balken mit weissen Linien trennen
+ggplot(data = daten, aes(x = Werte)) +
+  geom_histogram(binwidth = 2, color = "white") +
+  xlab("Werte") +
+  ylab("Anzahl") +
+  ggtitle("Mein zweites Histogramm", subtitle = "100 Werte aus N(M = 10, s = 3)")  
+```
+
+Für weitere Details siehe z.B. [The R Graph Gallery](https://www.r-graph-gallery.com/220-basic-ggplot2-histogram.html)
+
+### Boxplot
+
+Voraussetzung: Daten sind quantitativ 
+
+```{r boxplot-fig, fig.cap="Ein Boxplot mit ggplot2", fig.dim=c(4, 5)}
+# Beispieldatensatz mit Zufallszahlen aus Normalverteilung erzeugen
+set.seed(1234)
+daten <- data.frame(
+  Werte <- rnorm(100, mean = 10, sd = 3) 
+)
+
+ggplot(data = daten, aes(y = Werte)) +
+  geom_boxplot() +
+  ggtitle("Mein erster Boxplot", subtitle = "100 Werte aus N(M = 10, s = 3)")
+```
+
+Boxplots eignen sich gut für den Vergleich von Gruppen.  
+
+```{r boxplot2-fig, fig.cap="Gruppierter Boxplot mit ggplot2", fig.dim=c(5, 4)}
+# Beispieldatensatz für Körpergrösse von Frauen und Männerenerzeugen
+set.seed(1234)
+daten <- data.frame(
+  Geschlecht <- c(rep("w", 50), rep("m", 50)),
+  Groesse <- c(rnorm(50, mean = 165, sd = 6), rnorm(50, 178, 7))
+)
+
+ggplot(data = daten, aes(y = Groesse, x = Geschlecht)) +
+  geom_boxplot() +
+  ylab("Groesse in cm") +
+  ggtitle("Körpergrösse von Frauen und Männern", subtitle = "n = 50 pro Geschlecht")
+```
+
+Für weitere Details siehe z.B. [The R Graph Gallery](https://www.r-graph-gallery.com/262-basic-boxplot-with-ggplot2.html)
+
+
+### Balkendiagramm  
+
+Voraussetzung: Daten sind qualitativ
+
+```{r barplot-fig, fig.cap="Balkendiagramm mit ggplot2", fig.dim=c(5, 4)}
+# Beispieldatensatz für Augenfarben von 50 Personen  
+daten <- data.frame(
+  Augenfarbe <- c(rep("blau", 20), rep("braun", 18), rep("grün", 12))
+)
+
+ggplot(data = daten, aes(x = Augenfarbe)) +
+  geom_bar() +
+  ylab("Anzahl") +
+  ggtitle("Augenfarben, n = 50")
+```
+
+Balken können z.B. eingefärbt werden (`R` verfügt über 657 Farben, siehe z.B. [hier](http://sape.inf.usi.ch/quick-reference/ggplot2/colour) )
+
+```{r barplot2-fig, fig.cap="Hübsches Balkendiagramm mit ggplot2", fig.dim=c(5, 4)}
+ggplot(data = daten, aes(x = Augenfarbe)) +
+  geom_bar(fill = c("blue", "brown", "green")) +
+  ylab("Anzahl") +
+  ggtitle("Augenfarben, n = 50")
+```
+
+Für weitere Details siehe z.B. [The R Graph Gallery](https://www.r-graph-gallery.com/barplot.html)
+
+
+### Tabellen für Häufigkeiten  
+
+Tabelle mit absoluten Häufigkeiten für die Augenfarben erstellen.  
+
+```{r abs-tab}
+table(daten$Augenfarbe)
+```
+
+Tabelle mit den relativen Häufigkeiten für die Augenfarben erstellen.  
+
+```{r rel-tab}
+prop.table(table(daten$Augenfarbe))
+```
+

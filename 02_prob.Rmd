@@ -1,0 +1,96 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup-01, include=FALSE}
+rm(list = ls())
+
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.align = "center")
+
+library(openintro)
+library(tidyverse)
+library(knitr)
+library(patchwork)
+library(kableExtra)
+
+ggred <- "#F8766D"
+ggblue <- "#00BFC4"
+ggreen <- "#7CAE00"
+ggviolet <- "#C77CFF"
+```
+
+# Grundbegriffe der Wahrscheinlichkeitstheorie
+
+## Wahrscheinlichkeit 
+
+* Unter Wahrscheinlichkeit versteht man die Chance, dass bei einem Zufallsexperiment ein bestimmtes Ereignis auftritt.   
+* Wahrscheinlichkeiten können nur Werte zwischen 0 (unmögliches Ereignis) und 1 (sicheres Ereignis) zugeordnet werden.   
+* Nach *Laplace* ist die Wahrscheinlichkeit für ein günstiges Ereignis $p(A)$:
+
+\begin{equation}
+  p(A) = \frac{n_A}{N_{gesamt}} = \frac{Anzahl~der~günstigen~Ereignisse}{Anzahl~der~möglichen~Ereignisse}
+  (#eq:prob-p)
+\end{equation}
+
+## Ereignis und Komplementärereignis 
+
+\begin{equation}
+  p(A) + p(Nicht~A) = 1
+  (#eq:prob-p-q)
+\end{equation}
+
+## Disjunkte Ereignisse
+
+Zwei Ereignisse A und B werden als *disjunkt* bezeichnet, wenn sie einander ausschliessen, d.h. dass A und B nicht gleichzeitig eintreffen können.   
+
+\begin{equation}
+  A \cap B = 0
+  (#eq:disjoint)
+\end{equation}
+
+Lese die Formel: Zwei Ereignisse A und B sind disjunkt, wenn die Schnittmenge der leeren Menge entspricht.   
+
+## Nicht-disjunkte Ereignisse   
+
+Zwei Ereignisse A und B werden als *nicht-disjunkt* bezeichnet, wenn die Wahrscheinlichkeit für das gleichzeitige Auftreten deser Ereignisse nicht gleich null ist.  
+
+\begin{equation}
+  A \cap B \neq 0
+  (#eq:disjoint)
+\end{equation}
+
+Lese die Formel: Nicht-disjunkte Ereignisse haben eine nicht leere Schnittmenge.   
+
+## Bedingte Wahrscheinlichkeiten  
+
+Die bedingte Wahrscheinlichkeit $p(A|B)$ quantifiziert die Wahrscheinlichkeit des Ereignisses A unter der Bedingung, dass das Ereignis B eingetreten ist.  
+
+\begin{equation}
+  p(A|B) = \frac{p(A \cap B)}{P(B)}
+  (#eq:condprob)
+\end{equation}  
+
+Das Zeichen $\cap$ ist das mathematische Symbol für UND (Schnittmenge von A und B).  
+
+## Unabhängigkeit
+
+Zwei Ereignisse $A$ und $B$ sind unabhängig, wenn das Eintreffen oder Nicht-Eintreffen des Ereignisses $B$ die Wahrscheinlichkeit für ein Ereignis $A$ nicht verändert.  
+
+\begin{equation}
+  p(A) = p(A|B) ~, ~p(B) = p(B|A)
+  (#eq:independency)
+\end{equation} 
+
+## Theorem von Bayes
+
+Das *Theorem von Bayes* gibt an, wie man eine bedingte Wahrscheinlichkeit $p(A|B)$ aus der umgekehrten bedingten Wahrscheinlichkeit $p(B|A)$ berechnen kann.   
+
+\begin{equation}
+  p(A|B)= \frac{p(A) \times p(B|A)}{p(B)}
+  (#eq:bayes)
+\end{equation}  
