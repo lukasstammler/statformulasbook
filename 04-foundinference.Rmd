@@ -1,7 +1,305 @@
-# Applications
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
 
-Some _significant_ applications are demonstrated in this chapter.
+```{r setup-01, include=FALSE}
+rm(list = ls())
 
-## Example one
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.align = "center")
 
-## Example two
+library(openintro)
+library(tidyverse)
+library(knitr)
+library(patchwork)
+library(kableExtra)
+
+ggred <- "#F8766D"
+ggblue <- "#00BFC4"
+ggreen <- "#7CAE00"
+ggviolet <- "#C77CFF"
+```
+
+# Grundlagen der Inferenzstatistik 
+
+## Schätzungen von Parametern  
+
+Wird zur Schätzung eines Populationsparameters nur eine Stichprobenkennzahl angegeben, so handelt es sich um eine *Punktschätzung*. Wird bei einer Schätzung neben der Kennzahl noch ein *Konfidenzintervall* bestimmt, in welchem mit einer bestimmten Wahrscheinlichkeit der Populationsparameter liegt, so handelt es sich um eine *Intervallschätzung*.  
+
+### Schätzung bei qualitativen Merkmalen  
+
+$p:$ Stichprobenkennzahl  
+$\pi:$ Populationsparameter
+Beide Kennzahlen können Werte zwischen 0 und 1 annehmen.   
+
+**95%-Konfidenzintervall für $\pi$**  
+
+\begin{equation}
+  CI_{95} = p \pm z_{0.975} \times s_p
+  (#eq:ciqualz)
+\end{equation}  
+
+\begin{equation}
+  s_p = \sqrt{\frac{p(1 - p)}{n}}
+  (#eq:sp)
+\end{equation}  
+
+Bei Intervallschätzung mit kleinen Stichproben (N < 30, besser auch schon bei N < 100) sollte statt der Standardnormalverteilung ($z$-Werte) die Verteilung der $t$-Werte zur Definition des Intervalls zugrunde gelegt werden [@Leonhart2013].
+
+\begin{equation}
+  CI_{95} = p \pm t_{0.975, df} \times s_p
+  (#eq:ciqualt)
+\end{equation}  
+
+
+### Schätzung bei quantitativen Merkmalen
+
+**Zentraler Grenzwertsatz**
+
+Die Verteilung von Stichprobenkennzahlen (z.B. Mittelwert) folgt annähernd einer Normalverteilung. Ihr Mittelwert liegt in der Nähe des Populationsmittelwertes $\mu$ mit einer Standardabweichung geteilt durch die Quadratwurzel des Stichprobenumfangs (*Standardfehler $SE$*).
+
+\begin{equation}
+  \bar{x} \sim N(Mittelwert = \mu, SE = \frac{\sigma}{\sqrt{n}})
+  (#eq:clt)
+\end{equation}
+
+Wenn $\sigma$ unbekannt ist (was eigentlich immer der Fall ist), wird die Standardabweichung $s$ der Stichprobe als Schätzer für $\sigma$ eingesetzt.
+
+\begin{equation}
+  SE = \frac{s}{\sqrt{n}}
+  (#eq:se)
+\end{equation}
+
+Bedingungen für die Gültigkeit des zentralen Grenzwertsatzes:  
+
+Die Beobachtungseinheiten in der Stichprobe sind unabhängig voneinander (zufällige Auswahl, zufällige Zuordnung zu Gruppen).   
+Faustregel: Stichprobenumfang $n>30$ 
+
+Beispiel für die Berechnung des Standardfehlers $SE$ in `R`
+
+```{r}
+set.seed(1234)
+x <- rnorm(100)  # simulation von 100 normalverteilten Werten, mean = 0, s = 1
+
+n <- length(x)   # Stichprobenumfang von x ermitteln
+s <- sd(x)       # Standardabweichung von x berechnen
+
+s/sqrt(n)        # Berechnung und Ausgabe von SE
+```
+
+**95%-Konfidenzintervall für $\mu$**  
+
+Konfidenzintervalle (Vertrauensintervalle, $CI$) können auf jedem Konfidenzniveau berechnet werden. Um die Sache nicht allzu kompliziert zu machen, wird hier v.a. exemplarisch die Berechnung von 95%-Konfidenzinteravallen vorgestellt.  
+
+* Signifikanzniveau = $\alpha$ 
+* Konfidenzniveau = $1-\alpha$  
+
+\begin{equation}
+  CI_{95} = \bar{x} \pm z_{0.975} \times SE
+  (#eq:cinorm)
+\end{equation}  
+
+Allgemein formuliert:  
+
+\begin{equation}
+  CI^* = \bar{x} \pm z^* \times SE
+  (#eq:cinorm)
+\end{equation}  
+
+\begin{equation}
+  z^* = \vert \frac{(1-CI^*)}{2} \vert
+  (#eq:zforci)
+\end{equation}
+
+\begin{equation}
+  z^* \times SE = z^* \times \frac{s}{\sqrt{n}}
+  (#eq:ME)
+\end{equation}
+
+$z^* \times SE$ wird auch als Fehlerbereich (engl. $margin~ of~ error,~ ME$) bezeichnet.
+Der Wert von $z^*$ ist abhängig vom Konfidenzniveau.   
+
+```{r z-values}
+# z für ein 95% CI
+CI <- .95
+z95 <- abs(qnorm((1 - CI)/2))
+z95
+
+# z für ein 90% CI
+CI <- .9
+z90 <- abs(qnorm((1 - CI)/2))
+z90
+
+# z für ein 99% CI
+CI <- .99
+z99 <- abs(qnorm((1 - CI)/2))
+z99
+```
+
+Beispiel für die Berechnung eines 95% Konfidenzintervalls
+
+```{r}
+m <- 95.6       # Stichprobenmittelwert
+s <- 15.8       # Standardabweichung der Stichprobe
+n <- 100        # Stichprobenumfang
+
+# gesucht ist das 95% Konfidenzintervall für den Populationsmittelwert  
+CI <- .95       # Konfidenzniveau 95%
+z <- abs(qnorm((1-CI)/2))
+ME <- z * CI    # Fehlerbereich berechnen
+
+# Obere und untere Grenze für 95%-Konfidenzintervall berechnen
+CI95 <- m + c(-1, 1) * ME
+CI95
+```
+
+**Zuverlässigkeit vs. Präzision einer Schätzung** 
+
+Der Standardfehler beschreibt die Präzisieon der Schätzung eines Parameters. Je mehr Werte in die Schätzung eingehen, umso kleiner wird wird der Standardfehler. Je kleiner der Standardfehler, desto präziser die Schätzung.   
+
+Wenn wir das Konfidenzniveau erhöhen (Konfidenzintervall wird breiter, z.B. von 95% auf 99%) nimmt die Zuverlässigkeit, dass wir den wahren Populationsparameter im Intervall haben zu, allerdings auf Kosten der Präzision. Durch Erhöhung des Stichprobenumfangs kann die Zuverlässigkeit und die Präzision gleichzeitig verbessert werden.   
+
+Stichprobenumfang für einen bestimmten Fehlerbereich berechnen:
+
+\begin{equation}
+  ME = z^* \times \frac{s}{\sqrt{n}} \rightarrow n = (\frac{z^* \times s}{ME})^2
+  (#eq:nausME)
+\end{equation}
+
+```{r}
+ME.alt <- 1.862
+ME.neu <- ME.alt/2
+
+# neues 95%-Konfidenzintervall berechnen
+CI95.neu <- m + c(-1, 1) * ME.neu
+print(paste("CI95 neu [", CI95.neu[1], ",", CI95.neu[2], "]"))
+
+# Stichprobenumfang für das neue 95%-CI berechnen
+n.neu <- ((z * s)/ME.neu)^2
+print(paste("Stichprobenumfang neu:", n.neu))
+```
+
+
+## Hypothesentest für einen Mittelwert   
+
+**Hypothesentests werden immer für einen Popultionsparameter, z.B. $\mu$ durchgeführt und nicht für eine Stichprobe.**   
+
+### Vorgehen
+
+1. Formuliere die wissenschaftliche Hypothese  
+
+  * $H_0: \mu = Nullwert$   
+  * $H_A: \mu < oder > oder \neq Nullwert$  
+  * Es wird empfohlen $H_A:$ immer zweiseitig formulieren ausser in begründeten Ausnahmefällen.
+  
+2. Berechne den Punktschätzer $\bar{x}$ für $\mu$  
+3. Überprüfe die Testvoraussetzungen   
+
+  * Beobachtungseinheiten in der Stichprobe sind unabhängig.   
+  * Stichprobe stammt aus eine annähernd normalverteilten Population.   
+  * Der Stichprobenumfang $n \geq 30$ oder grösser bei stark schiefer Verteilung.   
+  
+4. Skizziere die Stichprobenverteilung, zeichne deinen Verwerfungsbereich ein und berechne die Teststatistik.    
+
+\begin{equation}
+  z = \frac{\bar{x} - \mu}{SE}, ~~ SE = \frac{s}{\sqrt{n}}
+  (eq:ztest)
+\end{equation}
+
+5. Berechne den kritischen $z$-Wert für ein bestimmtes Signifikanzniveau $\alpha$.
+
+\begin{equation}
+  z_{krit} = \pm |z_{\frac{1-\alpha}{2}}|
+  (#eq:zkrit)
+\end{equation}
+
+6. Liegt $z$ im Verwerfungsbereich wird $H_0$ zu Gunsten von $H_A$ zurückgewiesen.   
+7. Interpretiere das Resultat im Zusammenhang mit der Fragestellung.  
+
+### p-Werte berechnen   
+
+Definition: 
+
+\begin{equation}
+  p-Wert = P(beobachtete~oder~extremere~Teststatistik~ | ~H_0~ wahr)
+  (#eq:pvaluedef)
+\end{equation}
+
+Der p-Wert quantifiziert die Evidenz gegen $H_0$. Ein kleiner $p$-Wert (üblicherweise $p \leq 0.05$) bedeutet, dass du ausreichend Evidenz dafür hast, $H_0$ zu Gunsten von $H_A$ zu verwerfen.   
+**Einseitiger Hypothesentest anhand von p-Werten**
+
+1. Fall
+
+$H_0: \mu = Nullwert$
+$H_A: \mu > Nullwert$
+
+\begin{equation}
+  z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
+  (#eq:zonesidedgreater)
+\end{equation}
+
+$p$-Wert in `R` berechnen:
+
+```{r p-value-g, eval=FALSE}
+p <- 1 - pnorm(z)
+```
+
+2. Fall
+
+$H_0: \mu = Nullwert$
+$H_A: \mu < Nullwert$
+
+\begin{equation}
+  z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
+  (eq:zonesidedless)
+
+$p$-Wert in `R` berechnen:
+
+```{r p-value-l, eval=FALSE}
+p <- pnorm(z)
+```
+
+**Zweiseitiger Hypothesentest anhand von p-Werten**
+
+Zweiseitige Hypothesen sind der Normalfall. Einseitige Hypothesen sollten nur in begründeten Ausnahmefällen formuliert werden.  
+
+$H_0: \mu = Nullwert$
+$H_A: \mu \neq Nullvalue$   
+
+\begin{equation}
+  z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
+  (#eq:ztwosided)
+\end{equation}
+
+$p$-Wert in `R` berechnen:
+
+```{r p-value-twos, eval=FALSE}
+p <- 2 * pnorm(abs(z), lower.tail = FALSE)
+
+# Alternative
+p <- 2 * pnorm(-abs(z))
+```
+
+### Entscheidungsfehler
+
+* Fehler 1. Art: $H_0$ wird verworfen wenn $H_0$ wahr ist.   
+* Fehler 2. Art: $H_0$ wird nicht verworfen wenn $H_A$ wahr ist.   
+
+Bei einem Signifikanzniveau $\alpha = 0.05$ nehmen wir ein Risiko von 5% in Kauf, einen Fehler 1. Art zu begehen. 
+
+* $\alpha:$ Wahrscheinlichkeit, einen Fehler 1. Art zu begehen.  
+* $\beta:$ Wahrscheinlichkeit, einen Fehler 2. Art zu begehen.   
+* $1-\beta:$ Power (Trennschärfe) eines Tests; Wahrscheinlichkeit, für $H_A$ zu entscheiden, wenn $H_A$ wahr ist.
+
+### Hypothesentests mit Konfidenzintervallen  
+
+* Ein zweiseitiger Hypothesentest mit einem Signifikanzniveau $\alpha$ entspricht einem Konfidenzintervall mit dem Konfidenzniveau $1-\alpha$.  
+* Ein einseitiger Hypothesentest mit einem Signifikanzniveau $\alpha$ entspricht einem Vertrauensintervall mit einem Konfidenzniveau von $1-(2 \times \alpha)$.   
+* Enthält ein 95% Vertrauensintervall den Nullwert nicht, wird $H_0$ verworfen.  
+* Enthält ein 95% Vertrauensintervall den Nullwert, wird $H_0$ nicht verworfen.   
+
+
