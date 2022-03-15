@@ -4,7 +4,7 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup-01, include=FALSE}
+```{r setup-03, include=FALSE}
 rm(list = ls())
 
 knitr::opts_chunk$set(echo = TRUE, 
@@ -250,7 +250,5 @@ qq.right <- ggplot(data, aes(sample = x5)) +
   ggtitle("Rechtsschiefe Verteilung")
 
 (qq.left | qq.right)
-
-
 ```
 

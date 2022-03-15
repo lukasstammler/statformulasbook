@@ -4,13 +4,15 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup-01, include=FALSE}
+```{r setup-04, include=FALSE}
 rm(list = ls())
 
 knitr::opts_chunk$set(echo = TRUE, 
                       warning = FALSE, 
                       message = FALSE,
                       fig.align = "center")
+
+options(digits = 4)
 
 library(openintro)
 library(tidyverse)
@@ -95,8 +97,8 @@ s/sqrt(n)        # Berechnung und Ausgabe von SE
 
 Konfidenzintervalle (Vertrauensintervalle, $CI$) können auf jedem Konfidenzniveau berechnet werden. Um die Sache nicht allzu kompliziert zu machen, wird hier v.a. exemplarisch die Berechnung von 95%-Konfidenzinteravallen vorgestellt.  
 
-* Signifikanzniveau = $\alpha$ 
-* Konfidenzniveau = $1-\alpha$  
+Signifikanzniveau = $\alpha$ 
+Konfidenzniveau = $1-\alpha$  
 
 \begin{equation}
   CI_{95} = \bar{x} \pm z_{0.975} \times SE
@@ -229,13 +231,16 @@ Definition:
   (#eq:pvaluedef)
 \end{equation}
 
-Der p-Wert quantifiziert die Evidenz gegen $H_0$. Ein kleiner $p$-Wert (üblicherweise $p \leq 0.05$) bedeutet, dass du ausreichend Evidenz dafür hast, $H_0$ zu Gunsten von $H_A$ zu verwerfen.   
+Der p-Wert quantifiziert die Evidenz gegen $H_0$. Ein kleiner $p$-Wert (üblicherweise $p \leq 0.05$) bedeutet, dass du ausreichend Evidenz dafür hast, $H_0$ zu Gunsten von $H_A$ zu verwerfen. 
+
+<br/> 
+
 **Einseitiger Hypothesentest anhand von p-Werten**
 
 1. Fall
 
-$H_0: \mu = Nullwert$
-$H_A: \mu > Nullwert$
+$$H_0: \mu = Nullwert$$
+$$H_A: \mu > Nullwert$$
 
 \begin{equation}
   z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
@@ -248,14 +253,16 @@ $p$-Wert in `R` berechnen:
 p <- 1 - pnorm(z)
 ```
 
+
 2. Fall
 
-$H_0: \mu = Nullwert$
-$H_A: \mu < Nullwert$
+$$H_0: \mu = Nullwert$$
+$$H_A: \mu < Nullwert$$
 
 \begin{equation}
   z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
-  (eq:zonesidedless)
+  (#eq:zonesidedless)
+\end{equation}
 
 $p$-Wert in `R` berechnen:
 
@@ -263,12 +270,14 @@ $p$-Wert in `R` berechnen:
 p <- pnorm(z)
 ```
 
+<br/> 
+
 **Zweiseitiger Hypothesentest anhand von p-Werten**
 
 Zweiseitige Hypothesen sind der Normalfall. Einseitige Hypothesen sollten nur in begründeten Ausnahmefällen formuliert werden.  
 
-$H_0: \mu = Nullwert$
-$H_A: \mu \neq Nullvalue$   
+$$H_0: \mu = Nullwert$$
+$$H_A: \mu \neq Nullvalue$$   
 
 \begin{equation}
   z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
@@ -291,9 +300,9 @@ p <- 2 * pnorm(-abs(z))
 
 Bei einem Signifikanzniveau $\alpha = 0.05$ nehmen wir ein Risiko von 5% in Kauf, einen Fehler 1. Art zu begehen. 
 
-* $\alpha:$ Wahrscheinlichkeit, einen Fehler 1. Art zu begehen.  
-* $\beta:$ Wahrscheinlichkeit, einen Fehler 2. Art zu begehen.   
-* $1-\beta:$ Power (Trennschärfe) eines Tests; Wahrscheinlichkeit, für $H_A$ zu entscheiden, wenn $H_A$ wahr ist.
+$\alpha:$ Wahrscheinlichkeit, einen Fehler 1. Art zu begehen.  
+$\beta:$ Wahrscheinlichkeit, einen Fehler 2. Art zu begehen.   
+$1-\beta:$ Power (Trennschärfe) eines Tests; Wahrscheinlichkeit, für $H_A$ zu entscheiden, wenn $H_A$ wahr ist.
 
 ### Hypothesentests mit Konfidenzintervallen  
 
