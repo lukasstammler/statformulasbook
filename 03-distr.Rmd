@@ -1,23 +1,256 @@
-# Methods
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
 
-We describe our methods in this chapter.
+```{r setup-01, include=FALSE}
+rm(list = ls())
 
-Math can be added in body using usual syntax like this 
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.align = "center")
 
-## math example
+library(openintro)
+library(tidyverse)
+library(knitr)
+library(patchwork)
+library(kableExtra)
 
-$p$ is unknown but expected to be around 1/3. Standard error will be approximated
+ggred <- "#F8766D"
+ggblue <- "#00BFC4"
+ggreen <- "#7CAE00"
+ggviolet <- "#C77CFF"
+```
 
-$$
-SE = \sqrt(\frac{p(1-p)}{n}) \approx \sqrt{\frac{1/3 (1 - 1/3)} {300}} = 0.027
-$$
+# Wahrscheinlichkeitsverteilungen
 
-You can also use math in footnotes like this^[where we mention $p = \frac{a}{b}$].
+**Diskrete Wahrscheinlichkeitsverteilung**
 
-We will approximate standard error to 0.027[^longnote]
+Die Ergebnisse eines Zufallsexperiments mit einer diskreten Variablen sind abzählbar 
+bzw. können kategorisiert werden. Beispielsweise ist es beim Werfen eines Würfels 
+nur möglich eine Zahl aus der Menge $X = {1, 2, 3, 4, 5, 6}$ zu werfen. Der Wurf einer 
+2.6 ist jedoch nicht möglich. Die Anzahl der Seiten eines Würfels könnten gezählt und kategorisiert werden. Daher handelt es sich hierbei um eine diskrete Verteilung [@Leonhart2013].
 
-[^longnote]: $p$ is unknown but expected to be around 1/3. Standard error will be approximated
+**Kontinuierliche (= stetige) Wahrscheinlichkeitsverteilung**
 
-    $$
-    SE = \sqrt(\frac{p(1-p)}{n}) \approx \sqrt{\frac{1/3 (1 - 1/3)} {300}} = 0.027
-    $$
+Stetige Wahrscheinlichkeitsfunktionen beschreiben die Ergebnisse eines Zufallsexperiments, in dem unendlich viele Elementarereignisse realisiert werden können. So entsteht eine stetige *Dichtefunktion* der Wahrscheinlichkeitsverteilung [@Leonhart2013].   
+
+Die Betrachtung eines einzelnen Ereignisses in einer stetigen Wahrscheinlichkeitsverteilung ist nicht sinnvoll, da die Wahrscheinlichkeit für ein Elementarereignis immer gegen null geht. Es ist sehr unwahrscheinlich, dass eine Studentin mit genau 167.793 cm Grösse an einer Lehrveranstaltung teilnimmt. 
+
+Deshalb wir die Wahrscheinlichkeit für Intervalle zwischen zwei Elementarereignissen bestimmt. Diese Wahrscheinlichkeit entspricht der Fläche (dem Integral) der Dichtefunktion der stetigen Wahrscheinlichkeitsverteilung in diesen Grenzen [@Leonhart2013].
+
+## Binomialverteilung   
+
+Die Binomialverteilung beschreibt die Auftretenswahrscheinlichkeit zweier alternativer Ereignisse. Sie wird durch einen *Bernoulli-Prozess* erzeugt. Dies ist eine Folge voneinander unabhängiger Ereignisse mit jeweils zwei möglichen Ausgängen. Die Wahrscheinlichkeiten für die einzelnen Ereignisse sind jeweils konstant ($p$ bzw. $q = 1 - p$) [@Leonhart2013].
+
+
+
+### Voraussetzungen  
+
+* Die Versuche müssen unabhängig sein.   
+* Die Anzahl der Versuche muss bekannt sein.   
+* Jedes Versuchsergebnis ist entweder ein Erfolg oder ein Misserfolg.    
+* Die Wahrscheinlichkeit für einen Erfolg muss für jeden Versuch gleich sein. 
+
+### Funktion der Binomialverteilung
+
+Die Funktion der Binomialverteilung beschreibt die Wahrscheinlichkeit des $k$-maligen Eintreffens eines Ereignisses X bei $n$ Ereignissen
+
+Wenn $p$ die Wahrscheinlichkeit für einen Erfolg ist, ist $1-p$ die Wahrscheinlichkeit für einen Misserfolg. $n$ gibt die Anzahl der Versuche an und $k$ die Anzahl der Erfolge.   
+
+\begin{equation}
+  p(k, n) =  {n \choose k}p^k(1-p)^{n-k}
+  (#eq:binom)
+\end{equation}  
+
+Die Gleichung setzt sich aus drei Faktoren zusammen:
+
+* $n \choose k$ (sprich n über k) gibt die Anzahl aller möglichen Reihenfolgen an, 
+die zu dem erwünschten Ereignis führen. Dieser Faktor wird als *Binomialkoeffizient* bezeichnet.  
+* $p^k$ ist die Wahrscheinlichkeit für das k-malige Eintreten eines Erfolgs.   
+* $(1-p)^{n-k}$ ist die Wahrscheinlichkeit für das $(n-k)$-malige Eintreffen des Komplementärereignisses.   
+
+Wahrscheinlichkeit für $k$ Erfolge in $n$ Versuchen mit der Erfolgswahrscheinlichkeit $p$ in `R` berechnen:
+
+```{r, echo=TRUE, eval=FALSE}
+# R: Dichtefunktion der Binomialverteilung
+dbinom(k, n, p)
+```
+
+Beispiel: Wie gross ist die Wahrscheinlichkeit, bei drei Mal würfeln ($n$ = 3), 1 bis 3 mal ($k$ = 0 bis 3) eine bestimmte Zahl, z.B. eine 6 ($p$ = 1/6) zu werfen?  
+
+```{r, echo=TRUE}
+p <- 1/6
+n <- 3
+k <- 1:3
+
+dbinom(k, size = n, prob = p)
+```
+
+### Binomialkoeffizient
+
+Der Binomialkoeffizient gibt an, auf wie viele verschiedene Arten man $k$ Objekte aus einer Menge von $n$ verschiedenen Objekten auswählen kann.  
+
+Anzahl Kombinationen von $k$ Erfolgen in $n$ Versuchen berechnen  
+
+$${n \choose k} = \frac{n!}{k!(n-k)!}$$
+
+```{r, echo=TRUE, eval=FALSE}
+# R: Binomialkoeffizient
+choose(n, k)
+```
+
+Beispiel: Wieviele mögliche Kombinationen gibt es im Schweizer Zahlenlotto für 6 (= $k$) aus 42 (=$n$).
+
+```{r lotto, echo=TRUE}
+choose(n = 42, k = 6)
+```
+
+Es gibt $`r choose(n = 42, k = 6)`$ Kombinationen, d.h. die Wahrscheinlichkeit, 6 Richtige zu wählen beträgt 1$/`r choose(n = 42, k = 6)`$ = $`r 1/choose(n = 42, k = 6)`$.
+
+### Eigenschaften der Binomialverteilung   
+
+\begin{equation}
+  X \sim Bin(n, p)
+  (#eq:binom2)
+\end{equation}
+
+$n$ = Anzahl Versuche    
+$p$ = Eintrittswahrscheinlichkeit   
+
+**Erwartungswert (Mittelwert) der Binomialverteilung**
+
+\begin{equation}
+  \mu = n \times p
+  (#eq:mubinom)
+\end{equation}
+
+**Standardabweichung der Binomialverteilung**   
+
+\begin{equation}
+  \sigma = \sqrt{np(1-p)}
+  (#eq:sigmabinom)
+\end{equation}
+
+### Normalapproximation
+
+Eine Binomialverteilung mit mindestens 10 erwarteten Erfolgen und mindestens 10 erwarteten Misserfolgen folgt annähernd einer Normalverteilung.   
+
+$$n \times p \times (1-p) \geq 10$$
+
+Falls diese Bedingung erfüllt ist, gilt:
+
+\begin{equation}
+  Bin(n, p) \sim N(\mu, \sigma)
+  (#eq:binomnormapprox)
+\end{equation}
+
+## Normalverteilung
+
+\begin{equation}
+  X \sim N(\mu, \sigma)
+  (#eq:normdistr)
+\end{equation}
+
+### 68-95-99.7-Regel
+
+* 68% in $\mu \pm 1\sigma$   
+* 95% in $\mu \pm 2\sigma$, genauer $\mu \pm 1.96\sigma$  
+* 99.7% in $\mu \pm 3\sigma$  
+
+### Standardnormalverteilung  
+
+\begin{equation}
+  X \sim N(0, 1)
+  (#eq:stdnormdistr)
+\end{equation}
+
+### z-Wert
+
+Der z-Wert einer Beobachtung $x_i$ gibt an, um wieviele Standardabweichungen die Beobachtung über oder unter dem Mittelwert liegt.
+
+\begin{equation}
+  z = \frac{x_i-\bar{x}}{s}
+  (#eq:zvalue)
+\end{equation}
+
+Der z-Wert des Mittelwerts ist 0.  
+Ungewöhnliche Beobachtungen haben typischerweise einen z-Wert von $|z|>2$.   
+
+### Wahrscheinlichkeiten und Perzentilen in `R` berechnen   
+
+```{r percentiles, eval=FALSE}
+pnorm(x, mean, sd)                      # Fläche links von x 
+
+1 - pnorm(x, mean, sd)                  # Fläche rechts von x
+pnorm(x, mean, sd, lower.tail = FALSE)  # Fläche rechts von x (alternativ)
+
+qnorm(percentile, mean, sd)             # # Wert auf einer bestimmten Perzentile
+```
+
+Beispiel:
+
+```{r perc-expl, eval=TRUE}
+x <- c(2, 3, 4, 4, 5, 6, 10, 9, 8, 7, 7, 7, 5, 4)
+mittelwert <- mean(x)
+stdabw <- sd(x)
+
+# Wahrscheinlichkeit für den Wert kleiner oder gleich 7
+pnorm(7, mittelwert, stdabw)
+
+# Wahrscheinlichkeit für den Wert gleich oder grösser 7
+1 - pnorm(7, mittelwert, stdabw)
+
+# Wert auf der 40%-Perzentile
+qnorm(.4, mittelwert, stdabw)
+```
+
+
+### QQ-Plot
+
+Mittels QQ-Plots (Quantile-Quantile-Plots) können zwei Verteilungen grafisch verglichen werden, indem ihre Quantilen gegeneinander aufgetragen werden. Wenn die zwei Verteilungen exakt gleich sind, liegen die Punkte im QQ-Plot auf einer perfekten Linie.   
+
+```{r qq, eval=FALSE}
+qqnorm()    # QQ-Plot für Normalverteilung
+qqline()    # Linie in QQ-Plot einzeichnen
+```
+
+Beispiel:
+
+```{r qq-fig, fig.dim=c(4, 4)}
+set.seed(1)
+x <- rnorm(100)         # simulation von 100 normalverteilten Werten, mean = 0, s = 1
+
+qqnorm(x)               # qq-plot erstellen
+qqline(x, col = "blue") # Linie in qq-plot einzeichnen
+```
+
+```{r qq-fig2, fig.dim=c(7, 3), echo=FALSE}
+set.seed(35486)                    # Create random distributions
+data <- data.frame(x1 = rbeta(1000, 10, 2),
+                   x2 = rbeta(1000, 5, 2),
+                   x3 = rnorm(1000),
+                   x4 = rbeta(1000, 2, 5),
+                   x5 = rbeta(1000, 2, 10))
+
+qq.left <- ggplot(data, aes(sample = x1)) +
+  stat_qq(size = 2, color = "steelblue", alpha = .5) +
+  stat_qq_line() +
+  xlab("theoretical quantiles") +
+  ylab("sample quantiles") +
+  ggtitle("Linksschiefe Verteilung")
+
+qq.right <- ggplot(data, aes(sample = x5)) +
+  stat_qq(size = 2, color = "steelblue", alpha = .5) +
+  stat_qq_line() +
+  xlab("theoretical quantiles") +
+  ylab("sample quantiles") +
+  ggtitle("Rechtsschiefe Verteilung")
+
+(qq.left | qq.right)
+
+
+```
+
