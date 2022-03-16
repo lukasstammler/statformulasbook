@@ -4,7 +4,7 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup-04, include=FALSE}
+```{r setup-06, include=FALSE}
 rm(list = ls())
 
 knitr::opts_chunk$set(echo = TRUE, 

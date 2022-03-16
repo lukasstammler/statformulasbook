@@ -4,7 +4,7 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup-04, include=FALSE}
+```{r setup-05, include=FALSE}
 rm(list = ls())
 
 knitr::opts_chunk$set(echo = TRUE, 
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       fig.align = "center")
 
-options(digits = 4)
+options(scipen=999)
 
 library(openintro)
 library(tidyverse)
@@ -27,3 +27,904 @@ ggviolet <- "#C77CFF"
 ```
 
 # Inferenz für quantitative Daten 
+
+## Parametrische Testverfahren  
+
+Parametrische Testverfahren setzen voraus, dass das zu untersuchende Beobachtungsmerkmal aus einer eindeutig definierten Verteilung, meist aus einer Normalverteilung stammt. 
+
+**Übersicht zur Testwahl**  
+
+Voraussetzung: Beobachtungsmerkmal stammt aus einer normalverteilten Population.
+
+Eine Stichprobe  
+
+  * $n > 30 \rightarrow$ **z-Test**  
+  * $n \leq 30 \rightarrow$ **Einstichproben-t-Test**
+  
+zwei Stichproben  
+
+  * verbundene (abhängige) Stichproben $\rightarrow$ **t-Test für verbundene Stichproben**  
+  * unabhängige Stichproben $\rightarrow$ **t-Test für unabhängige Stichproben (Welch-Test)**  
+  
+
+### z-Test
+
+Mit dem $z$-Test vergleichen wir den Mittelwert einer Stichprobe mit einem bekannten 
+Populationsmittelwert (= Nullwert).
+
+1. Hypothesen $H_0$ und $H_A$ formulieren.  
+
+  * $H_0: \mu = Nullwert$  
+  * $H_A: \mu \neq Nullwert$
+
+2. Signifikanzniveau $\alpha$ festlegen (meist $\alpha$ = 0.05).   
+
+3. Voraussetzungen (Normalverteilung, Stichprobenumfang) für Testwahl prüfen. 
+
+   * $n \geq 30$
+   * Zufallsstichprobe  
+   * Beobachtungsmerkmal muss quantitativ und annähernd normalverteilt sein.  
+   
+4. (1-$\alpha$)-Konfidenzintervall für Populationsparameter berechnen.  
+
+\begin{equation}
+  CI_{1-\alpha} = \bar{x} \pm z_{\frac{alpha}{2}} \times SE_{\bar{x}}
+  (#eq:CI-ztest)
+\end{equation}  
+
+\begin{equation}
+  SE_{\bar{x}} = \frac{s}{\sqrt{n}}
+  (#eq:se-ztest)
+\end{equation}
+
+```{r, eval=FALSE}
+# z für Berechnung des CI in R berechnen
+z <- abs(qnorm(alpha/2))
+```
+
+
+Wenn der Nullwert nicht im (1 - $\alpha$) Konfidenzintervall enthalten ist, ist der 
+Unterschied zwischen $\mu$ und Nullwert statistisch signifikant.  
+
+5. Teststatistik berechnen.  
+
+\begin{equation}
+ z = \frac{\bar{x} - Nullwert}{SE_{\bar{x}}}
+  (#eq:z-ztest)
+\end{equation}
+
+6. $p$-Wert für die Teststatistik berechnen.  
+
+```{r, eval=FALSE}
+# p-Wert für eine zweiseitige Hypothese
+2 * (1 - pnorm(abs(z)))
+
+# alternativ
+2 * pnorm(-abs(z))
+2 * pnorm(abs(z), lower.tail = FALSE)
+```
+
+7. $p$-Wert mit Signifikanzniveau vergleichen und Entscheiden ob man $H_0$ verwirft oder beibehält.  
+Ist der $p$-Wert kleiner als das Signifikanzniveau $\alpha$, wird die $H_0$ zu Gunsten der $H_A$ verworfen.   
+
+8. Ergebnis in allgemein verständlicher Sprache formulieren. 
+
+Beispiel: Bei 30 Personen wurde der Effekt eines Blutdruckmedikaments getestet. Der Hersteller gibt an, dass das Medikament den systolischen Blutdruck im Durchschnitt um 5 mmHg senkt. Der Effekt auf den systolischen Blutdruck wurde in der Variablen `BDsys` gespeichert. 
+
+```{r}
+set.seed(1)
+BDsys <- rnorm(30, mean = -6, sd = 4)  # simulierte Daten generieren  
+alpha <- 0.05                          # Signifikanzniveau festlegen
+
+# CI berechnen  
+mean.BDsys <- mean(BDsys)              # Mittelwert für BDsys
+sd.BDsys <- sd(BDsys)                  # Standardabweichung für BDsys
+n.BDsys <- length(BDsys)               # Stichprobenumfang für BDsys
+SE.BDsys <- sd.BDsys / sqrt(n.BDsys)   # SE für Mittelwert von BDsys    
+z.CI <- abs(qnorm(alpha / 2))          # z-Wert
+CI <- mean.BDsys + c(-1, 1) * z.CI * SE.BDsys  #  Grenzen für CI berechnen
+CI <- round(CI, 3)                     # Werte für CI auf 3 Stellen runden
+CI.output <- paste((1 - alpha) * 100, "%-CI [", CI[1], ", ", CI[2], "]", sep = "")
+print(CI.output)                       # CI ausgeben
+
+# Teststatistik berechnen
+nullvalue <- -5                        # Nullwert eingeben
+z <- (mean.BDsys - nullvalue)/SE.BDsys # z-Wert berechnen
+p <- 2 * pnorm(-abs(z))                # p-Wert für z berechnen  (zweiseitig) 
+z <- round(z, 3)                       # z auf 3 Stellen runden
+p <- round(p, 4)                       # p-Wert auf 4 Stellen runden
+result <- paste("z = ", z, ", p = ", p, sep = "")  
+print(result)
+```
+
+Ergebnis in allgemein verständlicher Sprache formulieren: Die Einnahme des Blutdrucksenkers reduziert den systolischen Blutdruck im Durchschnitt um `r round(mean.BDsys, 3)`, `r CI.output` mmHg. Der vom Hersteller angegebene Wert von durchschnittlich -5 mmHg ist in diesem 95%-Konfidenzintervall enthalten und es liegt keine Evidenz gegen die Nullhypothese ($H_0: \mu = -5$) vor, $z$ = `r z`, $p$ = `r p`.  
+
+**Hinweis:** Für den $z$-Test existiert keine Funktion in `R-base`. Zum Überprüfen der 
+Ergebnisse kann die Funkion `z.test()` aus dem Package `BSDA` verwendet werden.
+
+```{r, eval=FALSE}
+install.packages("BSDA")
+library(BSDA)
+z.test()                               # für Beschreibung ?z.test eingeben
+```
+
+
+### Einstichproben-$t$-Test 
+
+Wie beim $z$-Test vergleichen wir den Mittelwert einer Stichprobe mit einem bekannten Populationsmittelwert (= Nullwert). Bei kleinen Stichproben ($n < 30$) kann der $z$-Test allerdings nicht angewendet werden und wir verwenden den Einstichproben-$t$-Test.
+
+**Merke: Statistikprogramme wie `R` verwenden immer den $t$-Test.**
+
+1. Hypothesen $H_0$ und $H_A$ formulieren.  
+
+  * $H_0: \mu = Nullwert$  
+  * $H_A: \mu \neq Nullwert$
+
+2. Signifikanzniveau $\alpha$ festlegen (meist $\alpha$ = 0.05).   
+
+3. Voraussetzungen (Normalverteilung, Stichprobenumfang) für Testwahl prüfen. 
+
+   * Zufallsstichprobe  
+   * Beobachtungsmerkmal muss quantitativ und annähernd normalverteilt sein.  
+   
+4. (1-$\alpha$)-Konfidenzintervall für Populationsparameter berechnen.  
+
+
+\begin{equation}
+  CI_{1-\alpha} = \bar{x} \pm t_{\frac{\alpha}{2},df} \times SE_{\bar{x}}
+  (#eq:CI-ttest)
+\end{equation}  
+
+\begin{equation}
+  SE_{\bar{x}} = \frac{s}{\sqrt{n}}, ~~ df = n-1
+  (#eq:se-ttest)
+\end{equation}
+
+```{r, eval=FALSE}
+# t für Berechnung des CI in R berechnen
+t <- abs(qt(alpha/2), df = n - 1)
+```
+
+Wenn der Nullwert nicht im (1 - $\alpha$) Konfidenzintervall enthalten ist, ist der 
+Unterschied zwischen $\mu$ und Nullwert statistisch signifikant.  
+
+5. Teststatistik berechnen.  
+
+\begin{equation}
+  t = \frac{\bar{x} - Nullwert}{SE_{\bar{x}}}
+  (#eq:t-ztest)
+\end{equation}
+
+6. $p$-Wert für die Teststatistik berechnen.  
+
+```{r, eval=FALSE}
+# p-Wert für eine zweiseitige Hypothese
+2 * (1 - pt(abs(t), df = n - 1 ))
+
+# alternativ
+2 * pt(-abs(t), df = n - 1)
+2 * pt(abs(t), , df = n - 1, lower.tail = FALSE)
+```
+
+7. $p$-Wert mit Signifikanzniveau vergleichen und Entscheiden ob man $H_0$ verwirft oder beibehält.  
+Ist der $p$-Wert kleiner als das Signifikanzniveau $\alpha$, wird die $H_0$ zu Gunsten der $H_A$ verworfen.   
+
+8. Ergebnis in allgemein verständlicher Sprache formulieren. 
+
+Beispiel: Bei 12 Personen wurde der Effekt eines Blutdruckmedikaments getestet. Der Hersteller gibt an, dass das Medikament den systolischen Blutdruck im Durchschnitt um 5 mmHg senkt. Der Effekt auf den systolischen Blutdruck wurde in der Variablen `BDsys` gespeichert. 
+
+```{r}
+set.seed(1)
+BDsys <- rnorm(12, mean = -6, sd = 4)  # simulierte Daten generieren  
+alpha <- 0.05                          # Signifikanzniveau festlegen
+
+# CI berechnen  
+mean.BDsys <- mean(BDsys)              # Mittelwert für BDsys
+sd.BDsys <- sd(BDsys)                  # Standardabweichung für BDsys
+n.BDsys <- length(BDsys)               # Stichprobenumfang für BDsys
+SE.BDsys <- sd.BDsys / sqrt(n.BDsys)   # SE für Mittelwert von BDsys    
+t.CI <- abs(qt(alpha / 2, df = n.BDsys - 1))  # t-Wert
+CI <- mean.BDsys + c(-1, 1) * t.CI * SE.BDsys  #  Grenzen für CI berechnen
+CI <- round(CI, 3)                     # Werte für CI auf 3 Stellen runden
+CI.output <- paste((1 - alpha) * 100, "%-CI [", CI[1], ", ", CI[2], "]", sep = "")
+print(CI.output)                       # CI ausgeben
+
+# Teststatistik berechnen
+nullvalue <- -5                        # Nullwert eingeben
+t <- (mean.BDsys - nullvalue)/SE.BDsys # z-Wert berechnen
+p <- 2 * pt(-abs(t), df = n.BDsys - 1) # p-Wert für z berechnen  (zweiseitig) 
+t <- round(t, 4)                       # z auf 3 Stellen runden
+p <- round(p, 4)                       # p-Wert auf 4 Stellen runden
+result <- paste("t = ", t, ", p = ", p, sep = "")  
+print(result)
+```
+
+Ergebnis in allgemein verständlicher Sprache formulieren: Die Einnahme des Blutdrucksenkers reduziert den systolischen Blutdruck im Durchschnitt um `r round(mean.BDsys, 3)`, `r CI.output` mmHg. Der vom Hersteller angegebene Wert von durchschnittlich -5 mmHg ist in diesem 95%-Konfidenzintervall enthalten und es liegt keine Evidenz gegen die Nullhypothese ($H_0: \mu = -5$) vor, $t$ = `r t`, $df$ = `r n.BDsys - 1`, $p$ = `r p`.  
+
+Einfacher geht es mit der `R`-Funktion `t.test()`.
+
+```{r}
+t.test(BDsys, mu = -5)
+```
+
+<br/>
+
+### t-Test für verbundene Stichproben   
+
+Bei abhängigen Stichproben wird davon ausgegangen, dass die Messwerte in "Paaren" vorliegen, z.B.  
+
+  * Gleiche Beobachtungseinheiten: Vorher-Nachher-Messungen, Messwiederholungen  
+  * Unterschiedliche Beobachtungseinheiten (jedoch voneinander abhängig): Zwillingsstudien, Partner, matched pairs.
+  
+Parameter: $\mu_{\Delta}$ = Mittelwert der paarweisen Differenzen in der Population      
+Punktschätzer: $\bar{x}_{\Delta}$ = Mittelwert der paarweisen Differenzen in der Stichprobe    
+Teststatistik: $t$   
+
+1. Hypothesen $H_0$ und $H_A$ formulieren.  
+
+  * $H_0: \mu_{\Delta} = 0$   
+  * $H_A: \mu_{\Delta} \neq 0$ (zweiseitige $H_A$)  
+
+2. Signifikanzniveau $\alpha$ festlegen (meist $\alpha$ = 0.05).  
+
+3. Voraussetzungen (Normalverteilung, Stichprobenumfang) für Testwahl prüfen.  
+
+  * Zufallsstichprobe  
+  * Paarweise Differenzen sind annähernd normalverteilt.  
+  * $n \geq 12$ oder grösser bei stark schiefen Verteilungen  
+  
+4. (1-$\alpha$)-Konfidenzintervall für Populationsparameter berechnen. 
+
+\begin{equation}
+  CI_{1-\alpha} = \bar{x}_{\Delta} \pm t_{\frac{\alpha}{2}, df} \times SE_{\bar{x}_{\Delta}}
+  (#eq:CI-tpaired)
+\end{equation}  
+
+\begin{equation}
+  SE_{\bar{x}_{\Delta}} = \frac{s_{\Delta}}{\sqrt{n}}, ~~ df = n-1
+  (#eq:se-tpaired)
+\end{equation}
+
+```{r, eval=FALSE}
+# t für Berechnung des CI in R berechnen
+t <- abs(qt(alpha/2), df = n - 1)
+```
+
+5. Teststatistik berechnen.   
+
+\begin{equation}
+  t = \frac{\bar{x}_{\Delta} - 0}{SE_{\bar{x}_{\Delta}}}
+  (#eq:t-paired)
+\end{equation}
+
+6. $p$-Wert für die Teststatisik berechnen.  
+
+```{r, eval=FALSE}
+# p-Wert für eine zweiseitige Hypothese
+2 * (1 - pt(abs(t), df = n - 1 ))
+
+# alternativ
+2 * pt(-abs(t), df = n - 1)
+2 * pt(abs(t), , df = n - 1, lower.tail = FALSE)
+```
+
+
+7. $p$-Wert mit Signifikanzniveau vergleichen und Entscheiden ob man $H_0$ verwirft oder beibehält.  
+Ist der $p$-Wert kleiner als das Signifikanzniveau $\alpha$, wird die $H_0$ zu Gunsten der $H_A$ verworfen.   
+
+8. Ergebnis in allgemein verständlicher Sprache formulieren. 
+
+Beispiel: Körpergewicht in kg für 17 Probandinnen vor und nach einer Anorexie Therapie. Hat die Therapie einen signifikanten Effekt?   
+
+```{r, fig.dim=c(4, 4)}
+## create dataset (data extracted & converted from package PairedData::Anorexia)
+anorexia <- data.frame(
+  id = seq(from = 1, to = 17, by = 1),
+  vor = c(38.0, 37.8, 39.0, 37.4, 39.3, 36.1, 34.9, 42.7, 33.3, 36.5, 37.0, 37.2, 35.2, 37.9, 40.8, 39.0, 39.6),
+  nach = c(43.2, 42.8, 41.5, 41.7, 45.5, 34.8, 34.8, 46.1, 43.0, 34.1, 35.3, 43.3, 41.1, 42.0, 42.5, 41.6, 44.5)
+)
+
+# erste 6 Beobachtungseinheiten im Datensatz anzeigen
+head(anorexia)
+
+# paarweise Differenzen berechnen und in Variable anorexia$diff speichern
+anorexia$diff <- anorexia$nach - anorexia$vor
+head(anorexia)
+
+## Verteilung der paarweisen Differenzen prüfen --------------------------------
+qqnorm(anorexia$diff)              # QQ-Plot erstellen 
+qqline(anorexia$diff)
+
+## CI für anorexia$diff berechnen ----------------------------------------------
+alpha <- 0.05                      # Signifikanzniveau festlegen  
+mean.diff <- mean(anorexia$diff)   # Mittelwert der paarweisen Differenzen
+sd.diff <- sd(anorexia$diff)       # Standardabweichung der paarweisen Differenzen
+n.diff <- length(anorexia$diff)    # Stichprobenumfang ermitteln
+SE.diff <- sd.diff/sqrt(n.diff)    # Standardfehler berechnen  
+t.CI <- abs(qt(alpha / 2, df = n.diff - 1)) # t für CI-Berechnung bestimmen  
+CI.diff <- mean.diff + c(-1, 1) * t.CI * SE.diff # CI Grenzen berechnen  
+CI.diff <- round(CI.diff, 3)                  # CI-Grenzen auf drei Stellen runden
+CI.output <- paste((1 - alpha) * 100, "%-CI [", CI.diff[1], ", ", CI.diff[2], "]")
+CI.output
+
+## p-Wert bestimmen
+t <- (mean.diff - 0) / SE.diff
+p <- 2 * pt(-abs(t), df = n.diff - 1)
+t <- round(t, 4)
+p <- round(p, 4)
+result <- paste("t = ", t, ", p = ", p, sep = "")  
+print(result)
+```
+
+Ergebnis in allgemein verständlicher Sprache formulieren: Die Therapie führt bei anorektischen Patientinnen im Durchschnitt zu einer signifikanten Gewichtszunahme von `r round(mean.diff, 1)` kg `r CI.output`,  $t$ = `r t`, $df$ = `r n.diff - 1`, $p$ = `r p`
+
+Einfacher geht es mit der `R`-Funktion `t.test()`.
+
+```{r}
+t.test(anorexia$nach, anorexia$vor, paired = TRUE)
+```
+
+<br/> 
+
+### t-Test für unabhängige Stichproben  
+
+Der $t$-Test dient der Prüfung von Mittelwertsdifferenzen zweier unabhängiger Stichproben (Unterschiedliche Beobachtungseinheiten, z.B. Vergleich von zwei Gruppen).
+
+* Parameter: $\mu_1 - \mu_2$, z.B. Differenz der Mittelwerte von zwei Populationen  
+* Punktschätzer: $\bar{x}_1 - \bar{x}_2$ z.B. Differenz der Mittelwerte von zwei Stichproben    
+* Teststatistik: $t$   
+
+1. Hypothesen:   
+
+  * $H_0: \mu_1 = \mu_2$ bzw. $H_0: \mu_1 - \mu_2 = 0$   
+  * $H_A: \mu_1 \neq \mu_2$ bzw. $H_A: \mu_1 - \mu_2 \neq 0$ (zweiseitige $H_A$)   
+  
+2. Signifikanzniveau $\alpha$ festlegen (meist $\alpha$ = 0.05).  
+
+3. Voraussetzungen (Normalverteilung, Stichprobenumfang) für Testwahl prüfen.   
+
+  * Daten stammen aus zwei unabhängigen Zufallsstichproben.  
+  * Die Daten in beiden Zufallsstichproben sind annähernd normalverteilt.  
+  
+4. (1-$\alpha$)-Konfidenzintervall für Populationsparameter berechnen.   
+
+\begin{equation}
+   CI_{1-\alpha} = (\bar{x}_1 - \bar{x}_2) \pm t_{\frac{\alpha}{2},df} \times SE_{\bar{x}_1 - \bar{x}_2}
+   (#eq:ci-tindep)
+\end{equation}
+
+\begin{equation}
+  df = n_1 + n_2 - 2
+  (#eq:df-indep)
+\end{equation}
+
+```{r, eval=FALSE}
+# t für Berechnung des CI in R berechnen
+t <- abs(qt(alpha/2), df = n1 + n2 - 2)
+```
+
+$SE$ vereinfacht (für Berechnungen von Hand: entspricht $SE_{\bar{x}_1} + SE_{\bar{x}_2}$)   
+
+\begin{equation}
+  SE_{\bar{x}_1 - \bar{x}_2} = \sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}
+  (#eq:se-indep-simple)
+\end{equation}
+
+$SE$ vollständig  
+
+\begin{equation}
+  SE_{\bar{x}_1 - \bar{x}_2} = \sqrt{\frac{(n_1-1) \cdot s_1^2+(n_2-1) \cdot s_2^2}{n_1+n_2-2}\cdot \lgroup \frac{1}{n_1}+\frac{1}{n_2} \rgroup}
+  (#eq:se-indep-compl)
+\end{equation}
+
+5. Teststatistik berechnen.   
+
+\begin{equation}
+  t = \frac{\bar{x}_1 - \bar{x}_2}{SE_{\bar{x}_1 - \bar{x}_2}}
+  (#eq:t-tindep)  
+\end{equation}
+
+6. $p$-Wert für die Teststatisik berechnen.  
+
+```{r, eval=FALSE}
+# p-Wert für eine zweiseitige Hypothese
+2 * (1 - pt(abs(t), df = n1 + n2 - 2))
+
+# alternativ
+2 * pt(-abs(t), df = n1 + n2 - 2)
+2 * pt(abs(t), , df = n1 + n2 - 2, lower.tail = FALSE)
+```
+
+7. $p$-Wert mit Signifikanzniveau vergleichen und Entscheiden ob man $H_0$ verwirft oder beibehält. 
+Ist der $p$-Wert kleiner als das Signifikanzniveau $\alpha$, wird die $H_0$ zu Gunsten der $H_A$ verworfen.   
+
+8. Ergebnis in allgemein verständlicher Sprache formulieren. 
+
+Beispiel: Unterscheiden sich Studierende, die mit der Methode A lernen in ihrem Gesamtscore von Studierenden, die mit der Methode B lernen?
+  
+```{r, fig.dim=c(7, 4)}
+# Simulierte Daten erzeugen ----------------------------------------------------
+set.seed(1)
+score <- data.frame(
+  ID = seq(from = 1, to = 15, by = 1),
+  methode_A = rnorm(15, mean = 71.5, sd = 9.4),
+  methode_B = rnorm(15, mean = 84.7, sd = 8.3)
+)
+
+# Kennzahlen -------------------------------------------------------------------
+library(dplyr)
+
+score %>% 
+  summarise(
+    mean.A = mean(methode_A),
+    sd.A = sd(methode_A),
+    mean.B = mean(methode_B),
+    sd.B = sd(methode_B)
+  ) %>% 
+  kbl(digits = 2) %>% 
+  kable_styling(full_width = FALSE)
+
+# Verteilung der beiden Variablen prüfen
+par(mfrow = c(1, 2))
+qqnorm(score$methode_A, main = "QQ-Plot Methode A")
+qqline(score$methode_A)
+
+qqnorm(score$methode_B, main = "QQ-Plot Methode B")
+qqline(score$methode_B)
+par(mfrow = c(1, 1))  
+
+# 95%-CI Grenzen berechnen -----------------------------------------------------
+alpha <- .05
+
+m.A <- mean(score$methode_A)
+s.A <- sd(score$methode_A)
+n.A <- length(score$methode_A)
+
+m.B <- mean(score$methode_B)
+s.B <- sd(score$methode_B)
+n.B <- length(score$methode_B)
+
+SE <- sqrt(s.A^2/n.A + s.B^2/n.B)
+df <- n.A + n.B - 2
+
+CI <- (m.B - m.A) + c(-1, 1) * abs(qt(alpha/2, df)) * SE
+CI <- round(CI, 2)
+CI.output <- paste((1 - alpha) * 100, "%-CI [", CI[1], ", ", CI[2], "]")
+CI.output
+
+# p-Wert bestimmen
+t <- (m.A - m.B)/SE
+p <- 2 * pt(-abs(t), df = df)
+t <- round(t, 4)
+p <- round(p, 5)
+result <- paste("t = ", t, ", p = ", p, sep = "")  
+print(result)
+```
+
+Ergebnis in allgemein verständlicher Sprache formulieren: Die Studierenden, die mit der Methode B lernen, erzielen im Durchschnitt einen um `r round(m.B-m.A, 3)`, `r CI.output` signifikant höheren Score als die Studierenden, die mit der Methode A lernen,  $t$ = `r t`, $df$ = `r df`, $p$ = `r p`.
+
+Einfacher geht es in `R` mit der Funktion `t.test()`. *Hinweis:* Es existieren zwei Varianten des $t$-Test für unabhängige Stichproben:
+
+* $t$-Test für zwei Stichproben mit gleichen Varianzen. Die oben gezeigten Formeln sind für diese Testvariante gültig.   
+* $t$-Test für zwei Stichproben mit ungleichen Varianzen ($Welch$-Test). Dieser Test führt einen Korrekturfaktor ein der v.a. die Anzahl Freiheitsgrade beeinflusst. Der $Welch$-Test wird in `R` standardmässig durchgeführt und ich empfehle, immer diese Testvariante zu verwenden.
+
+```{r}
+# t-Test standard = Welch Test
+t.test(score$methode_B, score$methode_A)
+
+# t-Test wie oben durchgeführt
+t.test(score$methode_B, score$methode_A, var.equal = TRUE)
+```
+
+<br/>
+
+## Nicht-parametrische Testverfahren   
+
+Nichtparametrische Tests kommen zur Anwendung, wenn die Annahme der Normalverteilung fraglich ist. Für die Anwendung von nichtparametrischen Tests ist es unerheblich, aus welcher Art von Verteilung die Daten stammen. Deshalb werden diese Prüfverfahren auch als *verteilungsfreie* Verfahren bezeichnet. Die minimale Voraussetzung ist, dass die Prüfvariable mindestens *qualitativ-ordinal* skaliert ist.    
+
+**Übersicht zur Testwahl**  
+
+Eine Stichprobe $\rightarrow$ **Vorzeichentest**  
+  
+Zwei Stichproben  
+
+  * verbundene (abhängige) Stichproben $\rightarrow$ **Wilcoxon-Vorzeichenrangtest**, **Vorzeichentest**   
+  * unabhängige Stichproben $\rightarrow$ **Mann-Whitney-U-Test**  
+  
+<br/>
+
+### Vorzeichentest   
+
+Referenzen: @King2019  
+
+Der Einstichproben-Test: Vergleicht einen Median ($\tilde{x}$) mit einem vorgegebenen Referenzmedian. $H_0: \tilde{x} = Nullwert$. Prüfgrösse sind die Stichprobendaten.   
+
+Vorgehen:   
+
+1. Vergleiche jeden Wert in der Stichprobe mit dem Nullwert. Für Werte die grösser als
+der Nullwert sind, schreibe ein $+$, für Werte die kleiner als der Nullwert sind, schreibe ein $-$.   
+2. Zähle die Anzahl $+$ und $-$. 
+3. Berechne anhand der Regeln für die Binomialverteilung die Wahrscheinlichkeit für dieses oder ein extremeres Resultat unter der Annahme, dass die Nullhypothese zutrifft. Dies ist auch unsere Teststatistik! 
+
+  * Wenn $p$ die Wahrscheinlichkeit für einen Erfolg ist, ist $1-p$ die Wahrscheinlichkeit für einen Misserfolg. $n$ gibt die Anzahl der Versuche an und $k$ die Anzahl der Erfolge.   
+
+\begin{equation}
+  p(k, n) =  {n \choose k}p^k(1-p)^{n-k}
+  (#eq:binom3)
+\end{equation}
+
+4. Vergleiche den p-Wert mit dem Signifikanzniveau. Beachte: Für eine zweiseitige $H_A$ muss der p-Wert verdoppelt werden.   
+
+Beispiel: In einer neuen Produktionslinie soll die Kontamination eines Produkts mit Schadstoffen 
+unter einem Grenzwert von 50 Einheiten liegen. Gemessen wurde die Kontamination an einer Stichprobe $n$ = 10.
+
+$H_0: \tilde{x} = 50$, der Median der Stichprobe ist 50      
+$H_A: \tilde{x} < 50$, der Median der Stichprobe ist kleiner als 50 
+
+```{r, echo=TRUE}
+# Für diesen Code müssen folgende Bibliotheken geladen werden ------------------
+# library(dplyr)
+# library(knitr)
+# library(kableExtra)
+
+## Kontaminationsdaten ---------------------------------------------------------
+contamination <- tibble(
+  value = c(45.344, 48.655, 36.199, 54.881, 49.287, 
+            49.336, 53.492, 40.702, 46.318, 31.303)
+)
+
+nullvalue <- 50
+
+## Differenz zum Nullwert plus oder minus --------------------------------------
+contamination <- contamination %>% 
+  mutate(
+    diff = value - nullvalue,
+    sign = if_else(diff >= 0, "plus", "minus")
+  )
+contamination %>% 
+  kbl() %>% 
+  kable_styling(full_width = FALSE)
+
+## Summe der positiven und negativen Differenzen -------------------------------
+contamination %>% 
+  group_by(sign) %>% 
+  summarise(
+    n = n()
+  ) %>% 
+  kbl() %>% 
+  kable_styling(full_width = FALSE)
+
+## Wie gross ist die Wahrscheinlichkeit 8 oder mehr negative aus 10 zu ziehen  
+p.Wert <- dbinom(8, 10, .5) + dbinom(9, 10, .5) + dbinom(10, 10, .5)
+
+
+## Tabelle für Resultat erstellen ----------------------------------------------
+cont.result <- tibble(
+  Nr.successes = 8,
+  Nr.trials = 10, 
+  p.H0 = .5,
+  p.Value = round(p.Wert, 4)
+)
+cont.result %>% 
+  kbl(caption = "Vorzeichentest") %>% 
+  kable_styling(full_width = FALSE)
+
+# Einfacher geht es mit R 
+binom.test(8, 10, .5, alternative = "greater")
+```
+
+Ergebnis in allgemein verständlicher Sprache formulieren: Der kritische Wert für unsere Teststatistik ist das Signifikanzniveau $\alpha$. Ist der $p-Wert$ grösser als $\alpha$, haben wir keine Evidenz dafür, dass wir die Nullhypothese verwerfen können. Es liegt nicht ausreichend Evidenz dafür vor, dass der Median der Kontamination signifikant tiefer ist, als der vorgegebene Grenzwert.    
+
+Der Vorzeichentest kann auch als Wilcoxon Vorzeichenrangtest mit dem Parameter `mu = nullvalue` durchgeführt werden. Das Resultat ist annähernd das selbe.
+
+```{r, echo=TRUE, eval=FALSE}
+wilcox.test(x, mu = Nullwert)
+```
+
+
+```{r, echo=TRUE, warning=FALSE}
+# Wilcoxon-Vorzeichenrangtest
+wilcox.test(x = contamination$value, mu = nullvalue, alternative = "less")
+```
+
+<br/>
+<br/>
+
+### Wilcoxon-Vorzeichenrangtest    
+
+Quellen: @Leonhart2013, @Realstat  
+
+Wilcoxon Vorzeichenrang-Test für gepaarte Daten: $H_0: \tilde{x}_{\Delta} = 0$, Prüfgrösse 
+$\tilde{x}_{\Delta}$ = Paarweise Differenzen Stichprobe B minus Stichprobe A.   
+
+Voraussetzungen:  
+
+* quantitative oder ordinal skalierte Daten   
+* unabhängige Beobachtungseinheiten   
+* Daten sind annähernd symmetrisch um den Median verteilt.   
+
+Vorgehen:
+
+1. Paarweise Differenzen nach Grösse sortieren. Die Vorzeichen werden für die Rangbildung ignoriert, das Vorzeichen wird notiert.  
+2. Rangsummen für positive und negative Differenzen bilden.  
+
+$$T_+ = \sum Ränge ~mit ~positivem ~Vorzeichen$$ 
+
+$$T_- = \sum Ränge ~mit ~negativem ~Vorzeichen$$ 
+
+3. Die Teststatistik $T$ ist die kleinere der beiden Rangsummen.   
+4. Kritischen Wert $T_{krit}$ in [Vorzeichen-Rang-Tabelle](https://www.real-statistics.com/statistics-tables/wilcoxon-signed-ranks-table/) nachschlagen. Wenn $T < T_{krit}$ wird $H_0$ verworfen.   
+
+**Normalapproximation**     
+
+* Für grössere Stichproben (Faustregel: $n > 25$, je nach Autor etwas andere Angaben) ist $T$ annähernd normalverteilt.  
+
+\begin{equation}
+  E(T) = \mu = \frac{n \times (n + 1)}{4}
+  (#eq:mu_wilcox)
+\end{equation}  
+
+\begin{equation}
+  \sigma^2 = \frac{n \times (n + 1) \times (2n + 1)}{24}
+  (#eq:var-wilcox)
+\end{equation}  
+
+
+**Korrektur für Bindungen**
+
+Wenn mehrere Bindungen vorliegen, ist ein besserer Schätzer für die Varianz   
+
+\begin{equation}
+  \sigma^2 = \frac{n \times (n + 1) \times (2n + 1)}{24} - \frac{1}{48} \sum_t(f_t^3 - f_t)
+  (#eq:var-corr)
+\end{equation}
+
+wobei:
+
+* $t$ = Anzahl Sets von Bindungen   
+* $f_t$ = Häufigkeit von Rang $t$ 
+  
+**Kontinuitäts-Korrektur**   
+
+Die Approximation einer diskreten Verteilung mittels einer kontinuierlichen Verteilung kann durch eine Kontinuitätskorrektur bei der Berechnung von $z$ berücksichtigt werden:  
+
+\begin{equation}
+  z = \frac{|U - \mu|-.5}{\sigma}
+  (#eq:contcorr)
+\end{equation}  
+
+Beispiel: Zur Überprüfung einer neuen Unterrichtsmethode wurde in einer abhängigen Stichprobe vor und nach einem Sommerlager die Leistung im Fach Statsitik erhoben. Während des Ferienaufenthalts fand ein integrierter Nachhilfekurs in Statistik statt. Die Messung der Statsitikleistung ist im Datensatz `prfg` gespeichert.  
+
+```{r, echo=TRUE}
+# Für diesen Code müssen folgende Bibliotheken geladen werden ------------------
+# library(dplyr)
+# library(knitr)
+# library(kableExtra)
+
+## Prüfergebnisse --------------------------------------------------------------
+prfg <- tibble(
+  ID = seq(from = 1, to = 10, by = 1),
+  vorher = c(22, 26, 12, 20, 22, 26, 22, 24, 40, 40),
+  nachher = c(40, 22, 28, 30, 16, 38, 24, 32, 20, 26)
+)
+
+## Paarweise Differenzen berechnen ---------------------------------------------
+prfg <- prfg %>% 
+  mutate(
+    diff = nachher - vorher
+  )
+
+## Nach Rängen sortieren -------------------------------------------------------
+prfg <- prfg %>% 
+  mutate(
+    rang = rank(abs(diff))
+  )
+
+## Rangsummen für T berechnen --------------------------------------------------
+T.plus <- prfg %>% 
+  filter(diff > 0) %>% 
+  summarise(
+    value = sum(rang)
+  )
+
+T.minus <- prfg %>% 
+  filter(diff < 0) %>% 
+  summarise(
+    value = sum(rang)
+  )
+
+## Testgrösse ist das kleinere T -----------------------------------------------
+T <- min(T.plus$value, T.minus$value)
+
+## p-Wert berechnen ------------------------------------------------------------
+p <- 2 * psignrank(T, n = length(prfg$diff))
+
+## Tabelle für Output erstellen ------------------------------------------------
+prfg.result <- tibble(
+  T.plus = T.plus$value,
+  T.minus = T.minus$value,
+  T = T,
+  T.krit = 8,
+  p.Wert = p
+)
+
+## Tabelle anzeigen ------------------------------------------------------------
+# library(knitr)
+# library(kableExtra)
+
+prfg.result %>% 
+  kbl(digits = 3, caption = "Wilcoxon Vorzeichenrangtest") %>% 
+  kable_styling(full_width = FALSE)
+
+## Überprüfung mit wilcox.test() -----------------------------------------------
+wilcox.test(prfg$vorher, prfg$nachher, paired = TRUE, correct = FALSE)
+```
+
+Anmerkungen  
+
+* Es wird im Beispiel keine Kontinuitätskorrektur oder eine Korrektur für Bindungen verwendet.  
+* $T.krit$ wurde manuell der Wilcoxon Vorzeichenrang-Tabelle entnommen ($n$ = 10).   
+* Der p-Wert wurde mit der Funktion `psignrank(T, n = n)` berechnet.  
+* Der berechnete T-Wert muss gleich oder kleiner als der kritische T-Wert sein, damit ein signifikanter Unterschied belegt werden kann.  
+* In `R` wird $T$ als $V$ angegeben.    
+
+Interpretation: Der beobachtete T-Wert unterschreitet den kritischen T-Wert nicht, somit ist der Unterschied zwischen den Testzeitpunkten nicht signifikant und der Sommerkurs hat keinen Effekt auf die Leistung der Schüler:innen in Statistik.
+
+### Mann-Whitney-U-Test
+
+Referenz: @King2019, @Leonhart2013
+
+Wird auch *Wilcoxon Rangsummen-Test* genannt.   
+
+Der U-Test von Mann-Whitney dient dem Vergleich der zentralen Tendenz zweier Stichproben.
+
+* $H_0: P(X > Y) = P(Y > X)$, m.a.W: Es besteht eine 50%-Wahrscheinlichkeit dafür, dass ein zufällig gezogener Wert aus $X$ grösser ist als ein zufällig gezogener Mittelwert aus $Y$ (und umgekehrt)  
+*  $H_0: P(X > Y) \neq P(Y > X)$, m.a.W: Die Wahrscheinlichkeit ist nicht 50%, dass ein zufällig gezogener Wert aus $X$ grösser ist als ein zufällig gezogener Mittelwert aus $Y$ (und umgekehrt)  
+  
+Voraussetzungen  
+
+* quantiative oder ordinal skalierte Daten   
+* zwei unabhängige Zufallsstichproben  
+
+Idee: Die Werte beider Stichproben werden in einer einzige Rangordnung sortiert. Für $H_0$ wird erwartet, dass $x < y$ gleich häufig ist wie $y < x$.   
+
+Teststatistik   
+
+* $U_1$ und $U_2$ gibt jeweils an, wie viele Rangwerte der anderen Variablen insgesamt niedriger sind.
+* Die Teststatistik $U$ ist der kleinere Wert von den beiden $U_1$ und $U_2$.
+* $U_1$ und $U_2$ werden wie folgt berechnet:
+
+\begin{equation}
+  U_1 = n_1 \times n_2+\frac{n_1 \times (n_1+1)}{2} - T_1
+  (#eq:U1)
+\end{equation}  
+
+\begin{equation}
+  U_2 = n_1 \times n_2+\frac{n_2 \times (n_2+1)}{2} - T_2
+  (#eq:U2)
+\end{equation}
+
+wobei, $n_1$ und $n_2$ die jeweiligen Stichprobenumfänge und $T_1$ und $T_2$ die Rangsummen der Gruppen 1 und 2 sind.  
+
+Für den Signifikanztest wird nun der kleinere der beiden bestimmten $U$-Werte verwendet.
+
+```{r, eval=FALSE}
+2 * (1 - pwilcox(U, m = n1, n = n2, lower.tail = FALSE))
+```
+
+
+**Normalapproximation**
+
+Für grosse Stichprobenumfänge ($n_1$ oder $n_2$ > 10) ist $U$ annähernd normal verteilt mit:  
+
+\begin{equation}
+  E(U) = \mu = \frac{n_1 \times n_2}{2}
+  (#eq:mu-U)
+\end{equation}   
+
+\begin{equation}
+  \sigma_U^2 = \frac{n_1 \times n_2 \times (n_1 + n_2 + 1)}{12}
+  (#eq:var-U)
+\end{equation}  
+
+Teststatistik:
+
+\begin{equation}
+  z = \frac{U - E(U)}{\sigma_U}
+  (#eq:z-U)
+\end{equation}  
+
+Wenn gebundene Ränge vorliegen (zwei Werte in einer Spalte belegen den selben Rang), wird die Standardabweichung von $U$ wie folgt korrigiert:
+
+\begin{equation}
+  \sigma_{UCorr} = \sqrt{\frac{n_1 \times n_2}{n(n-1)}} \times \sqrt{\frac{n^3-n}{12}-\sum_{i=1}^k\frac{t_i^3-t_i}{12}}
+  (#eq:s-U-corr)
+\end{equation}  
+
+wobei
+
+* $n = n_1 + n_2$   
+* $t_i$ = Anzahl einzelner Werte, welche den Rang $i$ teilen.  
+* $k$ = Anzahl gebundene Ränge
+
+in `R` 
+  
+```{r, echo=TRUE, eval=FALSE}
+wilcox.test(x, y, alternative = "two.sided", paired = FALSE)
+```
+
+Beispiel: Erreichen Studierende, die während einer Woche täglich 30 Minuten Statistikübungen machen, bessere Noten in einer Statistikprüfung? Für diese Studie wurden 15 Studierende zufällig ausgewählt und zufällig den Gruppen INT (n = 8) und CON (n = 7) zugeteilt. Beide Gruppen besuchten die Statistikvorlesung. Die Studierenden der Gruppe INT machten zusätzlich während einer Woche täglich 30 Min. Statistikübungen, die Gruppe CON machte keine Statistikübungen. Nach einer Woche wurde ein Statistiktest durchgeführt, der mit 0 bis 100 Punkten bewertet wurde. 
+
+```{r data-statex, echo=TRUE}
+# Für diesen Code müssen folgende Bibliotheken geladen werden ------------------
+# library(dplyr)
+# library(knitr)
+# library(kableExtra)
+
+# Datensatz erstellen ----------------------------------------------------------
+statex <- tibble(
+  Gruppe = c(rep("INT", 8), rep("CON", 7)),
+  Punkte = c(89, 92, 94, 96, 91, 99, 84, 90, 88, 93, 95, 75, 72, 80, 81)
+)
+
+# Prüfungsergebnisse nach Rängen sortieren  
+statex <- statex %>% 
+  mutate(
+    Rang = 16 - rank(Punkte, ties.method = "average" )
+  )
+
+statex %>% 
+  arrange(Rang) %>% 
+  kbl(digits = 2, caption = "Statistikresultate mit Rängen") %>% 
+  kable_classic(full_width = FALSE)
+
+# Rangsummen berechnen
+rangsummen <- statex %>% 
+  group_by(Gruppe) %>% 
+  summarise(
+    Rangsumme = sum(Rang)
+  ) 
+
+T1 <- rangsummen$Rangsumme[1]      # Rangsumme für Gruppe CON
+T2 <- rangsummen$Rangsumme[2]      # Rangsumme für Gruppe INT
+
+# U berechnen
+n1 <- 7
+n2 <- 8
+
+U1 <- n1 * n2 + (n1 * (n1 + 1))/2 - T1
+U2 <- n1 * n2 + (n2 * (n2 + 1))/2 - T2
+
+U <- min(U1, U2)
+
+# p-Wert berechnen
+p <- 2 * (1 - pwilcox(U, m = n1, n = n2, lower.tail = FALSE))
+
+# Resultat als Tabelle ausgeben
+result <- tibble(
+  T1 = T1,
+  T2 = T2,
+  n1 = n1,
+  n2 = n2,
+  U1 = U1,
+  U2 = U2,
+  U = U,
+  p = round(p, 4)
+)
+
+result %>% 
+  kbl(digits = 4, caption = "Mann-Whitney-U-Test") %>% 
+  kable_styling()
+
+# Vergleich mit wilcox.test()
+wilcox.test(
+  Punkte ~ Gruppe, data = statex, 
+  paired = FALSE, 
+  alternative = "two.sided")
+```
+
+```{r, echo=FALSE, include=FALSE}
+#Notiz
+# `R` berechnet die Teststatistik etwas anders: Die Funktion `wilcox.test()` berechnet zwar die Teststatistik $W$ wie oben angegeben, zieht dann jedoch $\frac{n_1 (n_1 + 1)}{2}$ davon ab [@Hughes2012].  
+```
+

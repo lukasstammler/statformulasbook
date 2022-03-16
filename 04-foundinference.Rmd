@@ -253,6 +253,11 @@ $p$-Wert in `R` berechnen:
 p <- 1 - pnorm(z)
 ```
 
+```{r einsgroesser-fig, echo=FALSE, fig.dim=c(4, 4), fig.cap="5%-Verwerfungsbereich für $\\mu$ > Nullwert"}
+normTail(U = 1.645, col = "steelblue")
+```
+
+<br/> 
 
 2. Fall
 
@@ -268,6 +273,11 @@ $p$-Wert in `R` berechnen:
 
 ```{r p-value-l, eval=FALSE}
 p <- pnorm(z)
+```
+
+
+```{r einskleiner-fig, echo=FALSE, fig.dim=c(4, 4), fig.cap="5%-Verwerfungsbereich für $\\mu$ < Nullwert"}
+normTail(L = -1.645, col = "steelblue")
 ```
 
 <br/> 
@@ -293,6 +303,14 @@ p <- 2 * pnorm(abs(z), lower.tail = FALSE)
 p <- 2 * pnorm(-abs(z))
 ```
 
+
+```{r zweis-fig, echo=FALSE, fig.dim=c(4,4), fig.cap="5%-Verwerfungsbereiche für $\\mu \\neq$ Nullwert"}
+normTail(L = -1.96, U = 1.96, col = "steelblue")
+```
+
+
+<br/> 
+
 ### Entscheidungsfehler
 
 * Fehler 1. Art: $H_0$ wird verworfen wenn $H_0$ wahr ist.   
@@ -304,6 +322,8 @@ $\alpha:$ Wahrscheinlichkeit, einen Fehler 1. Art zu begehen.
 $\beta:$ Wahrscheinlichkeit, einen Fehler 2. Art zu begehen.   
 $1-\beta:$ Power (Trennschärfe) eines Tests; Wahrscheinlichkeit, für $H_A$ zu entscheiden, wenn $H_A$ wahr ist.
 
+<br/>
+
 ### Hypothesentests mit Konfidenzintervallen  
 
 * Ein zweiseitiger Hypothesentest mit einem Signifikanzniveau $\alpha$ entspricht einem Konfidenzintervall mit dem Konfidenzniveau $1-\alpha$.  
@@ -311,4 +331,15 @@ $1-\beta:$ Power (Trennschärfe) eines Tests; Wahrscheinlichkeit, für $H_A$ zu 
 * Enthält ein 95% Vertrauensintervall den Nullwert nicht, wird $H_0$ verworfen.  
 * Enthält ein 95% Vertrauensintervall den Nullwert, wird $H_0$ nicht verworfen.   
 
+<br/>
 
+### Vorgehen   
+
+1. Hypothesen $H_0$ und $H_A$ formulieren.
+2. Signifikanzniveau $\alpha$ festlegen (meist $\alpha$ = 0.05). 
+3. Voraussetzungen (Normalverteilung, Stichprobenumfang) für Testwahl prüfen. 
+4. (1-$\alpha$)-Konfidenzintervall für Populationsparameter berechnen.
+5. Teststatistik berechnen.   
+6. $p$-Wert für die Teststatisik berechnen.  
+7. $p$-Wert mit Signifikanzniveau vergleichen und Entscheiden ob man $H_0$ verwirft oder beibehält. 
+8. Ergebnis in allgemein verständlicher Sprache formulieren. 

@@ -95,7 +95,10 @@ Der Binomialkoeffizient gibt an, auf wie viele verschiedene Arten man $k$ Objekt
 
 Anzahl Kombinationen von $k$ Erfolgen in $n$ Versuchen berechnen  
 
-$${n \choose k} = \frac{n!}{k!(n-k)!}$$
+\begin{equation}
+ {n \choose k} = \frac{n!}{k!(n-k)!}
+ (#eq:binomkoef)
+\end{equation}
 
 ```{r, echo=TRUE, eval=FALSE}
 # R: Binomialkoeffizient
@@ -252,3 +255,39 @@ qq.right <- ggplot(data, aes(sample = x5)) +
 (qq.left | qq.right)
 ```
 
+
+## $T$-Verteilung 
+
+Die $T$-Verteilung   
+
+* kann als Variante der Normalverteilung aufgefasst werden.  
+* hat immer den Mittelwert 0.  
+* hat eine Standardabweichung, die vom Stichprobenumfang $n$ abhängig ist.   
+* Wird nur durch einen einzigen Parameter, die Anzahl Freiheitsgrade $df$ (engl. degrees of freedom), definiert.  
+* wird mit wachsendem $n$ schmaler und geht für $n \rightarrow \infty$ in die Normalverteilung über.   
+
+$$df = n-1$$
+$$t \sim T(df)$$
+
+Die $T$-verteilung wird verwendet, wenn    
+
+* der Stichprobenumfang klein ist ($n \leq 30$)    
+* die Standardabweichung $\sigma$ der Population unbekannt ist und mit Hilfe der Stichprobenstandardabweichung $s$ geschätzt werden muss. 
+* also eigentlich immer; die Software rechnet standardmässig mit der $T$-Verteilung.  
+* Die Teststatistik von $T$-Tests sind $t$-Werte. $t$-Werte werden gleich interpretiert wie $z$-Werte.  
+
+
+```{r tdistr-fig, echo=FALSE, fig.dim=c(6, 6), fig.caption="T-Verteilung"}
+par(bg = "gray82")
+curve(dt(x, 15), from = -5, to = 5, col = "firebrick", 
+      xlab = "", ylab = "", lwd = 2, main = "t-Verteilung", axes = FALSE)
+curve(dt(x, 8), from = -5, to = 5, col = "red", add = TRUE, lwd = 2)
+curve(dt(x, 5), from = -5, to = 5, col = "firebrick2", add = TRUE, lwd = 2)
+curve(dt(x, 3), from = -5, to = 5, col = "orange2", add = TRUE, lwd = 2)
+curve(dt(x, 2), from = -5, to = 5, col = "orange", add = TRUE, lwd = 2)
+curve(dt(x, 1), from = -5, to = 5, col = "yellow", add = TRUE, lwd = 2)
+curve(dnorm(x), from = -5, to = 5, col = "purple", add = TRUE, lwd = 2)
+legend("topleft", legend = paste0("df = ", c(1, 2, 3, 5, 8, 15, "norm")),
+       col = c("yellow", "orange", "orange2", "firebrick2", "red", "firebrick", "purple"),
+       lty = 1, lwd = 2)
+```
