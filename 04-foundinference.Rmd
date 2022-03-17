@@ -34,28 +34,103 @@ Wird zur Schätzung eines Populationsparameters nur eine Stichprobenkennzahl ang
 
 ### Schätzung bei qualitativen Merkmalen  
 
-$p:$ Stichprobenkennzahl  
-$\pi:$ Populationsparameter
-Beide Kennzahlen können Werte zwischen 0 und 1 annehmen.   
+$p:$ Stichprobenkennzahl   
+$\hat{p}:$ Schätzer für den Populationsparameter   
+$\pi:$ Populationsparameter   
+Alle diese Kennzahlen können Werte zwischen 0 und 1 annehmen.   
+
+**Zentraler Grenzwertsatz für relative Häufigkeiten (engl. *proportions*)** 
+
+Relative Häufigkeiten von Stichproben sind annähernd normalverteilt mit ihrem Zentrum bei der Häufigkeit in der Population und einem Standardfehler, der umgekehrt proportional ist zum Stichprobenumfang.   
+
+\begin{equation}
+  \hat{p} \sim N \lgroup Mittelwert = p, SE_p = \sqrt{\frac{p(1-p)}{n}} \rgroup
+  (#eq:clt-prop)
+\end{equation}   
+
+Voraussetzungen  
+
+  * Unabhängigkeit: Die Beobachtungen müssen voneinander unabhängig sein (Zufallsstichprobe)  
+  * Stichprobenumfang: Es müssen mindestens 10 Erfolge und 10 Misserfolge vorliegen  
+   
+\begin{equation}
+  n \times p \geq 10; ~n \times (1-p) \geq 10
+  (#eq:clt-prop-cond)
+\end{equation}
 
 **95%-Konfidenzintervall für $\pi$**  
 
 \begin{equation}
-  CI_{95} = p \pm z_{0.975} \times s_p
-  (#eq:ciqualz)
+  CI_{95} = p \pm z_{0.025} \times SE_p
+  (\#eq:ciqualz)
 \end{equation}  
 
 \begin{equation}
-  s_p = \sqrt{\frac{p(1 - p)}{n}}
-  (#eq:sp)
+  SE_p = \sqrt{\frac{p(1 - p)}{n}}
+  (\#eq:sp)
 \end{equation}  
 
 Bei Intervallschätzung mit kleinen Stichproben (N < 30, besser auch schon bei N < 100) sollte statt der Standardnormalverteilung ($z$-Werte) die Verteilung der $t$-Werte zur Definition des Intervalls zugrunde gelegt werden [@Leonhart2013].
 
 \begin{equation}
-  CI_{95} = p \pm t_{0.975, df} \times s_p
-  (#eq:ciqualt)
+  CI_{95} = p \pm t_{0.025, df} \times SE_p
+  (\#eq:ciqualt)
 \end{equation}  
+
+Beispiel: Berechne die Wahrscheinlichkeit $P(\hat{p} > 0.95)$ für ein Ereignis mit der Erfolgswahrscheinlichkeit $p$ = 0.9 und einen Stichprobenumfang $n$ = 200. 
+
+```{r}
+# Für diesen Code müssen folgende Bibliotheken geladen werden ------------------
+# library(dplyr)
+# library(knitr)
+# library(kableExtra)
+
+# Voraussetzungen prüfen -------------------------------------------------------
+p.hat <- .95
+p <- .9
+n <- 200
+
+n * p       # Anzahl Erfolge
+n * (1 - p) # Anzahl Misserfolge
+
+# Normalapproximation ----------------------------------------------------------
+mean.p <- p
+SE.p <- sqrt((p * (1 - p))/n)  
+
+# 95%-CI berechnen -------------------------------------------------------------
+z <- abs(qnorm(.025))
+CI <- mean.p + c(-1, 1) * z * SE.p
+
+# z-Wert berechnen -------------------------------------------------------------
+z.p.hat <- (p.hat - p)/SE.p  
+
+# p-Wert berechnen -------------------------------------------------------------
+prob <- 1 - pnorm(z.p.hat)
+
+# Tabelle für Output erstellen -------------------------------------------------
+result <- tibble(
+  n = n,
+  p = p,
+  p.hat = p.hat,
+  SE.p = SE.p,
+  CI.lo = CI[1],
+  CI.up = CI[2],
+  z = z.p.hat,
+  prob = prob
+)
+result %>% 
+  kbl(digits = 5, caption = "Wahrscheinlichkeit für p.hat > 0.95 bei p = 0.9") %>% 
+  kable_styling(full_width = FALSE)
+```
+
+Die Frage kann auch unter Verwendung der Binomialverteilung beantwortet werden:  
+
+Die erwartete Wahrscheinlichkeit bei 200 Versuchen mit $p$ = 0.95 ist $\hat{p} = 200 \times 0.95 = 190$ Wie gross ist die Wahrscheinlichkeit für $p \geq 190$ bei 200 Stichproben und einer Wahrscheinlichkeit von $p$ = 0.9 in der Population unter der Nullhypothese?   
+   
+```{r}
+# Wahrscheinlichkeit für 190 oder mehr Erfolge bei n = 200 und p = .9
+sum(dbinom(190 : 200, size = 200, prob = .9))
+```
 
 
 ### Schätzung bei quantitativen Merkmalen
@@ -66,14 +141,14 @@ Die Verteilung von Stichprobenkennzahlen (z.B. Mittelwert) folgt annähernd eine
 
 \begin{equation}
   \bar{x} \sim N(Mittelwert = \mu, SE = \frac{\sigma}{\sqrt{n}})
-  (#eq:clt)
+  (\#eq:clt)
 \end{equation}
 
 Wenn $\sigma$ unbekannt ist (was eigentlich immer der Fall ist), wird die Standardabweichung $s$ der Stichprobe als Schätzer für $\sigma$ eingesetzt.
 
 \begin{equation}
   SE = \frac{s}{\sqrt{n}}
-  (#eq:se)
+  (\#eq:se)
 \end{equation}
 
 Bedingungen für die Gültigkeit des zentralen Grenzwertsatzes:  
@@ -95,51 +170,55 @@ s/sqrt(n)        # Berechnung und Ausgabe von SE
 
 **95%-Konfidenzintervall für $\mu$**  
 
+Ein Konfidenzintervall bezieht sich immer auf einen Popultionsparameter, z.B. $\mu$  nicht auf eine Stichprobenkennzahl! 
+
 Konfidenzintervalle (Vertrauensintervalle, $CI$) können auf jedem Konfidenzniveau berechnet werden. Um die Sache nicht allzu kompliziert zu machen, wird hier v.a. exemplarisch die Berechnung von 95%-Konfidenzinteravallen vorgestellt.  
 
 Signifikanzniveau = $\alpha$ 
 Konfidenzniveau = $1-\alpha$  
 
 \begin{equation}
-  CI_{95} = \bar{x} \pm z_{0.975} \times SE
-  (#eq:cinorm)
+  CI_{95} = \bar{x} \pm z_{\frac{\alpha}{2}} \times SE
+  (\#eq:cinorm)
 \end{equation}  
 
 Allgemein formuliert:  
 
 \begin{equation}
-  CI^* = \bar{x} \pm z^* \times SE
-  (#eq:cinorm)
+  CI_{1-\alpha} = \bar{x} \pm z_{\frac{\alpha}{2}} \times SE
+  (\#eq:cinorm)
 \end{equation}  
 
 \begin{equation}
-  z^* = \vert \frac{(1-CI^*)}{2} \vert
-  (#eq:zforci)
+  z_{\frac{\alpha}{2}} = \vert \frac{(1-CI_{1-\alpha})}{2} \vert
+  (\#eq:zforci)
 \end{equation}
 
 \begin{equation}
-  z^* \times SE = z^* \times \frac{s}{\sqrt{n}}
-  (#eq:ME)
+  ME = z_{\frac{\alpha}{2}} \times SE = z_{\frac{\alpha}{2}} \times \frac{s}{\sqrt{n}}
+  (\#eq:ME)
 \end{equation}
 
-$z^* \times SE$ wird auch als Fehlerbereich (engl. $margin~ of~ error,~ ME$) bezeichnet.
-Der Wert von $z^*$ ist abhängig vom Konfidenzniveau.   
+$z_{\frac{\alpha}{2}} \times SE$ wird auch als Fehlerbereich (engl. $margin~ of~ error,~ ME$) bezeichnet. Der Wert von $z_{\frac{\alpha}{2}}$ ist abhängig vom Konfidenzniveau $1-\alpha$.   
 
 ```{r z-values}
 # z für ein 95% CI
-CI <- .95
-z95 <- abs(qnorm((1 - CI)/2))
-z95
+CI <- .95 
+alpha <- 1 - CI
+z95 <- abs(qnorm(alpha/2))
+paste("CI-Niveau = ", CI * 100, "%, alpha = ", alpha, ", z = ", round(z95, 3), sep = "")
 
 # z für ein 90% CI
 CI <- .9
-z90 <- abs(qnorm((1 - CI)/2))
-z90
+alpha <- 1 - CI
+z90 <- abs(qnorm(alpha/2))
+paste("CI-Niveau = ", CI * 100, "%, alpha = ", alpha, ", z = ", round(z90, 3), sep = "")
 
 # z für ein 99% CI
 CI <- .99
-z99 <- abs(qnorm((1 - CI)/2))
-z99
+alpha <- 1 - CI
+z99 <- abs(qnorm(alpha/2))
+paste("CI-Niveau = ", CI * 100, "%, alpha = ", alpha, ", z = ", round(z99, 3), sep = "")
 ```
 
 Beispiel für die Berechnung eines 95% Konfidenzintervalls
@@ -151,7 +230,8 @@ n <- 100        # Stichprobenumfang
 
 # gesucht ist das 95% Konfidenzintervall für den Populationsmittelwert  
 CI <- .95       # Konfidenzniveau 95%
-z <- abs(qnorm((1-CI)/2))
+alpha <- 1 - CI # Signifikanzniveau alpha
+z <- abs(qnorm(alpha/2))
 ME <- z * CI    # Fehlerbereich berechnen
 
 # Obere und untere Grenze für 95%-Konfidenzintervall berechnen
@@ -169,7 +249,7 @@ Stichprobenumfang für einen bestimmten Fehlerbereich berechnen:
 
 \begin{equation}
   ME = z^* \times \frac{s}{\sqrt{n}} \rightarrow n = (\frac{z^* \times s}{ME})^2
-  (#eq:nausME)
+  (\#eq:nausME)
 \end{equation}
 
 ```{r}
@@ -188,7 +268,7 @@ print(paste("Stichprobenumfang neu:", n.neu))
 
 ## Hypothesentest für einen Mittelwert   
 
-**Hypothesentests werden immer für einen Popultionsparameter, z.B. $\mu$ durchgeführt und nicht für eine Stichprobe.**   
+> Hypothesentests werden immer für einen Popultionsparameter, z.B. $\mu$ durchgeführt und nicht für eine Stichprobe!   
 
 ### Vorgehen
 
@@ -209,14 +289,14 @@ print(paste("Stichprobenumfang neu:", n.neu))
 
 \begin{equation}
   z = \frac{\bar{x} - \mu}{SE}, ~~ SE = \frac{s}{\sqrt{n}}
-  (eq:ztest)
+  (\#eq:ztest)
 \end{equation}
 
 5. Berechne den kritischen $z$-Wert für ein bestimmtes Signifikanzniveau $\alpha$.
 
 \begin{equation}
   z_{krit} = \pm |z_{\frac{1-\alpha}{2}}|
-  (#eq:zkrit)
+  (\#eq:zkrit)
 \end{equation}
 
 6. Liegt $z$ im Verwerfungsbereich wird $H_0$ zu Gunsten von $H_A$ zurückgewiesen.   
@@ -228,7 +308,7 @@ Definition:
 
 \begin{equation}
   p-Wert = P(beobachtete~oder~extremere~Teststatistik~ | ~H_0~ wahr)
-  (#eq:pvaluedef)
+  (\#eq:pvaluedef)
 \end{equation}
 
 Der p-Wert quantifiziert die Evidenz gegen $H_0$. Ein kleiner $p$-Wert (üblicherweise $p \leq 0.05$) bedeutet, dass du ausreichend Evidenz dafür hast, $H_0$ zu Gunsten von $H_A$ zu verwerfen. 
@@ -244,7 +324,7 @@ $$H_A: \mu > Nullwert$$
 
 \begin{equation}
   z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
-  (#eq:zonesidedgreater)
+  (\#eq:zonesidedgreater)
 \end{equation}
 
 $p$-Wert in `R` berechnen:
@@ -266,7 +346,7 @@ $$H_A: \mu < Nullwert$$
 
 \begin{equation}
   z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
-  (#eq:zonesidedless)
+  (\#eq:zonesidedless)
 \end{equation}
 
 $p$-Wert in `R` berechnen:
@@ -291,7 +371,7 @@ $$H_A: \mu \neq Nullvalue$$
 
 \begin{equation}
   z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
-  (#eq:ztwosided)
+  (\#eq:ztwosided)
 \end{equation}
 
 $p$-Wert in `R` berechnen:

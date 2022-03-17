@@ -14,13 +14,16 @@ description: "Zusammenstellung von Statistik-Formeln mit Beispielen in R für ei
 
 # Vorbemerkung
 
-Dieses Dokument fasst die wichtigsten Definitionen und Formeln für Studierende, die an einem Grundkurs Statistik teilnehmen, zusammen. Die Zusammenstellung basiert auf dem Dokument [Grundkurs Statstik: Formeln und R-Funktionen](https://rpubs.com/stammler/851041), das über Rpubs publiziert wird. 
-Die Formeln werden durch Beispiele in `R` ergänzt, um ihre Anwendung zu illustrieren und in die Statistiksoftware einzuführen. Die laufende Erweiterung der ursprünglichen Formelsammlung hat mich zur Neugestaltung als Buch bewegt, da dieses Format leichter zu überarbeiten ist. 
+Formeln haben erfahrungsgemäss abschreckende Wirkung auf Studierende, die im Rahmen ihrer Grundausbildung einen Statistikkurs belegen "müssen". Aus diesem Grund verzichte ich in den Unterrichtsmaterialien weitgehend darauf. Dieses Dokument fasst die wichtigsten Definitionen und Formeln für Studierende, die an einem Grundkurs Statistik teilnehmen, zusammen. Für das Verständnis der mathematischen Mechanismen hinter den statistischen Prinzipien, halte ich die Auseinandersetzung mit den Formeln für unabdingbar. Die Formeln werden durch Beispiele in `R` [@R-base] ergänzt, um ihre Anwendung zu illustrieren und in die Statistiksoftware einzuführen.  
 
-Wie immer bin ich dankbar für Kommentare, Ergänzungen und Hinweise auf Fehler an lukas.stammler@bfh.ch.  
+Wie immer bin ich dankbar für Kommentare, Ergänzungen und Hinweise auf Fehler an [lukas.stammler@bfh.ch](mailto:lukas.stammler@bfh.ch).  
 
+
+![](20210327_LS_rund.png){width=25%}
+<br/>
+
+Lukas Stammler   
 Frühjahr 2022  
-Lukas Stammler  
 
 
 

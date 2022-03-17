@@ -26,4 +26,290 @@ ggreen <- "#7CAE00"
 ggviolet <- "#C77CFF"
 ```
 
-# Inferenz für qualitative Daten 
+# Inferenz für qualitative Daten
+
+s.a. Kapitel 5.2
+
+$p:$ Stichprobenkennzahl   
+$\hat{p}:$ Schätzer für den Populationsparameter   
+$\pi:$ Populationsparameter   
+Alle diese Kennzahlen können Werte zwischen 0 und 1 annehmen.   
+
+\begin{equation}
+  \hat{p} = \frac{Anzahl~Erfolge}{Anzahl~Versuche}
+  (\#eq:p-hat)
+\end{equation}
+
+## Hypothesentest für eine Stichprobe   
+
+1. Hypothesen formulieren:   
+
+  * $H_0: \pi = Nullwert ~p_0$   
+  * $H_A: \pi < oder > oder \neq Nullwert ~p_0$  
+  
+2. Punktschätzer $\hat{p}$ berechnen.   
+3. Voraussetzungen prüfen  
+
+  * Beobachtungen müssen unabhängig sein.  
+  * $np \geq 10$ und $n(p-1) \geq 10$ (hier $p$ aus der Nullhypothese einsetzen!)  
+  
+4. Teststatistik $z$ berechnen   
+
+\begin{equation}
+  z = \frac{\hat{p}-p_0}{SE} = \frac{\hat{p}-p_0}{\sqrt{\frac{p_0(1-p_0)}{n}}}
+  (\#eq:z-phat)
+\end{equation}
+
+5. Entscheide und interpretiere im Kontext der Forschungsfrage   
+
+   a) Verwerfe $H_0$, wenn $p \leq \alpha$; die Daten liefern Evidenz gegen $H_0$.   
+   b) Verwerfe $H_0$ nicht, wenn $p > \alpha$; die Daten liefern keine Evidenz gegen $H_0$.    
+   
+**$\hat{p}$ versus $p$**     
+
+Berechnung eines Konfidenzintervalls: Falls $\pi$ unbekannt ist, setzen wir den besten Schätzer $\hat{p}$ ein.   
+
+$$n\hat{p} \geq 10; ~n(1-\hat{p}) \geq 10$$
+
+\begin{equation}
+  SE_{\hat{p}} = \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
+  (\#eq:se-hatp)
+\end{equation}
+
+Hypothesentest: Wir testen gegen die Nullhypothese und setzen $p$ aus $H_0$ ein.
+
+$$np \geq 10; ~n(1-p) \geq 10$$
+
+\begin{equation}
+  SE_p = \sqrt{\frac{p(1-p)}{n}}
+  (\#eq:se-p)
+\end{equation}
+
+Beispiel: In einer Stichprobe von 100 Schüler:innen einer Schule sind 20 Raucher:innen. 
+
+1. Wie gross ist der Anteil an Raucher:innen an dieser Schule?   
+2. Unterscheidet sich der wahre Anteil an Schüler:innen, die an dieser Schule rauchen von 18%?
+
+```{r}
+# Für diesen Code müssen folgende Bibliotheken geladen werden ------------------
+# library(dplyr)
+# library(knitr)
+# library(kableExtra)
+
+# Variablen definieren ---------------------------------------------------------
+n <- 100                                 # Anzahl Schülerinnen
+raucher <- 20                            # Anzahl Raucherinnen
+p.hat <- raucher/n                       # Schätzer für den Anteil Raucherinnen
+
+# 95%-Konfidenzintervall berechnen ---------------------------------------------
+z <- abs(qnorm(.025))                    # z-Wert für 95% CI
+SE <- sqrt((p.hat * (1 - p.hat)) / n)    # SE für CI berechnen  
+CI <- p.hat + c(-1, 1) * z * SE          # Grenzen des 95%-CI berechnen
+
+# Hypothesentest ---------------------------------------------------------------
+p0 <- .18                                # Nullwert definieren
+SE.hyp <- sqrt((p0 * (1 - p0)) / n)      # SE für Hypothesentest berechnen
+z.p.hat <- (p.hat - p0)/SE.hyp           # Teststatistik berechnen
+prob <- 2 * pnorm(abs(z.p.hat), lower.tail = FALSE)
+
+# Tabelle erstellen ------------------------------------------------------------
+result <- tibble(
+  p.hat = p.hat,
+  SE = SE,
+  CI.lo = CI[1],
+  CI.hi = CI[2],
+  SE.hyp = SE.hyp,
+  z = z.p.hat,
+  p = prob
+)
+result %>% 
+  kbl(digits = 5, caption = "Anteil Raucher:innen") %>% 
+  kable_styling(full_width = FALSE)
+```
+
+Interpretation: An dieser Schule beträgt der Anteil an Raucher:innen im Durchschnitt 20% [95%-CI 12.2%, 27.8%]. Dieser Anteil unterscheidet sich nicht signifikant vom vermuteten Anteil von 18%, $z$ = 0.521, $p$ = 0.603.
+
+<br/>
+
+## Vergleich von zwei relativen Häufigkeiten
+
+**Anwendung des zentralen Grenzwertsatzes**   
+
+\begin{equation}
+  (\hat{p}_1-\hat{p}_2) \sim N \lgroup Mittelwert = (p_1-p_2), SE = \sqrt{\frac{p_1(1-p_1)}{n_1}+\frac{p_2(1-p_2)}{n_2}} \rgroup
+  (\#eq:clt-2prop)
+\end{equation}
+
+
+1. Hypothesen formulieren:   
+
+  * $H_0: \pi_1 = \pi_2$   
+  * $H_A: \pi_1 < oder > oder \neq Nullwert ~\pi_2$  
+  
+2. Punktschätzer $\hat{p}_1$ und $\hat{p}_2$ berechnen.   
+3. Voraussetzungen prüfen  
+
+  * Beobachtungen müssen unabhängig sein und aus einer Zufallsstichprobe stammen.  
+  * $np_1 \geq 10$ und $n(p_1-1) \geq 10$ und $np_2 \geq 10$ und $n(p_2-1) \geq 10$ 
+  
+4. Konfidenzintervall berechnen   
+
+\begin{equation}
+  SE = \sqrt{\frac{p_1(1-p_1)}{n_1}+\frac{p_2(1-p_2)}{n_2}}
+  (\#eq:se-2prop)
+\end{equation}
+
+\begin{equation}
+  CI = (\hat{p}_1 - \hat{p}_2) \pm z \times \sqrt{\frac{\hat{p}_1(1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2(1-\hat{p}_2)}{n_2}}
+  (\#eq:ci-2prop)
+\end{equation}
+
+5. Teststatistik $z$ berechnen 
+
+\begin{equation}
+  z = \frac{(\hat{p}_1-\hat{p}_2)}{SE_{pooled}}
+  (\#eq:z-2prop1)
+\end{equation}
+
+\begin{equation}
+  SE_{pooled} = {\sqrt{\frac{\hat{p}_{pool}(1-\hat{p}_{pool})}{n_1} + \frac{\hat{p}_{pool}(1-\hat{p}_{pool})}{n_2}}}
+  (\#eq:se-2prop)
+\end{equation}
+
+\begin{equation}
+  \hat{p}_{pooled} = \frac{Anzahl ~Erfolge}{Anzahl ~Fälle} = \frac{\hat{p}_1n_1 + \hat{p}_2n_2}{n_1 + n_2}
+  (\#eq:p-pooled)
+\end{equation}
+
+\begin{equation}
+  \hat{p}_n = \frac{Anzahl~Erfolge~in~Stichprobe~n}{n_n}
+  (\#eq:hatp-n)
+\end{equation}
+
+Zusammengefasst eine lange Formel für $z$:   
+
+\begin{equation}
+  z = \frac{(\hat{p}_1-\hat{p}_2)}{\sqrt{\frac{\hat{p}_{pool}(1-\hat{p}_{pool})}{n_1} + \frac{\hat{p}_{pool}(1-\hat{p}_{pool})}{n_2}}}
+  (\#eq:z-2prop)
+\end{equation}
+
+5. Entscheide und interpretiere im Kontext der Forschungsfrage   
+
+   a) Verwerfe $H_0$, wenn $p \leq \alpha$; die Daten liefern Evidenz gegen $H_0$.   
+   b) Verwerfe $H_0$ nicht, wenn $p > \alpha$; die Daten liefern keine Evidenz gegen $H_0$.  
+   
+Beispiel: Wir vergleichen die Zahlen der Schule mit einer zweiten Schule: Dort wurde eine Zufallsstichprobe von 120 Schüler:innen erhoben, wovon 30 Raucher:innen waren.   
+
+```{r}
+# Für diesen Code müssen folgende Bibliotheken geladen werden ------------------
+# library(dplyr)
+# library(knitr)
+# library(kableExtra)
+
+# Variablen definieren ---------------------------------------------------------
+n1 <- 100   
+p1 <- 20 / 100
+n2 <- 120
+p2 <- 30 / 120
+
+# 95%-Konfidenzintervall berechnen ---------------------------------------------
+SE <- sqrt((p1 * (1 - p1) / n1) + (p2 * (1 - p2) / n2))  
+z.CI <- abs(qnorm(.025))
+CI <- (p1 - p2) + c(-1, 1) * z.CI * SE
+
+# Hypothesentest ---------------------------------------------------------------
+p.pool <- ((p1 * n1) + (p2 * n2))/(n1 + n2)
+SE.pool <- sqrt(p.pool * (1 - p.pool)/n1 + p.pool * (1 - p.pool)/n2)
+z <- (p1 - p2)/SE.pool
+prob <- 2 * pnorm(abs(z), lower.tail = FALSE)
+
+# Tabelle für Output -----------------------------------------------------------
+result <- tibble(
+  M.diff = p1 - p2,
+  CI.lo = CI[1],
+  CI.up = CI[2],
+  SE.pooled = SE.pool,
+  z = z,
+  p = prob
+)
+result %>% 
+  kbl(digits = 4, caption = "Vergleich der Raucheranteile an zwei Schulen") %>% 
+  kable_styling(full_width = FALSE)
+```
+
+Interpretation: An Schule 1 liegt der Anteil an Raucher:innen bei 20% und an Schule 2 bei 25%. Damit besteht eine durchschnittliche Differenz von 5% [95%-CI: -16%, 6%] zwischen den beiden Schulen. Dieser Unterschied ist nicht signifikant, $z$ = -0.881, $p$ = 0.378.
+
+<br/>
+
+## Chi-Quadrat-Test
+
+auch *Chi-Quadrat-Anpassungstest* oder *Chi-Quadrat-Unabhängigkeitstest*   
+Untersucht, ob eine Zusammenhang zwischen zwei nominal oder ordinal skalierten Variablen besteht.
+Hypothesen:   
+
+* $H_0:$ Die Zeilen- und Spaltenvariablen sind voneineinander unabhängig.  
+* $H_A:$ Die Zeilen- und Spaltenvariablen sind hängen voneinander ab.   
+  
+Für jede Zelle der Tabelle muss der erwartete Wert $E$ unter der Nullhypothese berechnet werden.    
+\begin{equation}
+  E = \frac{Spaltentotal~\times~Zeilentotal}{Gesamttotal}
+  (\#eq:expected)
+\end{equation}  
+
+$\chi^2$-Teststatistik 
+
+\begin{equation}
+  \chi^2 = \sum_{i=1}^k \frac{(O-E)^2}{E}
+  (\#eq:chisq)
+\end{equation}
+
+$O:$ beobachtete absolute Häufigkeiten   
+$E:$ erwartete absolute Häufigkeiten   
+$k:$ Anzahl Zellen   
+
+
+Die $\chi^2$-Verteilung hat nur einen Paramter: $df$   
+
+\begin{equation}
+  df = (R-1) \times (C-1)
+  (\#eq:df-chisq)
+\end{equation}
+
+$R:$ Anzahl Zeilen   
+$C:$ Anzahl Spalten   
+
+**Merke:** Der $\chi^2$-Test darf nur durchgeführt werden, wenn die erwartete Häufigkeit in jeder Zelle mindestens 5 beträgt. Andernfalls *Fisher's exakten Test* durchführen. 
+
+Der $\chi^2$-Test kann in `R` einfach mit der Funktion `chisq.test()` durchgeführt werden.   
+
+```{r, echo=TRUE, eval=FALSE}
+chisq.test()
+```
+
+Der kritische Wert für $\chi^2$ kann in einer Verteilungstabelle abgelesen werden. Bei einer Vierfeldertafel (2 Zeilen und 2 Spalten) ist der Zusammenhang zwischen der Zeilen- und der Kolonnenvariable statistisch signifikant auf dem Niveau von 5% wenn $\chi^2$ grösser als $3.84~ (=1.96^2)$ ist. 
+
+Beispiel: Untersucht wurde bei 100 Schüler:innen, ob sie Tictoc verwenden.
+
+```{r}
+# Beispielaten generieren
+tictoc_m <- c(rep("ja", 23), rep("nein", 29))
+tictoc_w <- c(rep("ja", 38), rep("nein", 10))
+geschlecht <- c(rep("m", length(tictoc_m)), rep("w", length(tictoc_w)))
+tictoc <- data.frame(Geschlecht = geschlecht,
+                     tictoc = c(tictoc_m, tictoc_w))
+
+# Chi-Quadrat-Test, Ergebnis in chisq speichern
+chisq <- chisq.test(table(tictoc))
+
+# Testergebnis anzeigen
+chisq
+
+# Beobachtete Werte anzeigen
+chisq$observed
+
+# erwartete Werte anzeigen
+chisq$expected
+```
+
+
+

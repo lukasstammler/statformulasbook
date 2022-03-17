@@ -660,12 +660,12 @@ $$T_- = \sum Ränge ~mit ~negativem ~Vorzeichen$$
 * Für grössere Stichproben (Faustregel: $n > 25$, je nach Autor etwas andere Angaben) ist $T$ annähernd normalverteilt.  
 
 \begin{equation}
-  E(T) = \mu = \frac{n \times (n + 1)}{4}
-  (#eq:mu_wilcox)
+  E(T) = \mu_T = \frac{n \times (n + 1)}{4}
+  (#eq:mu-wilcox)
 \end{equation}  
 
 \begin{equation}
-  \sigma^2 = \frac{n \times (n + 1) \times (2n + 1)}{24}
+  \sigma_T^2 = \frac{n \times (n + 1) \times (2n + 1)}{24}
   (#eq:var-wilcox)
 \end{equation}  
 
@@ -684,13 +684,18 @@ wobei:
 * $t$ = Anzahl Sets von Bindungen   
 * $f_t$ = Häufigkeit von Rang $t$ 
   
-**Kontinuitäts-Korrektur**   
-
-Die Approximation einer diskreten Verteilung mittels einer kontinuierlichen Verteilung kann durch eine Kontinuitätskorrektur bei der Berechnung von $z$ berücksichtigt werden:  
+**Teststatistik** 
 
 \begin{equation}
-  z = \frac{|U - \mu|-.5}{\sigma}
-  (#eq:contcorr)
+  z = \frac{T - \mu_T}{\sigma_T}
+  (#eq:z-wilcox)
+\end{equation}  
+
+Die Approximation einer diskreten Verteilung mittels einer kontinuierlichen Verteilung kann bei $n$ < 60 durch eine Kontinuitätskorrektur bei der Berechnung von $z$ berücksichtigt werden:  
+
+\begin{equation}
+  z = \frac{|T - \mu_T|-.5}{\sigma_T}
+  (#eq:z-wilcox-contcorr)
 \end{equation}  
 
 Beispiel: Zur Überprüfung einer neuen Unterrichtsmethode wurde in einer abhängigen Stichprobe vor und nach einem Sommerlager die Leistung im Fach Statsitik erhoben. Während des Ferienaufenthalts fand ein integrierter Nachhilfekurs in Statistik statt. Die Messung der Statsitikleistung ist im Datensatz `prfg` gespeichert.  
@@ -765,10 +770,10 @@ Anmerkungen
 * Es wird im Beispiel keine Kontinuitätskorrektur oder eine Korrektur für Bindungen verwendet.  
 * $T.krit$ wurde manuell der Wilcoxon Vorzeichenrang-Tabelle entnommen ($n$ = 10).   
 * Der p-Wert wurde mit der Funktion `psignrank(T, n = n)` berechnet.  
-* Der berechnete T-Wert muss gleich oder kleiner als der kritische T-Wert sein, damit ein signifikanter Unterschied belegt werden kann.  
+* Der berechnete $T$-Wert muss gleich oder kleiner als der kritische $T$-Wert sein, damit ein signifikanter Unterschied belegt werden kann.  
 * In `R` wird $T$ als $V$ angegeben.    
 
-Interpretation: Der beobachtete T-Wert unterschreitet den kritischen T-Wert nicht, somit ist der Unterschied zwischen den Testzeitpunkten nicht signifikant und der Sommerkurs hat keinen Effekt auf die Leistung der Schüler:innen in Statistik.
+Interpretation: Der beobachtete $T$-Wert unterschreitet den kritischen $T$-Wert nicht, somit ist der Unterschied zwischen den Testzeitpunkten nicht signifikant und der Sommerkurs hat keinen Effekt auf die Leistung der Schüler:innen in Statistik.
 
 ### Mann-Whitney-U-Test
 
@@ -818,7 +823,7 @@ Für den Signifikanztest wird nun der kleinere der beiden bestimmten $U$-Werte v
 Für grosse Stichprobenumfänge ($n_1$ oder $n_2$ > 10) ist $U$ annähernd normal verteilt mit:  
 
 \begin{equation}
-  E(U) = \mu = \frac{n_1 \times n_2}{2}
+  E(U) = \mu_U = \frac{n_1 \times n_2}{2}
   (#eq:mu-U)
 \end{equation}   
 
@@ -827,14 +832,21 @@ Für grosse Stichprobenumfänge ($n_1$ oder $n_2$ > 10) ist $U$ annähernd norma
   (#eq:var-U)
 \end{equation}  
 
-Teststatistik:
+**Teststatistik**
 
 \begin{equation}
   z = \frac{U - E(U)}{\sigma_U}
   (#eq:z-U)
 \end{equation}  
 
-Wenn gebundene Ränge vorliegen (zwei Werte in einer Spalte belegen den selben Rang), wird die Standardabweichung von $U$ wie folgt korrigiert:
+Differieren die beiden Stichprobenumfänge $n_1$ und $n_2$ stark, so empfiehlt sich eine Kontinuitätskorrektur des $U$-Werts. 
+
+\begin{equation}
+  z = \frac{|U - E(U)|-0.5}{\sigma_U}
+  (#eq:z-U)
+\end{equation} 
+
+Wenn eine grosse Zahn von verbundenen Rängen vorliegt (zwei Werte in einer Spalte belegen den selben Rang), wird die Standardabweichung von $U$ wie folgt korrigiert:
 
 \begin{equation}
   \sigma_{UCorr} = \sqrt{\frac{n_1 \times n_2}{n(n-1)}} \times \sqrt{\frac{n^3-n}{12}-\sum_{i=1}^k\frac{t_i^3-t_i}{12}}
@@ -922,6 +934,9 @@ wilcox.test(
   paired = FALSE, 
   alternative = "two.sided")
 ```
+
+Interpretation: Studierende, die während einer Woche täglich 30 Minunten Statistikübungen machen, erreichten in unserer Studie im Durchschnitt eine um 8.45 Punkte höhere Punktzahl in der Statistikprüfung, Mann-Whitney-U = `r U`, p = `r round(p, 4)`. Damit liegt keine Evidenz dafür vor, dass sich die Prüfungsergebnisse im Durchschnitt zwischen den beiden Gruppen unterscheiden.
+
 
 ```{r, echo=FALSE, include=FALSE}
 #Notiz

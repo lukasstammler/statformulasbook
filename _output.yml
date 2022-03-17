@@ -2,14 +2,16 @@ bookdown::gitbook:
   css: style.css
   config:
     toc:
-    toc_depth: 3
-    toc_collapsed: true
-    #  before: |
-    #     <li><a href="./">Statistics Formulas R</a></li>
-    #   after: |
-    #     <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
-    # edit: https://github.com/rstudio/bookdown-demo/edit/master/%s
+      collapse: subsection
+      scroll_highlight: true
+    before: |
+        <li><a href="...">Statistics Formulas R</a></li>
+        <li><a href="...">Lukas Stammler</a></li>
+    after: |
+        <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+    edit: https://github.com/rstudio/bookdown-demo/edit/master/%s
     download: ["pdf", "epub"]
+  reference-section-title: "Literatur"
 bookdown::pdf_book:
   includes:
     in_header: preamble.tex

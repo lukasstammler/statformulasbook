@@ -1,0 +1,61 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup-08, include=FALSE}
+rm(list = ls())
+
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.align = "center")
+
+options(scipen=999)
+
+library(openintro)
+library(tidyverse)
+library(knitr)
+library(patchwork)
+library(kableExtra)
+
+ggred <- "#F8766D"
+ggblue <- "#00BFC4"
+ggreen <- "#7CAE00"
+ggviolet <- "#C77CFF"
+```
+
+# Varianzanalyse  
+
+ANOVA steht für Varianzanalyse (engl. Analysis of Variance) und wird verwendet um die Mittelwerte von mehr als 2 Gruppen zu vergleichen.  
+
+**Hypothesen**   
+
+* $H_0: \mu_1 = \mu_2 ... = \mu_n$   
+* $H_A: Die ~Mittelwerte ~sind ~nicht ~alle ~gleich$ 
+
+## Einfaktorielle Varianzanalyse
+
+
+### Quadratsummenzerlegung  
+
+Bei einer Varianzanalyse wird die Gesamtvarianz (*total*) der abhängigen Variablen $y$ in die Varianz zwischen den Gruppenmittelwerten (*between*) und die Varianz zwischen den Messwerten innerhalb der Gruppen (*within*) zerlegt.   
+
+\begin{equation}
+  SS_{total}=SS_{between} + SS_{within}
+  {#eq:anova}
+\end{equation}
+
+Die **Gesamtquadratsumme** $SS_{total}$ misst die totale Variabilität der abhängigen Variablen.  
+
+
+\begin{equation}
+  SS_{total} = \sum_{i=1}^n(y_i-\bar{y})^2
+  (#eq:ss-total)
+\end{equation}
+
+$y_i:$ Wert der abhängigen Variablen für jede Beobachtung   
+$\bar{y}:$ Mittelwert der abhängigen Variablen (sog. *grand mean*)   
+
+

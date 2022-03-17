@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       fig.align = "center")
 
+options(scipen = 999)
+
 library(openintro)
 library(tidyverse)
 library(knitr)
@@ -34,14 +36,14 @@ ggviolet <- "#C77CFF"
 
 \begin{equation}
   p(A) = \frac{n_A}{N_{gesamt}} = \frac{Anzahl~der~günstigen~Ereignisse}{Anzahl~der~möglichen~Ereignisse}
-  (#eq:prob-p)
+  (\#eq:prob-p)
 \end{equation}
 
 ## Ereignis und Komplementärereignis 
 
 \begin{equation}
   p(A) + p(Nicht~A) = 1
-  (#eq:prob-p-q)
+  (\#eq:prob-p-q)
 \end{equation}
 
 ## Disjunkte Ereignisse
@@ -50,7 +52,7 @@ Zwei Ereignisse A und B werden als *disjunkt* bezeichnet, wenn sie einander auss
 
 \begin{equation}
   A \cap B = 0
-  (#eq:disjoint)
+  (\#eq:disjoint)
 \end{equation}
 
 Lese die Formel: Zwei Ereignisse A und B sind disjunkt, wenn die Schnittmenge der leeren Menge entspricht.   
@@ -61,7 +63,7 @@ Zwei Ereignisse A und B werden als *nicht-disjunkt* bezeichnet, wenn die Wahrsch
 
 \begin{equation}
   A \cap B \neq 0
-  (#eq:disjoint)
+  (\#eq:disjoint)
 \end{equation}
 
 Lese die Formel: Nicht-disjunkte Ereignisse haben eine nicht leere Schnittmenge.   
@@ -72,7 +74,7 @@ Die bedingte Wahrscheinlichkeit $p(A|B)$ quantifiziert die Wahrscheinlichkeit de
 
 \begin{equation}
   p(A|B) = \frac{p(A \cap B)}{P(B)}
-  (#eq:condprob)
+  (\#eq:condprob)
 \end{equation}  
 
 Das Zeichen $\cap$ ist das mathematische Symbol für UND (Schnittmenge von A und B).  
@@ -83,7 +85,7 @@ Zwei Ereignisse $A$ und $B$ sind unabhängig, wenn das Eintreffen oder Nicht-Ein
 
 \begin{equation}
   p(A) = p(A|B) ~, ~p(B) = p(B|A)
-  (#eq:independency)
+  (\#eq:independency)
 \end{equation} 
 
 ## Theorem von Bayes
@@ -92,5 +94,8 @@ Das *Theorem von Bayes* gibt an, wie man eine bedingte Wahrscheinlichkeit $p(A|B
 
 \begin{equation}
   p(A|B)= \frac{p(A) \times p(B|A)}{p(B)}
-  (#eq:bayes)
+  (\#eq:bayes)
 \end{equation}  
+
+<br/>
+

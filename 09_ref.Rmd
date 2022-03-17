@@ -1,0 +1,29 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup-09, include=FALSE}
+rm(list = ls())
+
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.align = "center")
+
+options(digits = 4)
+
+library(openintro)
+library(tidyverse)
+library(knitr)
+library(patchwork)
+library(kableExtra)
+
+ggred <- "#F8766D"
+ggblue <- "#00BFC4"
+ggreen <- "#7CAE00"
+ggviolet <- "#C77CFF"
+```
+
+# Referenzen

@@ -62,7 +62,7 @@ Wenn $p$ die Wahrscheinlichkeit für einen Erfolg ist, ist $1-p$ die Wahrscheinl
 
 \begin{equation}
   p(k, n) =  {n \choose k}p^k(1-p)^{n-k}
-  (#eq:binom)
+  (\#eq:binom)
 \end{equation}  
 
 Die Gleichung setzt sich aus drei Faktoren zusammen:
@@ -97,7 +97,7 @@ Anzahl Kombinationen von $k$ Erfolgen in $n$ Versuchen berechnen
 
 \begin{equation}
  {n \choose k} = \frac{n!}{k!(n-k)!}
- (#eq:binomkoef)
+ (\#eq:binomkoef)
 \end{equation}
 
 ```{r, echo=TRUE, eval=FALSE}
@@ -117,7 +117,7 @@ Es gibt $`r choose(n = 42, k = 6)`$ Kombinationen, d.h. die Wahrscheinlichkeit, 
 
 \begin{equation}
   X \sim Bin(n, p)
-  (#eq:binom2)
+  (\#eq:binom2)
 \end{equation}
 
 $n$ = Anzahl Versuche    
@@ -127,14 +127,14 @@ $p$ = Eintrittswahrscheinlichkeit
 
 \begin{equation}
   \mu = n \times p
-  (#eq:mubinom)
+  (\#eq:mubinom)
 \end{equation}
 
 **Standardabweichung der Binomialverteilung**   
 
 \begin{equation}
   \sigma = \sqrt{np(1-p)}
-  (#eq:sigmabinom)
+  (\#eq:sigmabinom)
 \end{equation}
 
 ### Normalapproximation
@@ -147,14 +147,14 @@ Falls diese Bedingung erfüllt ist, gilt:
 
 \begin{equation}
   Bin(n, p) \sim N(\mu, \sigma)
-  (#eq:binomnormapprox)
+  (\#eq:binomnormapprox)
 \end{equation}
 
 ## Normalverteilung
 
 \begin{equation}
   X \sim N(\mu, \sigma)
-  (#eq:normdistr)
+  (\#eq:normdistr)
 \end{equation}
 
 ### 68-95-99.7-Regel
@@ -167,7 +167,7 @@ Falls diese Bedingung erfüllt ist, gilt:
 
 \begin{equation}
   X \sim N(0, 1)
-  (#eq:stdnormdistr)
+  (\#eq:stdnormdistr)
 \end{equation}
 
 ### z-Wert
@@ -176,7 +176,7 @@ Der z-Wert einer Beobachtung $x_i$ gibt an, um wieviele Standardabweichungen die
 
 \begin{equation}
   z = \frac{x_i-\bar{x}}{s}
-  (#eq:zvalue)
+  (\#eq:zvalue)
 \end{equation}
 
 Der z-Wert des Mittelwerts ist 0.  
@@ -256,7 +256,7 @@ qq.right <- ggplot(data, aes(sample = x5)) +
 ```
 
 
-## $T$-Verteilung 
+## T-Verteilung 
 
 Die $T$-Verteilung   
 

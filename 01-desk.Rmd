@@ -41,7 +41,7 @@ $\mu$ = Populationsmittelwert
 ```{=tex}
 \begin{equation}
   \bar{x} = \frac{\sum_{i=1}^n x_i}{n}
-  (#eq:mittelwert)
+  (\#eq:mittelwert)
 \end{equation}
 ```
 
@@ -65,7 +65,7 @@ wenn $n$ ungerade
 ```{=tex}
 \begin{equation}
   \tilde{x} = x_{\frac{n+1}{2}}
-  (#eq:median1)
+  (\#eq:median1)
 \end{equation}
 ```
 
@@ -74,7 +74,7 @@ wenn $n$ gerade
 ```{=tex}
 \begin{equation}
   \tilde{x} = \frac{1}{2}(x_{\frac{n}{2}} + {x_{\frac{n}{2}+1}})
-  (#eq:median2)
+  (\#eq:median2)
 \end{equation}
 ```
 
@@ -94,14 +94,14 @@ Berechnung der Varianz in der Stichprobe zur Schätzung der Populationsvarianz
 
 \begin{equation}
   s^2 = \frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n-1}
-  (#eq:varsample)
+  (\#eq:varsample)
 \end{equation}
 
 Berechnung der Varianz in der Population   
 
 \begin{equation}
   \sigma^2 = \frac{\sum_{i=1}^n (x_i - \mu)^2}{n}
-  (#eq:varpop)
+  (\#eq:varpop)
 \end{equation}
 
 ```{r var-expl}
@@ -122,14 +122,14 @@ Berechnung der Standardabweichung für eine Stichprobe
 
 \begin{equation}
   s = \sqrt{s^2} = \sqrt{\frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n-1}}
-  (#eq:ssample)
+  (\#eq:ssample)
 \end{equation}   
 
 Berechnung der Standardabweichung für eine Population
 
 \begin{equation}
   \sigma = \sqrt{\sigma^2} = \sqrt{\frac{\sum_{i=1}^n (x_i - \mu)^2}{n}}
-  (#eq:spop)
+  (\#eq:spop)
 \end{equation}
 
 ```{r}
