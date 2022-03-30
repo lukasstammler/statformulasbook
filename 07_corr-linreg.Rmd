@@ -27,3 +27,78 @@ ggviolet <- "#C77CFF"
 ```
 
 # Korrelation und lineare Regression
+
+## Korrelation
+
+> Bei der Beurteilung von Korrelationen muss stets das Streudiagramm beurteilt werden!
+
+Die Korrelation ist ein standardisiertes Mass für den linearen Zusammenhangs zwischen zwei Variablen.  
+ 
+
+### Korrelationskoeffizient nach Pearson $r$ 
+
+\begin{equation}
+  r = \frac{s_{xy}}{s_x \times s_y}
+  (\#eq:r)
+\end{equation}   
+
+$s_{xy}$ bezeichnet die *Kovarianz* der beiden Variablen $X$ und $Y$:
+
+\begin{equation}
+  s_{xy} = \frac{1}{n-1} \sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y})
+  (\#eq:covarianz)
+\end{equation}
+
+Der Korrelationskoeffizient $r$ ist empfindlich gegenüber Ausreissern.  
+
+### Rangkorrelationskoeffizient nach Spearman
+  * Der Rangkorrelationskoeffizient nach Spearman $r_s$ ist robust gegenüber Ausreissern    
+  * misst den monotonen Zusammenhang zwischen zwei Variablen   
+  
+### Interpretation Korrelationskoeffizienten   
+
+* Wertebereich: $[-1, ~1]$, $0$ (kein Zusammenhang) $\pm1$ (perfekter Zusammenhang)   
+* Das Vorzeichen gibt die Richtung des Zusammenhangs an: - (Minus) bedeutet negativer Zusammenhang, + (Plus) bedeutet postitiver Zusammenhang.  
+* Faustregel zur Interpretation:  
+  * -0.8 bis -1: starker negativer Zusammenhang   
+  * -0.8 bis -0.5: mittlerer negativer Zusammenhang  
+  * -0.5 bis 0.5: schwacher positiver Zusammenhang   
+  * 0.5 bis 0.8: mittlerer Zusammenhang   
+  * 0.8 bis 1: starker Zusammenhang  
+  
+```{r, eval=FALSE, echo=TRUE}
+# Korrelationskoeffizient nach Pearson
+cor(x, y)
+
+# Rangkorrelationskoeffizient nach Spearman
+cor(x, y, method = "spearman")
+```
+
+### Hypothesentest für Korrelationskoeffizienten  
+
+* $H_0: \rho = 0$, es besteht kein linearer Zusammenhang zwischen zwei Variablen.  
+* $H_A: \rho \neq 0$, es besteht ein linearer Zusammenhang zwischen zwei Variablen.   
+
+```{r, eval=FALSE, echo=TRUE}
+# Korrelationskoeffizient nach Pearson
+cor.test(x, y)
+
+# Rangkorrelationskoeffizient nach Spearman
+cor.test
+```
+
+Beispiel: Besteht ein Zusammenhang zwischen Temperatur und dem Verkauf von Eiscreme?
+
+```{r}
+eis <- tibble(
+  temp = c(9, 15, 18, 22, 28, 30),
+  verkauf = c(4, 6, 11, 15, 17, 18)
+)
+
+plot(eis$temp, eis$verkauf)
+cor.test(eis$temp, eis$verkauf)
+```
+
+
+
+<br/>

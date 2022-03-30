@@ -943,3 +943,106 @@ Interpretation: Studierende, die während einer Woche täglich 30 Minunten Stati
 # `R` berechnet die Teststatistik etwas anders: Die Funktion `wilcox.test()` berechnet zwar die Teststatistik $W$ wie oben angegeben, zieht dann jedoch $\frac{n_1 (n_1 + 1)}{2}$ davon ab [@Hughes2012].  
 ```
 
+## Bootstrap-Methode
+
+in Bearbeitung
+
+```{r}
+set.seed(1234)
+
+# simulated data ---------------------------------------------------------------
+drug <- c(-3.6, -2.8, -1.5, 1.4, 1.8, 2.2, 2.8, 3.6)
+psych::describe(drug)
+
+# 1000 means and medians from 10000samples with replacement --------------------
+mean.samples <- vector()
+for (i in 1:10000){
+  sample <- sample(drug, size = length(drug), replace = TRUE)
+  mean.samples[i] <- mean(sample)
+}
+bootstrap <- tibble(
+  m.samples = mean.samples
+)
+
+# plot histogram and mean ------------------------------------------------------
+ggplot(bootstrap, aes(x = m.samples)) +
+  geom_histogram(fill = "steelblue") +
+  ggtitle(paste("bootstrapped means, samples = 10000, M = ", 
+                round(mean(bootstrap$m.samples), 4)), 
+          subtitle = paste("original mean = ", round(mean(drug), 4)))
+
+# calculate CI -----------------------------------------------------------------
+alpha <- 0.05
+M <- mean(bootstrap$m.samples)
+SE <- sd(bootstrap$m.samples)
+CI <- M + c(-1, 1) * abs(qnorm(alpha/2)) * SE
+CI
+
+# normalise data to represent the nullhypothesis -------------------------------
+drug.norm <- drug - mean(drug)
+
+# 1000 means from 1000 samples with replacement from normalised data -----------
+mean.samples <- vector()
+for (i in 1:10000){
+  sample <- sample(drug.norm, size = length(drug.norm), replace = TRUE)
+  mean.samples[i] <- mean(sample)
+}
+bootstrap$m.samples.norm <- mean.samples
+
+# plot histogram and mean ------------------------------------------------------
+ggplot(bootstrap, aes(x = m.samples.norm)) +
+  geom_histogram(fill = "steelblue", binwidth = .2) +
+  geom_vline(xintercept = -.49, color = "red") +
+  geom_vline(xintercept = .49, color = "red") +
+  ggtitle(paste("bootstrapped means, samples = 10000, M = ", 
+                round(mean(bootstrap$m.samples.norm), 4)), 
+          subtitle = paste("boundaries two.sided = ", round(mean(drug), 4)))
+
+# calculate p-value ------------------------------------------------------------
+M.drug <- mean(drug)
+pnorm(M.drug) - pnorm(-M.drug) # prob for finding a mean value between -.49 and .49
+pnorm(-M.drug) # prob for finding a mean value < -.49
+pnorm(M.drug, lower.tail = FALSE) # prob for finding a mean Value > .49
+# prob finding a p-value of .49 or more extreme two.sided
+pnorm(-M.drug) + pnorm(M.drug, lower.tail = FALSE)
+```
+
+
+Example from Frost Hypothesistesting
+
+```{r}
+bodyfat <- read_csv("body_fat.csv")
+describe(bodyfat$PercFat)
+hist(bodyfat$PercFat)
+
+# 1000 means and medians from 100000 samples with replacement ------------------
+mean.samples <- vector()
+median.samples <- vector()
+for (i in 1:10000){
+  sample <- sample(bodyfat$PercFat, size = length(drug), replace = TRUE)
+  mean.samples[i] <- mean(sample)
+  median.samples[i] <- median(sample)
+}
+bootstrap <- tibble(
+  m.samples = mean.samples,
+  median.samples = median.samples
+)
+
+# plot histogram and mean ------------------------------------------------------
+ggplot(bootstrap, aes(x = m.samples)) +
+  geom_histogram(fill = "steelblue") +
+  ggtitle(paste("bootstrapped means, samples = 100000, M = ", 
+                round(mean(bootstrap$m.samples), 4)), 
+          subtitle = paste("original mean = ", round(mean(bodyfat$PercFat), 4)))
+qqnorm(bootstrap$m.samples)
+
+# plot histogram and median ------------------------------------------------------
+ggplot(bootstrap, aes(x = median.samples)) +
+  geom_histogram(fill = "steelblue") +
+  ggtitle(paste("bootstrapped medians, samples = 100000, Median = ", 
+                round(mean(bootstrap$median.samples), 4)), 
+          subtitle = paste("original mean = ", round(median(bodyfat$PercFat), 4)))
+qqnorm(bootstrap$median.samples)
+
+```
+

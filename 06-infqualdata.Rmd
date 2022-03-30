@@ -247,8 +247,16 @@ auch *Chi-Quadrat-Anpassungstest* oder *Chi-Quadrat-Unabhängigkeitstest*
 Untersucht, ob eine Zusammenhang zwischen zwei nominal oder ordinal skalierten Variablen besteht.
 Hypothesen:   
 
-* $H_0:$ Die Zeilen- und Spaltenvariablen sind voneineinander unabhängig.  
-* $H_A:$ Die Zeilen- und Spaltenvariablen sind hängen voneinander ab.   
+$H_0:$ Die Zeilen- und Spaltenvariablen sind voneineinander unabhängig.  
+$H_A:$ Die Zeilen- und Spaltenvariablen sind hängen voneinander ab.   
+
+Voraussetzungen:  
+
+  * Es handelt sich um unabhängige Beobachtungen aus Zufallsstichproben.  
+  * Der $\chi^2$-Test darf nur durchgeführt werden, wenn die erwartete Häufigkeit in jeder Zelle mindestens 5 beträgt. Andernfalls *Fisher's exakten Test* durchführen.  
+  * Die erwartete absolute Häufigkeit ist in jeder Zelle $\geq$ 1.
+  * Bei den Daten handelt es sich um absolute Häufigkeiten.
+
   
 Für jede Zelle der Tabelle muss der erwartete Wert $E$ unter der Nullhypothese berechnet werden.    
 \begin{equation}
@@ -259,7 +267,7 @@ Für jede Zelle der Tabelle muss der erwartete Wert $E$ unter der Nullhypothese 
 $\chi^2$-Teststatistik 
 
 \begin{equation}
-  \chi^2 = \sum_{i=1}^k \frac{(O-E)^2}{E}
+  \chi^2 = \sum_{i=1}^k \frac{(O_i-E_i)^2}{E_i}
   (\#eq:chisq)
 \end{equation}
 
@@ -267,6 +275,12 @@ $O:$ beobachtete absolute Häufigkeiten
 $E:$ erwartete absolute Häufigkeiten   
 $k:$ Anzahl Zellen   
 
+$\chi^2$-Teststatistik mit Kontinuitätskorrektur nach Yates  
+
+\begin{equation}
+  \chi^2 = \sum_{i=1}^k \frac{(|O_i-E_i|-0.5)^2}{E_i}
+  (\#eq:chisq)
+\end{equation}
 
 Die $\chi^2$-Verteilung hat nur einen Paramter: $df$   
 
@@ -277,8 +291,6 @@ Die $\chi^2$-Verteilung hat nur einen Paramter: $df$
 
 $R:$ Anzahl Zeilen   
 $C:$ Anzahl Spalten   
-
-**Merke:** Der $\chi^2$-Test darf nur durchgeführt werden, wenn die erwartete Häufigkeit in jeder Zelle mindestens 5 beträgt. Andernfalls *Fisher's exakten Test* durchführen. 
 
 Der $\chi^2$-Test kann in `R` einfach mit der Funktion `chisq.test()` durchgeführt werden.   
 
@@ -310,6 +322,54 @@ chisq$observed
 # erwartete Werte anzeigen
 chisq$expected
 ```
+
+Interpretation: Es besteht ein signifikanter Zusammenhang zwischen zwischen den beiden unabhängigen Variablen Geschlecht und der Verwendung von Tictoc, $\chi^2$ = 11.379, $df$ = 1, $p$ = 0.0007.  
+
+
+## Fisher's exakter Test
+
+Wenn die Voraussetzungen des $\chi^2$-Tests nicht erfüllt sind, ist der exakte Test nach Fisher durchzuführen. Der exakte Test nach Fisher verwendet die hypergeometrische Verteilung zur Berechnung der Resultate und verwendet keine Teststatistik.   
+
+```{r, echo=FALSE}
+tab <- tibble(
+  Rows = c("Row_1", "Row 2", "Total"),
+  Col_1 = c("a", "c", "a+c"),
+  Col_2 = c("b", "d", "b+d"), 
+  Total = c("a+c", "b+d", "N=a+b+c+d")
+)
+tab %>% 
+  kbl(caption = "2 x 2 Kontingenztabelle") %>% 
+  kable_styling(full_width = FALSE)
+```
+
+<br/> 
+
+\begin{equation}
+  p = \frac{(a + b)!(c + d)!(a + c)!(b + d)!}{N!a!b!c!d!}
+  (\#eq:fisherp)
+\end{equation}  
+
+\begin{equation}
+  OR = \frac{\frac{a}{b}}{\frac{c}{d}} = \frac{ad}{bc}
+  (\#eq:fisherOR)
+\end{equation}
+
+```{r}
+# Beispieldaten generieren -----------------------------------------------------
+df <- data.frame("cured" = c(60, 30), 
+                 "noncured" = c(10, 25), 
+                 row.names = c("treated", "nontreated"))
+df %>% 
+  kbl() %>% 
+  kable_styling(full_width = FALSE)
+
+# Exakten Test nach Fischer durchführen ----------------------------------------
+fisher.test(df)
+```
+
+Interpretation: Es besteht ein signifikanter Zusammenhang zwischen zwischen den beiden unabhängigen Variablen (Behandlung und Behandlungsergebnis), Fisher's exakter Test, $p$ = 0.00024, OR = 4.93, 95%-CI [1.98, 13.11]. Die Chance (Odds Ratio) für eine Heilung ist für Patienten, die behandelt werden 4.93 mal höher, als für Patienten, die nicht behandelt werden.   
+
+
 
 
 
