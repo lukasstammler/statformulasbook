@@ -4,3 +4,4 @@ language:
     chapter_name: "Kapitel "
     reference-section-title: "Literatur "
 delete_merged_file: true
+output_dir: docs

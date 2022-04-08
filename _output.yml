@@ -6,7 +6,6 @@ bookdown::gitbook:
       scroll_highlight: true
     before: |
         <li><a href="...">Statistics Formulas R</a></li>
-        <li><a href="...">Lukas Stammler</a></li>
     after: |
         <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
     edit: https://github.com/rstudio/bookdown-demo/edit/master/%s
@@ -18,5 +17,3 @@ bookdown::pdf_book:
   latex_engine: xelatex
   citation_package: natbib
   keep_tex: yes
-# bookdown::epub_book: default
-# bookdown::bs4_book: default
