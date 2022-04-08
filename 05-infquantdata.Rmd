@@ -506,14 +506,32 @@ Ergebnis in allgemein verständlicher Sprache formulieren: Die Studierenden, die
 Einfacher geht es in `R` mit der Funktion `t.test()`. *Hinweis:* Es existieren zwei Varianten des $t$-Test für unabhängige Stichproben:
 
 * $t$-Test für zwei Stichproben mit gleichen Varianzen. Die oben gezeigten Formeln sind für diese Testvariante gültig.   
-* $t$-Test für zwei Stichproben mit ungleichen Varianzen ($Welch$-Test). Dieser Test führt einen Korrekturfaktor ein der v.a. die Anzahl Freiheitsgrade beeinflusst. Der $Welch$-Test wird in `R` standardmässig durchgeführt und ich empfehle, immer diese Testvariante zu verwenden.
+* $t$-Test für zwei Stichproben mit ungleichen Varianzen ($Welch$-Test). Dieser Test führt einen Korrekturfaktor ein der v.a. die Anzahl Freiheitsgrade beeinflusst. Der $Welch$-Test wird in `R` standardmässig durchgeführt und ich empfehle, immer diese Testvariante zu verwenden.   
+ 
+$t$-Test für unabhängige Stichproben mit ungleichen Varianzen: Welch-Test
+
+\begin{equation}
+  t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{\hat{\sigma}_1^2}{n_1} + \frac{\hat{\sigma}_2^2}{n_2}}}
+  (#eq:t-welch)
+\end{equation}
+
+
+\begin{equation}
+  df = \frac{(n_1-1) \cdot (n_2-1)}{(n_2-1) \cdot c^2 + (n_1-1) \cdot (1-c)^2}
+  (#eq:df-welch)
+\end{equation}
+
+\begin{equation}
+  c = \frac{\frac{\hat{\sigma}_1^2}{n_1}}{\frac{\hat{\sigma}_1^2}{n_1}+\frac{\hat{\sigma}_2^2}{n_2}}
+  (#eq:c-welch)
+\end{equation}
 
 ```{r}
-# t-Test standard = Welch Test
-t.test(score$methode_B, score$methode_A)
-
-# t-Test wie oben durchgeführt
+# t-Test für gleiche Varianzen
 t.test(score$methode_B, score$methode_A, var.equal = TRUE)
+
+# t-Test für ungleiche Varianzen, R-standard = Welch-Test
+t.test(score$methode_B, score$methode_A)
 ```
 
 <br/>
@@ -945,9 +963,9 @@ Interpretation: Studierende, die während einer Woche täglich 30 Minunten Stati
 
 ## Bootstrap-Methode
 
-in Bearbeitung
+**in Bearbeitung**
 
-```{r}
+```{r, eval=FALSE}
 set.seed(1234)
 
 # simulated data ---------------------------------------------------------------
@@ -1010,16 +1028,16 @@ pnorm(-M.drug) + pnorm(M.drug, lower.tail = FALSE)
 
 Example from Frost Hypothesistesting
 
-```{r}
+```{r, eval=FALSE}
 bodyfat <- read_csv("body_fat.csv")
-describe(bodyfat$PercFat)
+psych::describe(bodyfat$PercFat)
 hist(bodyfat$PercFat)
 
 # 1000 means and medians from 100000 samples with replacement ------------------
 mean.samples <- vector()
 median.samples <- vector()
-for (i in 1:10000){
-  sample <- sample(bodyfat$PercFat, size = length(drug), replace = TRUE)
+for (i in 1:100000){
+  sample <- sample(bodyfat$PercFat, size = length(bodyfat$PercFat), replace = TRUE)
   mean.samples[i] <- mean(sample)
   median.samples[i] <- median(sample)
 }
@@ -1043,6 +1061,13 @@ ggplot(bootstrap, aes(x = median.samples)) +
                 round(mean(bootstrap$median.samples), 4)), 
           subtitle = paste("original mean = ", round(median(bodyfat$PercFat), 4)))
 qqnorm(bootstrap$median.samples)
+
+# calculate CI -----------------------------------------------------------------
+alpha <- 0.05
+M <- mean(bootstrap$m.samples)
+SE <- sd(bootstrap$m.samples)
+CI <- M + c(-1, 1) * abs(qnorm(alpha/2)) * SE
+CI
 
 ```
 
