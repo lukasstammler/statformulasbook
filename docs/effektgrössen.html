@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Kapitel 4 Wahrscheinlichkeitsverteilungen | Formeln Statistik</title>
+  <title>Kapitel 10 Effektgrössen | Formeln Statistik</title>
   <meta name="description" content="Zusammenstellung von Statistik-Formeln mit Beispielen in R für einen Grundkurs Statistik" />
   <meta name="generator" content="bookdown 0.25 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Kapitel 4 Wahrscheinlichkeitsverteilungen | Formeln Statistik" />
+  <meta property="og:title" content="Kapitel 10 Effektgrössen | Formeln Statistik" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="Zusammenstellung von Statistik-Formeln mit Beispielen in R für einen Grundkurs Statistik" />
   <meta name="github-repo" content="lukasstammler/statformulasbook" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Kapitel 4 Wahrscheinlichkeitsverteilungen | Formeln Statistik" />
+  <meta name="twitter:title" content="Kapitel 10 Effektgrössen | Formeln Statistik" />
   
   <meta name="twitter:description" content="Zusammenstellung von Statistik-Formeln mit Beispielen in R für einen Grundkurs Statistik" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="grundbegriffe-der-wahrscheinlichkeitstheorie.html"/>
-<link rel="next" href="grundlagen-der-inferenzstatistik.html"/>
+<link rel="prev" href="varianzanalyse.html"/>
+<link rel="next" href="referenzen.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -285,218 +285,17 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="wahrscheinlichkeitsverteilungen" class="section level1 hasAnchor" number="4">
-<h1><span class="header-section-number">Kapitel 4</span> Wahrscheinlichkeitsverteilungen<a href="wahrscheinlichkeitsverteilungen.html#wahrscheinlichkeitsverteilungen" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><strong>Diskrete Wahrscheinlichkeitsverteilung</strong></p>
-<p>Die Ergebnisse eines Zufallsexperiments mit einer diskreten Variablen sind abzählbar
-bzw. können kategorisiert werden. Beispielsweise ist es beim Werfen eines Würfels
-nur möglich eine Zahl aus der Menge <span class="math inline">\(X = {1, 2, 3, 4, 5, 6}\)</span> zu werfen. Der Wurf einer
-2.6 ist jedoch nicht möglich. Die Anzahl der Seiten eines Würfels könnten gezählt und kategorisiert werden. Daher handelt es sich hierbei um eine diskrete Verteilung <span class="citation">(<a href="#ref-Leonhart2013" role="doc-biblioref">Leonhart 2013</a>)</span>.</p>
-<p><strong>Kontinuierliche (= stetige) Wahrscheinlichkeitsverteilung</strong></p>
-<p>Stetige Wahrscheinlichkeitsfunktionen beschreiben die Ergebnisse eines Zufallsexperiments, in dem unendlich viele Elementarereignisse realisiert werden können. So entsteht eine stetige <em>Dichtefunktion</em> der Wahrscheinlichkeitsverteilung <span class="citation">(<a href="#ref-Leonhart2013" role="doc-biblioref">Leonhart 2013</a>)</span>.</p>
-<p>Die Betrachtung eines einzelnen Ereignisses in einer stetigen Wahrscheinlichkeitsverteilung ist nicht sinnvoll, da die Wahrscheinlichkeit für ein Elementarereignis immer gegen null geht. Es ist sehr unwahrscheinlich, dass eine Studentin mit genau 167.793 cm Grösse an einer Lehrveranstaltung teilnimmt.</p>
-<p>Deshalb wir die Wahrscheinlichkeit für Intervalle zwischen zwei Elementarereignissen bestimmt. Diese Wahrscheinlichkeit entspricht der Fläche (dem Integral) der Dichtefunktion der stetigen Wahrscheinlichkeitsverteilung in diesen Grenzen <span class="citation">(<a href="#ref-Leonhart2013" role="doc-biblioref">Leonhart 2013</a>)</span>.</p>
-<div id="binomialverteilung" class="section level2 hasAnchor" number="4.1">
-<h2><span class="header-section-number">4.1</span> Binomialverteilung<a href="wahrscheinlichkeitsverteilungen.html#binomialverteilung" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Die Binomialverteilung beschreibt die Auftretenswahrscheinlichkeit zweier alternativer Ereignisse. Sie wird durch einen <em>Bernoulli-Prozess</em> erzeugt. Dies ist eine Folge voneinander unabhängiger Ereignisse mit jeweils zwei möglichen Ausgängen. Die Wahrscheinlichkeiten für die einzelnen Ereignisse sind jeweils konstant (<span class="math inline">\(p\)</span> bzw. <span class="math inline">\(q = 1 - p\)</span>) <span class="citation">(<a href="#ref-Leonhart2013" role="doc-biblioref">Leonhart 2013</a>)</span>.</p>
-<div id="voraussetzungen" class="section level3 hasAnchor" number="4.1.1">
-<h3><span class="header-section-number">4.1.1</span> Voraussetzungen<a href="wahrscheinlichkeitsverteilungen.html#voraussetzungen" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li>Die Versuche müssen unabhängig sein.<br />
-</li>
-<li>Die Anzahl der Versuche muss bekannt sein.<br />
-</li>
-<li>Jedes Versuchsergebnis ist entweder ein Erfolg oder ein Misserfolg.<br />
-</li>
-<li>Die Wahrscheinlichkeit für einen Erfolg muss für jeden Versuch gleich sein.</li>
-</ul>
-</div>
-<div id="funktion-der-binomialverteilung" class="section level3 hasAnchor" number="4.1.2">
-<h3><span class="header-section-number">4.1.2</span> Funktion der Binomialverteilung<a href="wahrscheinlichkeitsverteilungen.html#funktion-der-binomialverteilung" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Die Funktion der Binomialverteilung beschreibt die Wahrscheinlichkeit des <span class="math inline">\(k\)</span>-maligen Eintreffens eines Ereignisses X bei <span class="math inline">\(n\)</span> Ereignissen</p>
-<p>Wenn <span class="math inline">\(p\)</span> die Wahrscheinlichkeit für einen Erfolg ist, ist <span class="math inline">\(1-p\)</span> die Wahrscheinlichkeit für einen Misserfolg. <span class="math inline">\(n\)</span> gibt die Anzahl der Versuche an und <span class="math inline">\(k\)</span> die Anzahl der Erfolge.</p>
-<p><span class="math display" id="eq:binom">\[\begin{equation}
-  p(k, n) =  {n \choose k}p^k(1-p)^{n-k}
-  \tag{4.1}
-\end{equation}\]</span></p>
-<p>Die Gleichung setzt sich aus drei Faktoren zusammen:</p>
-<ul>
-<li><span class="math inline">\(n \choose k\)</span> (sprich n über k) gibt die Anzahl aller möglichen Reihenfolgen an,
-die zu dem erwünschten Ereignis führen. Dieser Faktor wird als <em>Binomialkoeffizient</em> bezeichnet.<br />
-</li>
-<li><span class="math inline">\(p^k\)</span> ist die Wahrscheinlichkeit für das k-malige Eintreten eines Erfolgs.<br />
-</li>
-<li><span class="math inline">\((1-p)^{n-k}\)</span> ist die Wahrscheinlichkeit für das <span class="math inline">\((n-k)\)</span>-malige Eintreffen des Komplementärereignisses.</li>
-</ul>
-<p>Wahrscheinlichkeit für <span class="math inline">\(k\)</span> Erfolge in <span class="math inline">\(n\)</span> Versuchen mit der Erfolgswahrscheinlichkeit <span class="math inline">\(p\)</span> in <code>R</code> berechnen:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="wahrscheinlichkeitsverteilungen.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R: Dichtefunktion der Binomialverteilung</span></span>
-<span id="cb33-2"><a href="wahrscheinlichkeitsverteilungen.html#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(k, n, p)</span></code></pre></div>
-<p>Beispiel: Wie gross ist die Wahrscheinlichkeit, bei drei Mal würfeln (<span class="math inline">\(n\)</span> = 3), 1 bis 3 mal (<span class="math inline">\(k\)</span> = 0 bis 3) eine bestimmte Zahl, z.B. eine 6 (<span class="math inline">\(p\)</span> = 1/6) zu werfen?</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="wahrscheinlichkeitsverteilungen.html#cb34-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">6</span></span>
-<span id="cb34-2"><a href="wahrscheinlichkeitsverteilungen.html#cb34-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb34-3"><a href="wahrscheinlichkeitsverteilungen.html#cb34-3" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span>
-<span id="cb34-4"><a href="wahrscheinlichkeitsverteilungen.html#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-5"><a href="wahrscheinlichkeitsverteilungen.html#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(k, <span class="at">size =</span> n, <span class="at">prob =</span> p)</span></code></pre></div>
-<pre><code>## [1] 0.34722222 0.06944444 0.00462963</code></pre>
-</div>
-<div id="binomialkoeffizient" class="section level3 hasAnchor" number="4.1.3">
-<h3><span class="header-section-number">4.1.3</span> Binomialkoeffizient<a href="wahrscheinlichkeitsverteilungen.html#binomialkoeffizient" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Der Binomialkoeffizient gibt an, auf wie viele verschiedene Arten man <span class="math inline">\(k\)</span> Objekte aus einer Menge von <span class="math inline">\(n\)</span> verschiedenen Objekten auswählen kann.</p>
-<p>Anzahl Kombinationen von <span class="math inline">\(k\)</span> Erfolgen in <span class="math inline">\(n\)</span> Versuchen berechnen</p>
-<p><span class="math display" id="eq:binomkoef">\[\begin{equation}
-{n \choose k} = \frac{n!}{k!(n-k)!}
-\tag{4.2}
-\end{equation}\]</span></p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="wahrscheinlichkeitsverteilungen.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R: Binomialkoeffizient</span></span>
-<span id="cb36-2"><a href="wahrscheinlichkeitsverteilungen.html#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">choose</span>(n, k)</span></code></pre></div>
-<p>Beispiel: Wieviele mögliche Kombinationen gibt es im Schweizer Zahlenlotto für 6 (= <span class="math inline">\(k\)</span>) aus 42 (=<span class="math inline">\(n\)</span>).</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="wahrscheinlichkeitsverteilungen.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">choose</span>(<span class="at">n =</span> <span class="dv">42</span>, <span class="at">k =</span> <span class="dv">6</span>)</span></code></pre></div>
-<pre><code>## [1] 5245786</code></pre>
-<p>Es gibt <span class="math inline">\(5245786\)</span> Kombinationen, d.h. die Wahrscheinlichkeit, 6 Richtige zu wählen beträgt 1<span class="math inline">\(/5245786\)</span> = <span class="math inline">\(0.0000002\)</span>.</p>
-</div>
-<div id="eigenschaften-der-binomialverteilung" class="section level3 hasAnchor" number="4.1.4">
-<h3><span class="header-section-number">4.1.4</span> Eigenschaften der Binomialverteilung<a href="wahrscheinlichkeitsverteilungen.html#eigenschaften-der-binomialverteilung" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p><span class="math display" id="eq:binom2">\[\begin{equation}
-  X \sim Bin(n, p)
-  \tag{4.3}
-\end{equation}\]</span></p>
-<p><span class="math inline">\(n\)</span> = Anzahl Versuche<br />
-<span class="math inline">\(p\)</span> = Eintrittswahrscheinlichkeit</p>
-<p><strong>Erwartungswert (Mittelwert) der Binomialverteilung</strong></p>
-<p><span class="math display" id="eq:mubinom">\[\begin{equation}
-  \mu = n \times p
-  \tag{4.4}
-\end{equation}\]</span></p>
-<p><strong>Standardabweichung der Binomialverteilung</strong></p>
-<p><span class="math display" id="eq:sigmabinom">\[\begin{equation}
-  \sigma = \sqrt{np(1-p)}
-  \tag{4.5}
-\end{equation}\]</span></p>
-</div>
-<div id="normalapproximation" class="section level3 hasAnchor" number="4.1.5">
-<h3><span class="header-section-number">4.1.5</span> Normalapproximation<a href="wahrscheinlichkeitsverteilungen.html#normalapproximation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Eine Binomialverteilung mit mindestens 10 erwarteten Erfolgen und mindestens 10 erwarteten Misserfolgen folgt annähernd einer Normalverteilung.</p>
-<p><span class="math display">\[n \times p \times (1-p) \geq 10\]</span></p>
-<p>Falls diese Bedingung erfüllt ist, gilt:</p>
-<p><span class="math display" id="eq:binomnormapprox">\[\begin{equation}
-  Bin(n, p) \sim N(\mu, \sigma)
-  \tag{4.6}
-\end{equation}\]</span></p>
-</div>
-</div>
-<div id="normalverteilung" class="section level2 hasAnchor" number="4.2">
-<h2><span class="header-section-number">4.2</span> Normalverteilung<a href="wahrscheinlichkeitsverteilungen.html#normalverteilung" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p><span class="math display" id="eq:normdistr">\[\begin{equation}
-  X \sim N(\mu, \sigma)
-  \tag{4.7}
-\end{equation}\]</span></p>
-<div id="regel" class="section level3 hasAnchor" number="4.2.1">
-<h3><span class="header-section-number">4.2.1</span> 68-95-99.7-Regel<a href="wahrscheinlichkeitsverteilungen.html#regel" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li>68% in <span class="math inline">\(\mu \pm 1\sigma\)</span><br />
-</li>
-<li>95% in <span class="math inline">\(\mu \pm 2\sigma\)</span>, genauer <span class="math inline">\(\mu \pm 1.96\sigma\)</span><br />
-</li>
-<li>99.7% in <span class="math inline">\(\mu \pm 3\sigma\)</span></li>
-</ul>
-</div>
-<div id="standardnormalverteilung" class="section level3 hasAnchor" number="4.2.2">
-<h3><span class="header-section-number">4.2.2</span> Standardnormalverteilung<a href="wahrscheinlichkeitsverteilungen.html#standardnormalverteilung" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p><span class="math display" id="eq:stdnormdistr">\[\begin{equation}
-  X \sim N(0, 1)
-  \tag{4.8}
-\end{equation}\]</span></p>
-</div>
-<div id="z-wert" class="section level3 hasAnchor" number="4.2.3">
-<h3><span class="header-section-number">4.2.3</span> z-Wert<a href="wahrscheinlichkeitsverteilungen.html#z-wert" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Der z-Wert einer Beobachtung <span class="math inline">\(x_i\)</span> gibt an, um wieviele Standardabweichungen die Beobachtung über oder unter dem Mittelwert liegt.</p>
-<p><span class="math display" id="eq:zvalue">\[\begin{equation}
-  z = \frac{x_i-\bar{x}}{s}
-  \tag{4.9}
-\end{equation}\]</span></p>
-<p>Der z-Wert des Mittelwerts ist 0.<br />
-Ungewöhnliche Beobachtungen haben typischerweise einen z-Wert von <span class="math inline">\(|z|&gt;2\)</span>.</p>
-</div>
-<div id="wahrscheinlichkeiten-und-perzentilen-in-r-berechnen" class="section level3 hasAnchor" number="4.2.4">
-<h3><span class="header-section-number">4.2.4</span> Wahrscheinlichkeiten und Perzentilen in <code>R</code> berechnen<a href="wahrscheinlichkeitsverteilungen.html#wahrscheinlichkeiten-und-perzentilen-in-r-berechnen" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="wahrscheinlichkeitsverteilungen.html#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(x, mean, sd)                      <span class="co"># Fläche links von x </span></span>
-<span id="cb39-2"><a href="wahrscheinlichkeitsverteilungen.html#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-3"><a href="wahrscheinlichkeitsverteilungen.html#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(x, mean, sd)                  <span class="co"># Fläche rechts von x</span></span>
-<span id="cb39-4"><a href="wahrscheinlichkeitsverteilungen.html#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(x, mean, sd, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)  <span class="co"># Fläche rechts von x (alternativ)</span></span>
-<span id="cb39-5"><a href="wahrscheinlichkeitsverteilungen.html#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-6"><a href="wahrscheinlichkeitsverteilungen.html#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(percentile, mean, sd)             <span class="co"># # Wert auf einer bestimmten Perzentile</span></span></code></pre></div>
-<p>Beispiel:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="wahrscheinlichkeitsverteilungen.html#cb40-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">9</span>, <span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">7</span>, <span class="dv">7</span>, <span class="dv">5</span>, <span class="dv">4</span>)</span>
-<span id="cb40-2"><a href="wahrscheinlichkeitsverteilungen.html#cb40-2" aria-hidden="true" tabindex="-1"></a>mittelwert <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
-<span id="cb40-3"><a href="wahrscheinlichkeitsverteilungen.html#cb40-3" aria-hidden="true" tabindex="-1"></a>stdabw <span class="ot">&lt;-</span> <span class="fu">sd</span>(x)</span>
-<span id="cb40-4"><a href="wahrscheinlichkeitsverteilungen.html#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-5"><a href="wahrscheinlichkeitsverteilungen.html#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Wahrscheinlichkeit für den Wert kleiner oder gleich 7</span></span>
-<span id="cb40-6"><a href="wahrscheinlichkeitsverteilungen.html#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">7</span>, mittelwert, stdabw)</span></code></pre></div>
-<pre><code>## [1] 0.6991514</code></pre>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="wahrscheinlichkeitsverteilungen.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wahrscheinlichkeit für den Wert gleich oder grösser 7</span></span>
-<span id="cb42-2"><a href="wahrscheinlichkeitsverteilungen.html#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="dv">7</span>, mittelwert, stdabw)</span></code></pre></div>
-<pre><code>## [1] 0.3008486</code></pre>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="wahrscheinlichkeitsverteilungen.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wert auf der 40%-Perzentile</span></span>
-<span id="cb44-2"><a href="wahrscheinlichkeitsverteilungen.html#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(.<span class="dv">4</span>, mittelwert, stdabw)</span></code></pre></div>
-<pre><code>## [1] 5.19633</code></pre>
-</div>
-<div id="qq-plot" class="section level3 hasAnchor" number="4.2.5">
-<h3><span class="header-section-number">4.2.5</span> QQ-Plot<a href="wahrscheinlichkeitsverteilungen.html#qq-plot" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Mittels QQ-Plots (Quantile-Quantile-Plots) können zwei Verteilungen grafisch verglichen werden, indem ihre Quantilen gegeneinander aufgetragen werden. Wenn die zwei Verteilungen exakt gleich sind, liegen die Punkte im QQ-Plot auf einer perfekten Linie.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="wahrscheinlichkeitsverteilungen.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>()    <span class="co"># QQ-Plot für Normalverteilung</span></span>
-<span id="cb46-2"><a href="wahrscheinlichkeitsverteilungen.html#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>()    <span class="co"># Linie in QQ-Plot einzeichnen</span></span></code></pre></div>
-<p>Beispiel:</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="wahrscheinlichkeitsverteilungen.html#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb47-2"><a href="wahrscheinlichkeitsverteilungen.html#cb47-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)         <span class="co"># simulation von 100 normalverteilten Werten, mean = 0, s = 1</span></span>
-<span id="cb47-3"><a href="wahrscheinlichkeitsverteilungen.html#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-4"><a href="wahrscheinlichkeitsverteilungen.html#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(x)               <span class="co"># qq-plot erstellen</span></span>
-<span id="cb47-5"><a href="wahrscheinlichkeitsverteilungen.html#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(x, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>) <span class="co"># Linie in qq-plot einzeichnen</span></span></code></pre></div>
-<p><img src="statformulasbook_files/figure-html/qq-fig-1.png" width="384" style="display: block; margin: auto;" /></p>
-<p><img src="statformulasbook_files/figure-html/qq-fig2-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="t-verteilung" class="section level2 hasAnchor" number="4.3">
-<h2><span class="header-section-number">4.3</span> T-Verteilung<a href="wahrscheinlichkeitsverteilungen.html#t-verteilung" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Die <span class="math inline">\(T\)</span>-Verteilung</p>
-<ul>
-<li>kann als Variante der Normalverteilung aufgefasst werden.<br />
-</li>
-<li>hat immer den Mittelwert 0.<br />
-</li>
-<li>hat eine Standardabweichung, die vom Stichprobenumfang <span class="math inline">\(n\)</span> abhängig ist.<br />
-</li>
-<li>Wird nur durch einen einzigen Parameter, die Anzahl Freiheitsgrade <span class="math inline">\(df\)</span> (engl. degrees of freedom), definiert.<br />
-</li>
-<li>wird mit wachsendem <span class="math inline">\(n\)</span> schmaler und geht für <span class="math inline">\(n \rightarrow \infty\)</span> in die Normalverteilung über.</li>
-</ul>
-<p><span class="math display">\[df = n-1\]</span>
-<span class="math display">\[t \sim T(df)\]</span></p>
-<p>Die <span class="math inline">\(T\)</span>-verteilung wird verwendet, wenn</p>
-<ul>
-<li>der Stichprobenumfang klein ist (<span class="math inline">\(n \leq 30\)</span>)<br />
-</li>
-<li>die Standardabweichung <span class="math inline">\(\sigma\)</span> der Population unbekannt ist und mit Hilfe der Stichprobenstandardabweichung <span class="math inline">\(s\)</span> geschätzt werden muss.</li>
-<li>also eigentlich immer; die Software rechnet standardmässig mit der <span class="math inline">\(T\)</span>-Verteilung.<br />
-</li>
-<li>Die Teststatistik von <span class="math inline">\(T\)</span>-Tests sind <span class="math inline">\(t\)</span>-Werte. <span class="math inline">\(t\)</span>-Werte werden gleich interpretiert wie <span class="math inline">\(z\)</span>-Werte.</li>
-</ul>
-<p><img src="statformulasbook_files/figure-html/tdistr-fig-1.png" width="576" style="display: block; margin: auto;" /></p>
+<div id="effektgrössen" class="section level1 hasAnchor" number="10">
+<h1><span class="header-section-number">Kapitel 10</span> Effektgrössen<a href="effektgrössen.html#effektgrössen" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 
-</div>
-</div>
-<h3> Referenzen<a href="referenzen.html#referenzen" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Leonhart2013" class="csl-entry">
-Leonhart, Rainer. 2013. <em>Lehrbuch Statistik. Einstieg Und Vertiefung</em>. Hans Huber.
-</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="grundbegriffe-der-wahrscheinlichkeitstheorie.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="grundlagen-der-inferenzstatistik.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="varianzanalyse.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="referenzen.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -527,7 +326,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/03-distr.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/09_effectsizes.Rmd",
 "text": "Edit"
 },
 "history": {

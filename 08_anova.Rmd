@@ -26,6 +26,8 @@ ggreen <- "#7CAE00"
 ggviolet <- "#C77CFF"
 ```
 
+**in Bearbeitung**
+
 # Varianzanalyse  
 
 ANOVA steht für Varianzanalyse (engl. Analysis of Variance) und wird verwendet um die Mittelwerte von mehr als 2 Gruppen zu vergleichen.  

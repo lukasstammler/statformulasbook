@@ -172,4 +172,5 @@ hypothesentest-für-korrelationskoeffizienten
 varianzanalyse
 einfaktorielle-varianzanalyse
 quadratsummenzerlegung
+effektgrössen
 referenzen

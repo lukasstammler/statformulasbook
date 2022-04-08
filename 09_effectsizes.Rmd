@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       fig.align = "center")
 
-options(digits = 4)
+options(scipen=999)
 
 library(openintro)
 library(tidyverse)
@@ -26,4 +26,6 @@ ggreen <- "#7CAE00"
 ggviolet <- "#C77CFF"
 ```
 
-# Referenzen
+**in Bearbeitung**
+
+# Effektgrössen
