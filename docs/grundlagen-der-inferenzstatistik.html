@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Kapitel 5 Grundlagen der Inferenzstatistik | test bootstrap method</title>
+  <meta name="description" content="Zusammenstellung von Statistik-Formeln mit Beispielen in R für einen Grundkurs Statistik" />
+  <meta name="generator" content="bookdown 0.25 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Kapitel 5 Grundlagen der Inferenzstatistik | test bootstrap method" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Zusammenstellung von Statistik-Formeln mit Beispielen in R für einen Grundkurs Statistik" />
+  <meta name="github-repo" content="lukasstammler/statformulasbook" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Kapitel 5 Grundlagen der Inferenzstatistik | test bootstrap method" />
+  
+  <meta name="twitter:description" content="Zusammenstellung von Statistik-Formeln mit Beispielen in R für einen Grundkurs Statistik" />
+  
+
+<meta name="author" content="Lukas Stammler" />
+
+
+<meta name="date" content="2022-04-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="wahrscheinlichkeitsverteilungen.html"/>
+<link rel="next" href="inferenz-für-quantitative-daten.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Vorbemerkung<span></span></a></li>
+<li class="chapter" data-level="2" data-path="Deskriptive.html"><a href="Deskriptive.html"><i class="fa fa-check"></i><b>2</b> Deskriptive Statistik<span></span></a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="Deskriptive.html"><a href="Deskriptive.html#kennzahlen-der-zentralen-tendenz-und-der-streuung"><i class="fa fa-check"></i><b>2.1</b> Kennzahlen der zentralen Tendenz und der Streuung<span></span></a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="Deskriptive.html"><a href="Deskriptive.html#umfang"><i class="fa fa-check"></i><b>2.1.1</b> Umfang<span></span></a></li>
+<li class="chapter" data-level="2.1.2" data-path="Deskriptive.html"><a href="Deskriptive.html#arithmetisches-mittel-mittelwert"><i class="fa fa-check"></i><b>2.1.2</b> Arithmetisches Mittel, Mittelwert<span></span></a></li>
+<li class="chapter" data-level="2.1.3" data-path="Deskriptive.html"><a href="Deskriptive.html#median"><i class="fa fa-check"></i><b>2.1.3</b> Median<span></span></a></li>
+<li class="chapter" data-level="2.1.4" data-path="Deskriptive.html"><a href="Deskriptive.html#varianz"><i class="fa fa-check"></i><b>2.1.4</b> Varianz<span></span></a></li>
+<li class="chapter" data-level="2.1.5" data-path="Deskriptive.html"><a href="Deskriptive.html#standardabweichung"><i class="fa fa-check"></i><b>2.1.5</b> Standardabweichung<span></span></a></li>
+<li class="chapter" data-level="2.1.6" data-path="Deskriptive.html"><a href="Deskriptive.html#minimum-maximum-und-variationsbreite"><i class="fa fa-check"></i><b>2.1.6</b> Minimum, Maximum und Variationsbreite<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="Deskriptive.html"><a href="Deskriptive.html#grafiken"><i class="fa fa-check"></i><b>2.2</b> Grafiken<span></span></a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="Deskriptive.html"><a href="Deskriptive.html#histogramm"><i class="fa fa-check"></i><b>2.2.1</b> Histogramm<span></span></a></li>
+<li class="chapter" data-level="2.2.2" data-path="Deskriptive.html"><a href="Deskriptive.html#boxplot"><i class="fa fa-check"></i><b>2.2.2</b> Boxplot<span></span></a></li>
+<li class="chapter" data-level="2.2.3" data-path="Deskriptive.html"><a href="Deskriptive.html#balkendiagramm"><i class="fa fa-check"></i><b>2.2.3</b> Balkendiagramm<span></span></a></li>
+<li class="chapter" data-level="2.2.4" data-path="Deskriptive.html"><a href="Deskriptive.html#tabellen-für-häufigkeiten"><i class="fa fa-check"></i><b>2.2.4</b> Tabellen für Häufigkeiten<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="grundbegriffe-der-wahrscheinlichkeitstheorie.html"><a href="grundbegriffe-der-wahrscheinlichkeitstheorie.html"><i class="fa fa-check"></i><b>3</b> Grundbegriffe der Wahrscheinlichkeitstheorie<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="grundbegriffe-der-wahrscheinlichkeitstheorie.html"><a href="grundbegriffe-der-wahrscheinlichkeitstheorie.html#wahrscheinlichkeit"><i class="fa fa-check"></i><b>3.1</b> Wahrscheinlichkeit<span></span></a></li>
+<li class="chapter" data-level="3.2" data-path="grundbegriffe-der-wahrscheinlichkeitstheorie.html"><a href="grundbegriffe-der-wahrscheinlichkeitstheorie.html#ereignis-und-komplementärereignis"><i class="fa fa-check"></i><b>3.2</b> Ereignis und Komplementärereignis<span></span></a></li>
+<li class="chapter" data-level="3.3" data-path="grundbegriffe-der-wahrscheinlichkeitstheorie.html"><a href="grundbegriffe-der-wahrscheinlichkeitstheorie.html#disjunkte-ereignisse"><i class="fa fa-check"></i><b>3.3</b> Disjunkte Ereignisse<span></span></a></li>
+<li class="chapter" data-level="3.4" data-path="grundbegriffe-der-wahrscheinlichkeitstheorie.html"><a href="grundbegriffe-der-wahrscheinlichkeitstheorie.html#nicht-disjunkte-ereignisse"><i class="fa fa-check"></i><b>3.4</b> Nicht-disjunkte Ereignisse<span></span></a></li>
+<li class="chapter" data-level="3.5" data-path="grundbegriffe-der-wahrscheinlichkeitstheorie.html"><a href="grundbegriffe-der-wahrscheinlichkeitstheorie.html#bedingte-wahrscheinlichkeiten"><i class="fa fa-check"></i><b>3.5</b> Bedingte Wahrscheinlichkeiten<span></span></a></li>
+<li class="chapter" data-level="3.6" data-path="grundbegriffe-der-wahrscheinlichkeitstheorie.html"><a href="grundbegriffe-der-wahrscheinlichkeitstheorie.html#unabhängigkeit"><i class="fa fa-check"></i><b>3.6</b> Unabhängigkeit<span></span></a></li>
+<li class="chapter" data-level="3.7" data-path="grundbegriffe-der-wahrscheinlichkeitstheorie.html"><a href="grundbegriffe-der-wahrscheinlichkeitstheorie.html#theorem-von-bayes"><i class="fa fa-check"></i><b>3.7</b> Theorem von Bayes<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html"><i class="fa fa-check"></i><b>4</b> Wahrscheinlichkeitsverteilungen<span></span></a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#binomialverteilung"><i class="fa fa-check"></i><b>4.1</b> Binomialverteilung<span></span></a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#voraussetzungen"><i class="fa fa-check"></i><b>4.1.1</b> Voraussetzungen<span></span></a></li>
+<li class="chapter" data-level="4.1.2" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#funktion-der-binomialverteilung"><i class="fa fa-check"></i><b>4.1.2</b> Funktion der Binomialverteilung<span></span></a></li>
+<li class="chapter" data-level="4.1.3" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#binomialkoeffizient"><i class="fa fa-check"></i><b>4.1.3</b> Binomialkoeffizient<span></span></a></li>
+<li class="chapter" data-level="4.1.4" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#eigenschaften-der-binomialverteilung"><i class="fa fa-check"></i><b>4.1.4</b> Eigenschaften der Binomialverteilung<span></span></a></li>
+<li class="chapter" data-level="4.1.5" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#normalapproximation"><i class="fa fa-check"></i><b>4.1.5</b> Normalapproximation<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#normalverteilung"><i class="fa fa-check"></i><b>4.2</b> Normalverteilung<span></span></a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#regel"><i class="fa fa-check"></i><b>4.2.1</b> 68-95-99.7-Regel<span></span></a></li>
+<li class="chapter" data-level="4.2.2" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#standardnormalverteilung"><i class="fa fa-check"></i><b>4.2.2</b> Standardnormalverteilung<span></span></a></li>
+<li class="chapter" data-level="4.2.3" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#z-wert"><i class="fa fa-check"></i><b>4.2.3</b> z-Wert<span></span></a></li>
+<li class="chapter" data-level="4.2.4" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#wahrscheinlichkeiten-und-perzentilen-in-r-berechnen"><i class="fa fa-check"></i><b>4.2.4</b> Wahrscheinlichkeiten und Perzentilen in <code>R</code> berechnen<span></span></a></li>
+<li class="chapter" data-level="4.2.5" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#qq-plot"><i class="fa fa-check"></i><b>4.2.5</b> QQ-Plot<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="wahrscheinlichkeitsverteilungen.html"><a href="wahrscheinlichkeitsverteilungen.html#t-verteilung"><i class="fa fa-check"></i><b>4.3</b> T-Verteilung<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="grundlagen-der-inferenzstatistik.html"><a href="grundlagen-der-inferenzstatistik.html"><i class="fa fa-check"></i><b>5</b> Grundlagen der Inferenzstatistik<span></span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="grundlagen-der-inferenzstatistik.html"><a href="grundlagen-der-inferenzstatistik.html#schätzungen-von-parametern"><i class="fa fa-check"></i><b>5.1</b> Schätzungen von Parametern<span></span></a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="grundlagen-der-inferenzstatistik.html"><a href="grundlagen-der-inferenzstatistik.html#schätzung-bei-qualitativen-merkmalen"><i class="fa fa-check"></i><b>5.1.1</b> Schätzung bei qualitativen Merkmalen<span></span></a></li>
+<li class="chapter" data-level="5.1.2" data-path="grundlagen-der-inferenzstatistik.html"><a href="grundlagen-der-inferenzstatistik.html#schätzung-bei-quantitativen-merkmalen"><i class="fa fa-check"></i><b>5.1.2</b> Schätzung bei quantitativen Merkmalen<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="grundlagen-der-inferenzstatistik.html"><a href="grundlagen-der-inferenzstatistik.html#hypothesentest-für-einen-mittelwert"><i class="fa fa-check"></i><b>5.2</b> Hypothesentest für einen Mittelwert<span></span></a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="grundlagen-der-inferenzstatistik.html"><a href="grundlagen-der-inferenzstatistik.html#vorgehen"><i class="fa fa-check"></i><b>5.2.1</b> Vorgehen<span></span></a></li>
+<li class="chapter" data-level="5.2.2" data-path="grundlagen-der-inferenzstatistik.html"><a href="grundlagen-der-inferenzstatistik.html#p-werte-berechnen"><i class="fa fa-check"></i><b>5.2.2</b> p-Werte berechnen<span></span></a></li>
+<li class="chapter" data-level="5.2.3" data-path="grundlagen-der-inferenzstatistik.html"><a href="grundlagen-der-inferenzstatistik.html#entscheidungsfehler"><i class="fa fa-check"></i><b>5.2.3</b> Entscheidungsfehler<span></span></a></li>
+<li class="chapter" data-level="5.2.4" data-path="grundlagen-der-inferenzstatistik.html"><a href="grundlagen-der-inferenzstatistik.html#hypothesentests-mit-konfidenzintervallen"><i class="fa fa-check"></i><b>5.2.4</b> Hypothesentests mit Konfidenzintervallen<span></span></a></li>
+<li class="chapter" data-level="5.2.5" data-path="grundlagen-der-inferenzstatistik.html"><a href="grundlagen-der-inferenzstatistik.html#vorgehen-1"><i class="fa fa-check"></i><b>5.2.5</b> Vorgehen<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html"><i class="fa fa-check"></i><b>6</b> Inferenz für quantitative Daten<span></span></a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#parametrische-testverfahren"><i class="fa fa-check"></i><b>6.1</b> Parametrische Testverfahren<span></span></a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#z-test"><i class="fa fa-check"></i><b>6.1.1</b> z-Test<span></span></a></li>
+<li class="chapter" data-level="6.1.2" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#einstichproben-t-test"><i class="fa fa-check"></i><b>6.1.2</b> Einstichproben-<span class="math inline">\(t\)</span>-Test<span></span></a></li>
+<li class="chapter" data-level="6.1.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#t-test-für-verbundene-stichproben"><i class="fa fa-check"></i><b>6.1.3</b> t-Test für verbundene Stichproben<span></span></a></li>
+<li class="chapter" data-level="6.1.4" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#t-test-für-unabhängige-stichproben"><i class="fa fa-check"></i><b>6.1.4</b> t-Test für unabhängige Stichproben<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#nicht-parametrische-testverfahren"><i class="fa fa-check"></i><b>6.2</b> Nicht-parametrische Testverfahren<span></span></a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#vorzeichentest"><i class="fa fa-check"></i><b>6.2.1</b> Vorzeichentest<span></span></a></li>
+<li class="chapter" data-level="6.2.2" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#wilcoxon-vorzeichenrangtest"><i class="fa fa-check"></i><b>6.2.2</b> Wilcoxon-Vorzeichenrangtest<span></span></a></li>
+<li class="chapter" data-level="6.2.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#mann-whitney-u-test"><i class="fa fa-check"></i><b>6.2.3</b> Mann-Whitney-U-Test<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrap-methode"><i class="fa fa-check"></i><b>6.3</b> Bootstrap-Methode<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="inferenz-für-qualitative-daten.html"><a href="inferenz-für-qualitative-daten.html"><i class="fa fa-check"></i><b>7</b> Inferenz für qualitative Daten<span></span></a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="inferenz-für-qualitative-daten.html"><a href="inferenz-für-qualitative-daten.html#hypothesentest-für-eine-stichprobe"><i class="fa fa-check"></i><b>7.1</b> Hypothesentest für eine Stichprobe<span></span></a></li>
+<li class="chapter" data-level="7.2" data-path="inferenz-für-qualitative-daten.html"><a href="inferenz-für-qualitative-daten.html#vergleich-von-zwei-relativen-häufigkeiten"><i class="fa fa-check"></i><b>7.2</b> Vergleich von zwei relativen Häufigkeiten<span></span></a></li>
+<li class="chapter" data-level="7.3" data-path="inferenz-für-qualitative-daten.html"><a href="inferenz-für-qualitative-daten.html#chi-quadrat-test"><i class="fa fa-check"></i><b>7.3</b> Chi-Quadrat-Test<span></span></a></li>
+<li class="chapter" data-level="7.4" data-path="inferenz-für-qualitative-daten.html"><a href="inferenz-für-qualitative-daten.html#fishers-exakter-test"><i class="fa fa-check"></i><b>7.4</b> Fisher’s exakter Test<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html"><i class="fa fa-check"></i><b>8</b> Korrelation und lineare Regression<span></span></a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#korrelation"><i class="fa fa-check"></i><b>8.1</b> Korrelation<span></span></a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#korrelationskoeffizient-nach-pearson-r"><i class="fa fa-check"></i><b>8.1.1</b> Korrelationskoeffizient nach Pearson <span class="math inline">\(r\)</span><span></span></a></li>
+<li class="chapter" data-level="8.1.2" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#rangkorrelationskoeffizient-nach-spearman"><i class="fa fa-check"></i><b>8.1.2</b> Rangkorrelationskoeffizient nach Spearman<span></span></a></li>
+<li class="chapter" data-level="8.1.3" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#interpretation-korrelationskoeffizienten"><i class="fa fa-check"></i><b>8.1.3</b> Interpretation Korrelationskoeffizienten<span></span></a></li>
+<li class="chapter" data-level="8.1.4" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#hypothesentest-für-korrelationskoeffizienten"><i class="fa fa-check"></i><b>8.1.4</b> Hypothesentest für Korrelationskoeffizienten<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="varianzanalyse.html"><a href="varianzanalyse.html"><i class="fa fa-check"></i><b>9</b> Varianzanalyse<span></span></a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="varianzanalyse.html"><a href="varianzanalyse.html#einfaktorielle-varianzanalyse"><i class="fa fa-check"></i><b>9.1</b> Einfaktorielle Varianzanalyse<span></span></a>
+<ul>
+<li class="chapter" data-level="9.1.1" data-path="varianzanalyse.html"><a href="varianzanalyse.html#quadratsummenzerlegung"><i class="fa fa-check"></i><b>9.1.1</b> Quadratsummenzerlegung<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="referenzen.html"><a href="referenzen.html"><i class="fa fa-check"></i><b>10</b> Referenzen<span></span></a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">test bootstrap method</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="grundlagen-der-inferenzstatistik" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">Kapitel 5</span> Grundlagen der Inferenzstatistik<a href="grundlagen-der-inferenzstatistik.html#grundlagen-der-inferenzstatistik" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="schätzungen-von-parametern" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Schätzungen von Parametern<a href="grundlagen-der-inferenzstatistik.html#schätzungen-von-parametern" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Wird zur Schätzung eines Populationsparameters nur eine Stichprobenkennzahl angegeben, so handelt es sich um eine <em>Punktschätzung</em>. Wird bei einer Schätzung neben der Kennzahl noch ein <em>Konfidenzintervall</em> bestimmt, in welchem mit einer bestimmten Wahrscheinlichkeit der Populationsparameter liegt, so handelt es sich um eine <em>Intervallschätzung</em>.</p>
+<div id="schätzung-bei-qualitativen-merkmalen" class="section level3 hasAnchor" number="5.1.1">
+<h3><span class="header-section-number">5.1.1</span> Schätzung bei qualitativen Merkmalen<a href="grundlagen-der-inferenzstatistik.html#schätzung-bei-qualitativen-merkmalen" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math inline">\(p:\)</span> Stichprobenkennzahl<br />
+<span class="math inline">\(\hat{p}:\)</span> Schätzer für den Populationsparameter<br />
+<span class="math inline">\(\pi:\)</span> Populationsparameter<br />
+Alle diese Kennzahlen können Werte zwischen 0 und 1 annehmen.</p>
+<p><strong>Zentraler Grenzwertsatz für relative Häufigkeiten (engl. <em>proportions</em>)</strong></p>
+<p>Relative Häufigkeiten von Stichproben sind annähernd normalverteilt mit ihrem Zentrum bei der Häufigkeit in der Population und einem Standardfehler, der umgekehrt proportional ist zum Stichprobenumfang.</p>
+<p><span class="math display" id="eq:clt-prop">\[\begin{equation}
+  \hat{p} \sim N \lgroup Mittelwert = p, SE_p = \sqrt{\frac{p(1-p)}{n}} \rgroup
+  \tag{5.1}
+\end{equation}\]</span></p>
+<p>Voraussetzungen</p>
+<ul>
+<li>Unabhängigkeit: Die Beobachtungen müssen voneinander unabhängig sein (Zufallsstichprobe)<br />
+</li>
+<li>Stichprobenumfang: Es müssen mindestens 10 Erfolge und 10 Misserfolge vorliegen</li>
+</ul>
+<p><span class="math display" id="eq:clt-prop-cond">\[\begin{equation}
+  n \times p \geq 10; ~n \times (1-p) \geq 10
+  \tag{5.2}
+\end{equation}\]</span></p>
+<p><strong>95%-Konfidenzintervall für <span class="math inline">\(\pi\)</span></strong></p>
+<p><span class="math display" id="eq:ciqualz">\[\begin{equation}
+  CI_{95} = p \pm z_{0.025} \times SE_p
+  \tag{5.3}
+\end{equation}\]</span></p>
+<p><span class="math display" id="eq:sp">\[\begin{equation}
+  SE_p = \sqrt{\frac{p(1 - p)}{n}}
+  \tag{5.4}
+\end{equation}\]</span></p>
+<p>Bei Intervallschätzung mit kleinen Stichproben (N &lt; 30, besser auch schon bei N &lt; 100) sollte statt der Standardnormalverteilung (<span class="math inline">\(z\)</span>-Werte) die Verteilung der <span class="math inline">\(t\)</span>-Werte zur Definition des Intervalls zugrunde gelegt werden <span class="citation">(<a href="#ref-Leonhart2013" role="doc-biblioref">Leonhart 2013</a>)</span>.</p>
+<p><span class="math display" id="eq:ciqualt">\[\begin{equation}
+  CI_{95} = p \pm t_{0.025, df} \times SE_p
+  \tag{5.5}
+\end{equation}\]</span></p>
+<p>Beispiel: Berechne die Wahrscheinlichkeit <span class="math inline">\(P(\hat{p} &gt; 0.95)\)</span> für ein Ereignis mit der Erfolgswahrscheinlichkeit <span class="math inline">\(p\)</span> = 0.9 und einen Stichprobenumfang <span class="math inline">\(n\)</span> = 200.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="grundlagen-der-inferenzstatistik.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Für diesen Code müssen folgende Bibliotheken geladen werden ------------------</span></span>
+<span id="cb48-2"><a href="grundlagen-der-inferenzstatistik.html#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co"># library(dplyr)</span></span>
+<span id="cb48-3"><a href="grundlagen-der-inferenzstatistik.html#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co"># library(knitr)</span></span>
+<span id="cb48-4"><a href="grundlagen-der-inferenzstatistik.html#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co"># library(kableExtra)</span></span>
+<span id="cb48-5"><a href="grundlagen-der-inferenzstatistik.html#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-6"><a href="grundlagen-der-inferenzstatistik.html#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Voraussetzungen prüfen -------------------------------------------------------</span></span>
+<span id="cb48-7"><a href="grundlagen-der-inferenzstatistik.html#cb48-7" aria-hidden="true" tabindex="-1"></a>p.hat <span class="ot">&lt;-</span> .<span class="dv">95</span></span>
+<span id="cb48-8"><a href="grundlagen-der-inferenzstatistik.html#cb48-8" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> .<span class="dv">9</span></span>
+<span id="cb48-9"><a href="grundlagen-der-inferenzstatistik.html#cb48-9" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb48-10"><a href="grundlagen-der-inferenzstatistik.html#cb48-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-11"><a href="grundlagen-der-inferenzstatistik.html#cb48-11" aria-hidden="true" tabindex="-1"></a>n <span class="sc">*</span> p       <span class="co"># Anzahl Erfolge</span></span></code></pre></div>
+<pre><code>## [1] 180</code></pre>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="grundlagen-der-inferenzstatistik.html#cb50-1" aria-hidden="true" tabindex="-1"></a>n <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p) <span class="co"># Anzahl Misserfolge</span></span></code></pre></div>
+<pre><code>## [1] 20</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="grundlagen-der-inferenzstatistik.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalapproximation ----------------------------------------------------------</span></span>
+<span id="cb52-2"><a href="grundlagen-der-inferenzstatistik.html#cb52-2" aria-hidden="true" tabindex="-1"></a>mean.p <span class="ot">&lt;-</span> p</span>
+<span id="cb52-3"><a href="grundlagen-der-inferenzstatistik.html#cb52-3" aria-hidden="true" tabindex="-1"></a>SE.p <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((p <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p))<span class="sc">/</span>n)  </span>
+<span id="cb52-4"><a href="grundlagen-der-inferenzstatistik.html#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="grundlagen-der-inferenzstatistik.html#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 95%-CI berechnen -------------------------------------------------------------</span></span>
+<span id="cb52-6"><a href="grundlagen-der-inferenzstatistik.html#cb52-6" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">qnorm</span>(.<span class="dv">025</span>))</span>
+<span id="cb52-7"><a href="grundlagen-der-inferenzstatistik.html#cb52-7" aria-hidden="true" tabindex="-1"></a>CI <span class="ot">&lt;-</span> mean.p <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> z <span class="sc">*</span> SE.p</span>
+<span id="cb52-8"><a href="grundlagen-der-inferenzstatistik.html#cb52-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-9"><a href="grundlagen-der-inferenzstatistik.html#cb52-9" aria-hidden="true" tabindex="-1"></a><span class="co"># z-Wert berechnen -------------------------------------------------------------</span></span>
+<span id="cb52-10"><a href="grundlagen-der-inferenzstatistik.html#cb52-10" aria-hidden="true" tabindex="-1"></a>z.p.hat <span class="ot">&lt;-</span> (p.hat <span class="sc">-</span> p)<span class="sc">/</span>SE.p  </span>
+<span id="cb52-11"><a href="grundlagen-der-inferenzstatistik.html#cb52-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-12"><a href="grundlagen-der-inferenzstatistik.html#cb52-12" aria-hidden="true" tabindex="-1"></a><span class="co"># p-Wert berechnen -------------------------------------------------------------</span></span>
+<span id="cb52-13"><a href="grundlagen-der-inferenzstatistik.html#cb52-13" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(z.p.hat)</span>
+<span id="cb52-14"><a href="grundlagen-der-inferenzstatistik.html#cb52-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-15"><a href="grundlagen-der-inferenzstatistik.html#cb52-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Tabelle für Output erstellen -------------------------------------------------</span></span>
+<span id="cb52-16"><a href="grundlagen-der-inferenzstatistik.html#cb52-16" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb52-17"><a href="grundlagen-der-inferenzstatistik.html#cb52-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n,</span>
+<span id="cb52-18"><a href="grundlagen-der-inferenzstatistik.html#cb52-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> p,</span>
+<span id="cb52-19"><a href="grundlagen-der-inferenzstatistik.html#cb52-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">p.hat =</span> p.hat,</span>
+<span id="cb52-20"><a href="grundlagen-der-inferenzstatistik.html#cb52-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE.p =</span> SE.p,</span>
+<span id="cb52-21"><a href="grundlagen-der-inferenzstatistik.html#cb52-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI.lo =</span> CI[<span class="dv">1</span>],</span>
+<span id="cb52-22"><a href="grundlagen-der-inferenzstatistik.html#cb52-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI.up =</span> CI[<span class="dv">2</span>],</span>
+<span id="cb52-23"><a href="grundlagen-der-inferenzstatistik.html#cb52-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">z =</span> z.p.hat,</span>
+<span id="cb52-24"><a href="grundlagen-der-inferenzstatistik.html#cb52-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> prob</span>
+<span id="cb52-25"><a href="grundlagen-der-inferenzstatistik.html#cb52-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-26"><a href="grundlagen-der-inferenzstatistik.html#cb52-26" aria-hidden="true" tabindex="-1"></a>result <span class="sc">%&gt;%</span> </span>
+<span id="cb52-27"><a href="grundlagen-der-inferenzstatistik.html#cb52-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">digits =</span> <span class="dv">5</span>, <span class="at">caption =</span> <span class="st">&quot;Wahrscheinlichkeit für p.hat &gt; 0.95 bei p = 0.9&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-28"><a href="grundlagen-der-inferenzstatistik.html#cb52-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-9">Table 5.1: </span>Wahrscheinlichkeit für p.hat &gt; 0.95 bei p = 0.9
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+p
+</th>
+<th style="text-align:right;">
+p.hat
+</th>
+<th style="text-align:right;">
+SE.p
+</th>
+<th style="text-align:right;">
+CI.lo
+</th>
+<th style="text-align:right;">
+CI.up
+</th>
+<th style="text-align:right;">
+z
+</th>
+<th style="text-align:right;">
+prob
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+200
+</td>
+<td style="text-align:right;">
+0.9
+</td>
+<td style="text-align:right;">
+0.95
+</td>
+<td style="text-align:right;">
+0.02121
+</td>
+<td style="text-align:right;">
+0.8584
+</td>
+<td style="text-align:right;">
+0.9416
+</td>
+<td style="text-align:right;">
+2.357
+</td>
+<td style="text-align:right;">
+0.00921
+</td>
+</tr>
+</tbody>
+</table>
+<p>Die Frage kann auch unter Verwendung der Binomialverteilung beantwortet werden:</p>
+<p>Die erwartete Wahrscheinlichkeit bei 200 Versuchen mit <span class="math inline">\(p\)</span> = 0.95 ist <span class="math inline">\(\hat{p} = 200 \times 0.95 = 190\)</span> Wie gross ist die Wahrscheinlichkeit für <span class="math inline">\(p \geq 190\)</span> bei 200 Stichproben und einer Wahrscheinlichkeit von <span class="math inline">\(p\)</span> = 0.9 in der Population unter der Nullhypothese?</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="grundlagen-der-inferenzstatistik.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wahrscheinlichkeit für 190 oder mehr Erfolge bei n = 200 und p = .9</span></span>
+<span id="cb53-2"><a href="grundlagen-der-inferenzstatistik.html#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">dbinom</span>(<span class="dv">190</span> <span class="sc">:</span> <span class="dv">200</span>, <span class="at">size =</span> <span class="dv">200</span>, <span class="at">prob =</span> .<span class="dv">9</span>))</span></code></pre></div>
+<pre><code>## [1] 0.008071</code></pre>
+</div>
+<div id="schätzung-bei-quantitativen-merkmalen" class="section level3 hasAnchor" number="5.1.2">
+<h3><span class="header-section-number">5.1.2</span> Schätzung bei quantitativen Merkmalen<a href="grundlagen-der-inferenzstatistik.html#schätzung-bei-quantitativen-merkmalen" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Zentraler Grenzwertsatz</strong></p>
+<p>Die Verteilung von Stichprobenkennzahlen (z.B. Mittelwert) folgt annähernd einer Normalverteilung. Ihr Mittelwert liegt in der Nähe des Populationsmittelwertes <span class="math inline">\(\mu\)</span> mit einer Standardabweichung geteilt durch die Quadratwurzel des Stichprobenumfangs (<em>Standardfehler <span class="math inline">\(SE\)</span></em>).</p>
+<p><span class="math display" id="eq:clt">\[\begin{equation}
+  \bar{x} \sim N(Mittelwert = \mu, SE = \frac{\sigma}{\sqrt{n}})
+  \tag{5.6}
+\end{equation}\]</span></p>
+<p>Wenn <span class="math inline">\(\sigma\)</span> unbekannt ist (was eigentlich immer der Fall ist), wird die Standardabweichung <span class="math inline">\(s\)</span> der Stichprobe als Schätzer für <span class="math inline">\(\sigma\)</span> eingesetzt.</p>
+<p><span class="math display" id="eq:se">\[\begin{equation}
+  SE = \frac{s}{\sqrt{n}}
+  \tag{5.7}
+\end{equation}\]</span></p>
+<p>Bedingungen für die Gültigkeit des zentralen Grenzwertsatzes:</p>
+<p>Die Beobachtungseinheiten in der Stichprobe sind unabhängig voneinander (zufällige Auswahl, zufällige Zuordnung zu Gruppen).<br />
+Faustregel: Stichprobenumfang <span class="math inline">\(n&gt;30\)</span></p>
+<p>Beispiel für die Berechnung des Standardfehlers <span class="math inline">\(SE\)</span> in <code>R</code></p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="grundlagen-der-inferenzstatistik.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb55-2"><a href="grundlagen-der-inferenzstatistik.html#cb55-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)  <span class="co"># simulation von 100 normalverteilten Werten, mean = 0, s = 1</span></span>
+<span id="cb55-3"><a href="grundlagen-der-inferenzstatistik.html#cb55-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-4"><a href="grundlagen-der-inferenzstatistik.html#cb55-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(x)   <span class="co"># Stichprobenumfang von x ermitteln</span></span>
+<span id="cb55-5"><a href="grundlagen-der-inferenzstatistik.html#cb55-5" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(x)       <span class="co"># Standardabweichung von x berechnen</span></span>
+<span id="cb55-6"><a href="grundlagen-der-inferenzstatistik.html#cb55-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-7"><a href="grundlagen-der-inferenzstatistik.html#cb55-7" aria-hidden="true" tabindex="-1"></a>s<span class="sc">/</span><span class="fu">sqrt</span>(n)        <span class="co"># Berechnung und Ausgabe von SE</span></span></code></pre></div>
+<pre><code>## [1] 0.1004</code></pre>
+<p><strong>95%-Konfidenzintervall für <span class="math inline">\(\mu\)</span></strong></p>
+<p>Ein Konfidenzintervall bezieht sich immer auf einen Popultionsparameter, z.B. <span class="math inline">\(\mu\)</span> nicht auf eine Stichprobenkennzahl!</p>
+<p>Konfidenzintervalle (Vertrauensintervalle, <span class="math inline">\(CI\)</span>) können auf jedem Konfidenzniveau berechnet werden. Um die Sache nicht allzu kompliziert zu machen, wird hier v.a. exemplarisch die Berechnung von 95%-Konfidenzinteravallen vorgestellt.</p>
+<p>Signifikanzniveau = <span class="math inline">\(\alpha\)</span>
+Konfidenzniveau = <span class="math inline">\(1-\alpha\)</span></p>
+<p><span class="math display" id="eq:cinorm">\[\begin{equation}
+  CI_{95} = \bar{x} \pm z_{\frac{\alpha}{2}} \times SE
+  \tag{5.8}
+\end{equation}\]</span></p>
+<p>Allgemein formuliert:</p>
+<p><span class="math display" id="eq:cinorm">\[\begin{equation}
+  CI_{1-\alpha} = \bar{x} \pm z_{\frac{\alpha}{2}} \times SE
+  \tag{5.8}
+\end{equation}\]</span></p>
+<p><span class="math display" id="eq:zforci">\[\begin{equation}
+  z_{\frac{\alpha}{2}} = \vert \frac{(1-CI_{1-\alpha})}{2} \vert
+  \tag{5.9}
+\end{equation}\]</span></p>
+<p><span class="math display" id="eq:ME">\[\begin{equation}
+  ME = z_{\frac{\alpha}{2}} \times SE = z_{\frac{\alpha}{2}} \times \frac{s}{\sqrt{n}}
+  \tag{5.10}
+\end{equation}\]</span></p>
+<p><span class="math inline">\(z_{\frac{\alpha}{2}} \times SE\)</span> wird auch als Fehlerbereich (engl. <span class="math inline">\(margin~ of~ error,~ ME\)</span>) bezeichnet. Der Wert von <span class="math inline">\(z_{\frac{\alpha}{2}}\)</span> ist abhängig vom Konfidenzniveau <span class="math inline">\(1-\alpha\)</span>.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="grundlagen-der-inferenzstatistik.html#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># z für ein 95% CI</span></span>
+<span id="cb57-2"><a href="grundlagen-der-inferenzstatistik.html#cb57-2" aria-hidden="true" tabindex="-1"></a>CI <span class="ot">&lt;-</span> .<span class="dv">95</span> </span>
+<span id="cb57-3"><a href="grundlagen-der-inferenzstatistik.html#cb57-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> CI</span>
+<span id="cb57-4"><a href="grundlagen-der-inferenzstatistik.html#cb57-4" aria-hidden="true" tabindex="-1"></a>z95 <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">qnorm</span>(alpha<span class="sc">/</span><span class="dv">2</span>))</span>
+<span id="cb57-5"><a href="grundlagen-der-inferenzstatistik.html#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">&quot;CI-Niveau = &quot;</span>, CI <span class="sc">*</span> <span class="dv">100</span>, <span class="st">&quot;%, alpha = &quot;</span>, alpha, <span class="st">&quot;, z = &quot;</span>, <span class="fu">round</span>(z95, <span class="dv">3</span>), <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;CI-Niveau = 95%, alpha = 0.05, z = 1.96&quot;</code></pre>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="grundlagen-der-inferenzstatistik.html#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># z für ein 90% CI</span></span>
+<span id="cb59-2"><a href="grundlagen-der-inferenzstatistik.html#cb59-2" aria-hidden="true" tabindex="-1"></a>CI <span class="ot">&lt;-</span> .<span class="dv">9</span></span>
+<span id="cb59-3"><a href="grundlagen-der-inferenzstatistik.html#cb59-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> CI</span>
+<span id="cb59-4"><a href="grundlagen-der-inferenzstatistik.html#cb59-4" aria-hidden="true" tabindex="-1"></a>z90 <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">qnorm</span>(alpha<span class="sc">/</span><span class="dv">2</span>))</span>
+<span id="cb59-5"><a href="grundlagen-der-inferenzstatistik.html#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">&quot;CI-Niveau = &quot;</span>, CI <span class="sc">*</span> <span class="dv">100</span>, <span class="st">&quot;%, alpha = &quot;</span>, alpha, <span class="st">&quot;, z = &quot;</span>, <span class="fu">round</span>(z90, <span class="dv">3</span>), <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;CI-Niveau = 90%, alpha = 0.1, z = 1.645&quot;</code></pre>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="grundlagen-der-inferenzstatistik.html#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># z für ein 99% CI</span></span>
+<span id="cb61-2"><a href="grundlagen-der-inferenzstatistik.html#cb61-2" aria-hidden="true" tabindex="-1"></a>CI <span class="ot">&lt;-</span> .<span class="dv">99</span></span>
+<span id="cb61-3"><a href="grundlagen-der-inferenzstatistik.html#cb61-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> CI</span>
+<span id="cb61-4"><a href="grundlagen-der-inferenzstatistik.html#cb61-4" aria-hidden="true" tabindex="-1"></a>z99 <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">qnorm</span>(alpha<span class="sc">/</span><span class="dv">2</span>))</span>
+<span id="cb61-5"><a href="grundlagen-der-inferenzstatistik.html#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">&quot;CI-Niveau = &quot;</span>, CI <span class="sc">*</span> <span class="dv">100</span>, <span class="st">&quot;%, alpha = &quot;</span>, alpha, <span class="st">&quot;, z = &quot;</span>, <span class="fu">round</span>(z99, <span class="dv">3</span>), <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;CI-Niveau = 99%, alpha = 0.01, z = 2.576&quot;</code></pre>
+<p>Beispiel für die Berechnung eines 95% Konfidenzintervalls</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="grundlagen-der-inferenzstatistik.html#cb63-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fl">95.6</span>       <span class="co"># Stichprobenmittelwert</span></span>
+<span id="cb63-2"><a href="grundlagen-der-inferenzstatistik.html#cb63-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fl">15.8</span>       <span class="co"># Standardabweichung der Stichprobe</span></span>
+<span id="cb63-3"><a href="grundlagen-der-inferenzstatistik.html#cb63-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span>        <span class="co"># Stichprobenumfang</span></span>
+<span id="cb63-4"><a href="grundlagen-der-inferenzstatistik.html#cb63-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="grundlagen-der-inferenzstatistik.html#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="co"># gesucht ist das 95% Konfidenzintervall für den Populationsmittelwert  </span></span>
+<span id="cb63-6"><a href="grundlagen-der-inferenzstatistik.html#cb63-6" aria-hidden="true" tabindex="-1"></a>CI <span class="ot">&lt;-</span> .<span class="dv">95</span>       <span class="co"># Konfidenzniveau 95%</span></span>
+<span id="cb63-7"><a href="grundlagen-der-inferenzstatistik.html#cb63-7" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> CI <span class="co"># Signifikanzniveau alpha</span></span>
+<span id="cb63-8"><a href="grundlagen-der-inferenzstatistik.html#cb63-8" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">qnorm</span>(alpha<span class="sc">/</span><span class="dv">2</span>))</span>
+<span id="cb63-9"><a href="grundlagen-der-inferenzstatistik.html#cb63-9" aria-hidden="true" tabindex="-1"></a>ME <span class="ot">&lt;-</span> z <span class="sc">*</span> CI    <span class="co"># Fehlerbereich berechnen</span></span>
+<span id="cb63-10"><a href="grundlagen-der-inferenzstatistik.html#cb63-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-11"><a href="grundlagen-der-inferenzstatistik.html#cb63-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Obere und untere Grenze für 95%-Konfidenzintervall berechnen</span></span>
+<span id="cb63-12"><a href="grundlagen-der-inferenzstatistik.html#cb63-12" aria-hidden="true" tabindex="-1"></a>CI95 <span class="ot">&lt;-</span> m <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> ME</span>
+<span id="cb63-13"><a href="grundlagen-der-inferenzstatistik.html#cb63-13" aria-hidden="true" tabindex="-1"></a>CI95</span></code></pre></div>
+<pre><code>## [1] 93.74 97.46</code></pre>
+<p><strong>Zuverlässigkeit vs. Präzision einer Schätzung</strong></p>
+<p>Der Standardfehler beschreibt die Präzisieon der Schätzung eines Parameters. Je mehr Werte in die Schätzung eingehen, umso kleiner wird wird der Standardfehler. Je kleiner der Standardfehler, desto präziser die Schätzung.</p>
+<p>Wenn wir das Konfidenzniveau erhöhen (Konfidenzintervall wird breiter, z.B. von 95% auf 99%) nimmt die Zuverlässigkeit, dass wir den wahren Populationsparameter im Intervall haben zu, allerdings auf Kosten der Präzision. Durch Erhöhung des Stichprobenumfangs kann die Zuverlässigkeit und die Präzision gleichzeitig verbessert werden.</p>
+<p>Stichprobenumfang für einen bestimmten Fehlerbereich berechnen:</p>
+<p><span class="math display" id="eq:nausME">\[\begin{equation}
+  ME = z^* \times \frac{s}{\sqrt{n}} \rightarrow n = (\frac{z^* \times s}{ME})^2
+  \tag{5.11}
+\end{equation}\]</span></p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="grundlagen-der-inferenzstatistik.html#cb65-1" aria-hidden="true" tabindex="-1"></a>ME.alt <span class="ot">&lt;-</span> <span class="fl">1.862</span></span>
+<span id="cb65-2"><a href="grundlagen-der-inferenzstatistik.html#cb65-2" aria-hidden="true" tabindex="-1"></a>ME.neu <span class="ot">&lt;-</span> ME.alt<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb65-3"><a href="grundlagen-der-inferenzstatistik.html#cb65-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-4"><a href="grundlagen-der-inferenzstatistik.html#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="co"># neues 95%-Konfidenzintervall berechnen</span></span>
+<span id="cb65-5"><a href="grundlagen-der-inferenzstatistik.html#cb65-5" aria-hidden="true" tabindex="-1"></a>CI95.neu <span class="ot">&lt;-</span> m <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> ME.neu</span>
+<span id="cb65-6"><a href="grundlagen-der-inferenzstatistik.html#cb65-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;CI95 neu [&quot;</span>, CI95.neu[<span class="dv">1</span>], <span class="st">&quot;,&quot;</span>, CI95.neu[<span class="dv">2</span>], <span class="st">&quot;]&quot;</span>))</span></code></pre></div>
+<pre><code>## [1] &quot;CI95 neu [ 94.669 , 96.531 ]&quot;</code></pre>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="grundlagen-der-inferenzstatistik.html#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stichprobenumfang für das neue 95%-CI berechnen</span></span>
+<span id="cb67-2"><a href="grundlagen-der-inferenzstatistik.html#cb67-2" aria-hidden="true" tabindex="-1"></a>n.neu <span class="ot">&lt;-</span> ((z <span class="sc">*</span> s)<span class="sc">/</span>ME.neu)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb67-3"><a href="grundlagen-der-inferenzstatistik.html#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Stichprobenumfang neu:&quot;</span>, n.neu))</span></code></pre></div>
+<pre><code>## [1] &quot;Stichprobenumfang neu: 1106.39701140001&quot;</code></pre>
+</div>
+</div>
+<div id="hypothesentest-für-einen-mittelwert" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Hypothesentest für einen Mittelwert<a href="grundlagen-der-inferenzstatistik.html#hypothesentest-für-einen-mittelwert" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<blockquote>
+<p>Hypothesentests werden immer für einen Popultionsparameter, z.B. <span class="math inline">\(\mu\)</span> durchgeführt und nicht für eine Stichprobe!</p>
+</blockquote>
+<div id="vorgehen" class="section level3 hasAnchor" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span> Vorgehen<a href="grundlagen-der-inferenzstatistik.html#vorgehen" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li>Formuliere die wissenschaftliche Hypothese</li>
+</ol>
+<ul>
+<li><span class="math inline">\(H_0: \mu = Nullwert\)</span><br />
+</li>
+<li><span class="math inline">\(H_A: \mu &lt; oder &gt; oder \neq Nullwert\)</span><br />
+</li>
+<li>Es wird empfohlen <span class="math inline">\(H_A:\)</span> immer zweiseitig formulieren ausser in begründeten Ausnahmefällen.</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>Berechne den Punktschätzer <span class="math inline">\(\bar{x}\)</span> für <span class="math inline">\(\mu\)</span><br />
+</li>
+<li>Überprüfe die Testvoraussetzungen</li>
+</ol>
+<ul>
+<li>Beobachtungseinheiten in der Stichprobe sind unabhängig.<br />
+</li>
+<li>Stichprobe stammt aus eine annähernd normalverteilten Population.<br />
+</li>
+<li>Der Stichprobenumfang <span class="math inline">\(n \geq 30\)</span> oder grösser bei stark schiefer Verteilung.</li>
+</ul>
+<ol start="4" style="list-style-type: decimal">
+<li>Skizziere die Stichprobenverteilung, zeichne deinen Verwerfungsbereich ein und berechne die Teststatistik.</li>
+</ol>
+<p><span class="math display" id="eq:ztest">\[\begin{equation}
+  z = \frac{\bar{x} - \mu}{SE}, ~~ SE = \frac{s}{\sqrt{n}}
+  \tag{5.12}
+\end{equation}\]</span></p>
+<ol start="5" style="list-style-type: decimal">
+<li>Berechne den kritischen <span class="math inline">\(z\)</span>-Wert für ein bestimmtes Signifikanzniveau <span class="math inline">\(\alpha\)</span>.</li>
+</ol>
+<p><span class="math display" id="eq:zkrit">\[\begin{equation}
+  z_{krit} = \pm |z_{\frac{1-\alpha}{2}}|
+  \tag{5.13}
+\end{equation}\]</span></p>
+<ol start="6" style="list-style-type: decimal">
+<li>Liegt <span class="math inline">\(z\)</span> im Verwerfungsbereich wird <span class="math inline">\(H_0\)</span> zu Gunsten von <span class="math inline">\(H_A\)</span> zurückgewiesen.<br />
+</li>
+<li>Interpretiere das Resultat im Zusammenhang mit der Fragestellung.</li>
+</ol>
+</div>
+<div id="p-werte-berechnen" class="section level3 hasAnchor" number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span> p-Werte berechnen<a href="grundlagen-der-inferenzstatistik.html#p-werte-berechnen" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Definition:</p>
+<p><span class="math display" id="eq:pvaluedef">\[\begin{equation}
+  p-Wert = P(beobachtete~oder~extremere~Teststatistik~ | ~H_0~ wahr)
+  \tag{5.14}
+\end{equation}\]</span></p>
+<p>Der p-Wert quantifiziert die Evidenz gegen <span class="math inline">\(H_0\)</span>. Ein kleiner <span class="math inline">\(p\)</span>-Wert (üblicherweise <span class="math inline">\(p \leq 0.05\)</span>) bedeutet, dass du ausreichend Evidenz dafür hast, <span class="math inline">\(H_0\)</span> zu Gunsten von <span class="math inline">\(H_A\)</span> zu verwerfen.</p>
+<p><br/></p>
+<p><strong>Einseitiger Hypothesentest anhand von p-Werten</strong></p>
+<ol style="list-style-type: decimal">
+<li>Fall</li>
+</ol>
+<p><span class="math display">\[H_0: \mu = Nullwert\]</span>
+<span class="math display">\[H_A: \mu &gt; Nullwert\]</span></p>
+<p><span class="math display" id="eq:zonesidedgreater">\[\begin{equation}
+  z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
+  \tag{5.15}
+\end{equation}\]</span></p>
+<p><span class="math inline">\(p\)</span>-Wert in <code>R</code> berechnen:</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="grundlagen-der-inferenzstatistik.html#cb69-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(z)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:einsgroesser-fig"></span>
+<img src="statformulasbook_files/figure-html/einsgroesser-fig-1.png" alt="5%-Verwerfungsbereich für $\mu$ &gt; Nullwert" width="384" />
+<p class="caption">
+Figure 5.1: 5%-Verwerfungsbereich für <span class="math inline">\(\mu\)</span> &gt; Nullwert
+</p>
+</div>
+<p><br/></p>
+<ol start="2" style="list-style-type: decimal">
+<li>Fall</li>
+</ol>
+<p><span class="math display">\[H_0: \mu = Nullwert\]</span>
+<span class="math display">\[H_A: \mu &lt; Nullwert\]</span></p>
+<p><span class="math display" id="eq:zonesidedless">\[\begin{equation}
+  z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
+  \tag{5.16}
+\end{equation}\]</span></p>
+<p><span class="math inline">\(p\)</span>-Wert in <code>R</code> berechnen:</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="grundlagen-der-inferenzstatistik.html#cb70-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(z)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:einskleiner-fig"></span>
+<img src="statformulasbook_files/figure-html/einskleiner-fig-1.png" alt="5%-Verwerfungsbereich für $\mu$ &lt; Nullwert" width="384" />
+<p class="caption">
+Figure 5.2: 5%-Verwerfungsbereich für <span class="math inline">\(\mu\)</span> &lt; Nullwert
+</p>
+</div>
+<p><br/></p>
+<p><strong>Zweiseitiger Hypothesentest anhand von p-Werten</strong></p>
+<p>Zweiseitige Hypothesen sind der Normalfall. Einseitige Hypothesen sollten nur in begründeten Ausnahmefällen formuliert werden.</p>
+<p><span class="math display">\[H_0: \mu = Nullwert\]</span>
+<span class="math display">\[H_A: \mu \neq Nullvalue\]</span></p>
+<p><span class="math display" id="eq:ztwosided">\[\begin{equation}
+  z = \frac{\bar{x}-Nullwert}{SE_{\bar{x}}}
+  \tag{5.17}
+\end{equation}\]</span></p>
+<p><span class="math inline">\(p\)</span>-Wert in <code>R</code> berechnen:</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="grundlagen-der-inferenzstatistik.html#cb71-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(z), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb71-2"><a href="grundlagen-der-inferenzstatistik.html#cb71-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-3"><a href="grundlagen-der-inferenzstatistik.html#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternative</span></span>
+<span id="cb71-4"><a href="grundlagen-der-inferenzstatistik.html#cb71-4" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pnorm</span>(<span class="sc">-</span><span class="fu">abs</span>(z))</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:zweis-fig"></span>
+<img src="statformulasbook_files/figure-html/zweis-fig-1.png" alt="5%-Verwerfungsbereiche für $\mu \neq$ Nullwert" width="384" />
+<p class="caption">
+Figure 5.3: 5%-Verwerfungsbereiche für <span class="math inline">\(\mu \neq\)</span> Nullwert
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="entscheidungsfehler" class="section level3 hasAnchor" number="5.2.3">
+<h3><span class="header-section-number">5.2.3</span> Entscheidungsfehler<a href="grundlagen-der-inferenzstatistik.html#entscheidungsfehler" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Fehler 1. Art: <span class="math inline">\(H_0\)</span> wird verworfen wenn <span class="math inline">\(H_0\)</span> wahr ist.<br />
+</li>
+<li>Fehler 2. Art: <span class="math inline">\(H_0\)</span> wird nicht verworfen wenn <span class="math inline">\(H_A\)</span> wahr ist.</li>
+</ul>
+<p>Bei einem Signifikanzniveau <span class="math inline">\(\alpha = 0.05\)</span> nehmen wir ein Risiko von 5% in Kauf, einen Fehler 1. Art zu begehen.</p>
+<p><span class="math inline">\(\alpha:\)</span> Wahrscheinlichkeit, einen Fehler 1. Art zu begehen.<br />
+<span class="math inline">\(\beta:\)</span> Wahrscheinlichkeit, einen Fehler 2. Art zu begehen.<br />
+<span class="math inline">\(1-\beta:\)</span> Power (Trennschärfe) eines Tests; Wahrscheinlichkeit, für <span class="math inline">\(H_A\)</span> zu entscheiden, wenn <span class="math inline">\(H_A\)</span> wahr ist.</p>
+<p><br/></p>
+</div>
+<div id="hypothesentests-mit-konfidenzintervallen" class="section level3 hasAnchor" number="5.2.4">
+<h3><span class="header-section-number">5.2.4</span> Hypothesentests mit Konfidenzintervallen<a href="grundlagen-der-inferenzstatistik.html#hypothesentests-mit-konfidenzintervallen" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Ein zweiseitiger Hypothesentest mit einem Signifikanzniveau <span class="math inline">\(\alpha\)</span> entspricht einem Konfidenzintervall mit dem Konfidenzniveau <span class="math inline">\(1-\alpha\)</span>.<br />
+</li>
+<li>Ein einseitiger Hypothesentest mit einem Signifikanzniveau <span class="math inline">\(\alpha\)</span> entspricht einem Vertrauensintervall mit einem Konfidenzniveau von <span class="math inline">\(1-(2 \times \alpha)\)</span>.<br />
+</li>
+<li>Enthält ein 95% Vertrauensintervall den Nullwert nicht, wird <span class="math inline">\(H_0\)</span> verworfen.<br />
+</li>
+<li>Enthält ein 95% Vertrauensintervall den Nullwert, wird <span class="math inline">\(H_0\)</span> nicht verworfen.</li>
+</ul>
+<p><br/></p>
+</div>
+<div id="vorgehen-1" class="section level3 hasAnchor" number="5.2.5">
+<h3><span class="header-section-number">5.2.5</span> Vorgehen<a href="grundlagen-der-inferenzstatistik.html#vorgehen-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li>Hypothesen <span class="math inline">\(H_0\)</span> und <span class="math inline">\(H_A\)</span> formulieren.</li>
+<li>Signifikanzniveau <span class="math inline">\(\alpha\)</span> festlegen (meist <span class="math inline">\(\alpha\)</span> = 0.05).</li>
+<li>Voraussetzungen (Normalverteilung, Stichprobenumfang) für Testwahl prüfen.</li>
+<li>(1-<span class="math inline">\(\alpha\)</span>)-Konfidenzintervall für Populationsparameter berechnen.</li>
+<li>Teststatistik berechnen.<br />
+</li>
+<li><span class="math inline">\(p\)</span>-Wert für die Teststatisik berechnen.<br />
+</li>
+<li><span class="math inline">\(p\)</span>-Wert mit Signifikanzniveau vergleichen und Entscheiden ob man <span class="math inline">\(H_0\)</span> verwirft oder beibehält.</li>
+<li>Ergebnis in allgemein verständlicher Sprache formulieren.</li>
+</ol>
+
+</div>
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Leonhart2013" class="csl-entry">
+Leonhart, Rainer. 2013. <em>Lehrbuch Statistik. Einstieg Und Vertiefung</em>. Hans Huber.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="wahrscheinlichkeitsverteilungen.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="inferenz-für-quantitative-daten.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/04-foundinference.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["statformulasbook.pdf", "statformulasbook.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+},
+"before": "<li><a href="...">Statistics Formulas R</a></li>n",
+"after": "<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>n"
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

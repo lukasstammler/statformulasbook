@@ -8,7 +8,7 @@ documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-github-repo: rstudio/bookdown-demo
+github-repo: lukasstammler/statformulasbook
 description: "Zusammenstellung von Statistik-Formeln mit Beispielen in R für einen Grundkurs Statistik"
 ---
 
