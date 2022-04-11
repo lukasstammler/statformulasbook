@@ -403,21 +403,21 @@ Der $t$-Test dient der Prüfung von Mittelwertsdifferenzen zweier unabhängiger 
 t <- abs(qt(alpha/2), df = n1 + n2 - 2)
 ```
 
-$SE$ vereinfacht (für Berechnungen von Hand)   
+* $SE$ vereinfacht (für Berechnungen von Hand)   
 
 \begin{equation}
   SE_{\bar{x}_1 - \bar{x}_2} = \sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}} = \sqrt{SE^2_{\bar{x}_1} + SE^2_{\bar{x}_2}}
   (#eq:se-indep-simple)
 \end{equation}
 
-Gepoolte Standardabweichung  
+* Gepoolte Standardabweichung  
 
 \begin{equation}
   s_{pooled} = \sqrt{\frac{(n_1-1) \cdot s_1^2+(n_2-1) \cdot s_2^2}{n_1+n_2-2}}$
   (#eq:s-pooled)
 \end{equation}
 
-$SE$ für eine Mittelwertsdifferenz  
+* $SE$ für eine Mittelwertsdifferenz  
 
 \begin{equation}
   SE_{\bar{x}_1 - \bar{x}_2} = s_{pooled} \cdot \sqrt{\frac{1}{n_1}+\frac{1}{n_2}}
