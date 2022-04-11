@@ -23,7 +23,7 @@
 <meta name="author" content="Lukas Stammler" />
 
 
-<meta name="date" content="2022-04-08" />
+<meta name="date" content="2022-04-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -240,7 +240,10 @@ div.csl-indent {
 <li class="chapter" data-level="6.2.2" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#wilcoxon-vorzeichenrangtest"><i class="fa fa-check"></i><b>6.2.2</b> Wilcoxon-Vorzeichenrangtest<span></span></a></li>
 <li class="chapter" data-level="6.2.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#mann-whitney-u-test"><i class="fa fa-check"></i><b>6.2.3</b> Mann-Whitney-U-Test<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="6.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrap-methode"><i class="fa fa-check"></i><b>6.3</b> Bootstrap-Methode<span></span></a></li>
+<li class="chapter" data-level="6.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrap-methode"><i class="fa fa-check"></i><b>6.3</b> Bootstrap-Methode<span></span></a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#vorgehen-2"><i class="fa fa-check"></i><b>6.3.1</b> Vorgehen<span></span></a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="inferenz-für-qualitative-daten.html"><a href="inferenz-für-qualitative-daten.html"><i class="fa fa-check"></i><b>7</b> Inferenz für qualitative Daten<span></span></a>
 <ul>
@@ -257,6 +260,7 @@ div.csl-indent {
 <li class="chapter" data-level="8.1.2" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#rangkorrelationskoeffizient-nach-spearman"><i class="fa fa-check"></i><b>8.1.2</b> Rangkorrelationskoeffizient nach Spearman<span></span></a></li>
 <li class="chapter" data-level="8.1.3" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#interpretation-korrelationskoeffizienten"><i class="fa fa-check"></i><b>8.1.3</b> Interpretation Korrelationskoeffizienten<span></span></a></li>
 <li class="chapter" data-level="8.1.4" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#hypothesentest-für-korrelationskoeffizienten"><i class="fa fa-check"></i><b>8.1.4</b> Hypothesentest für Korrelationskoeffizienten<span></span></a></li>
+<li class="chapter" data-level="8.1.5" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#vertrauensintervall-für-pearsons-r"><i class="fa fa-check"></i><b>8.1.5</b> Vertrauensintervall für Pearson’s r<span></span></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="varianzanalyse.html"><a href="varianzanalyse.html"><i class="fa fa-check"></i><b>9</b> Varianzanalyse<span></span></a>
@@ -372,10 +376,93 @@ div.csl-indent {
 ## sample estimates:
 ##    cor 
 ## 0.9721</code></pre>
+</div>
+<div id="vertrauensintervall-für-pearsons-r" class="section level3 hasAnchor" number="8.1.5">
+<h3><span class="header-section-number">8.1.5</span> Vertrauensintervall für Pearson’s r<a href="korrelation-und-lineare-regression.html#vertrauensintervall-für-pearsons-r" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Da der Wertebereich für <span class="math inline">\(r\)</span> nicht über [-1, 1] hinausgehen kann, ist ein <span class="math inline">\(CI\)</span> z.B. .9 <span class="math inline">\(\pm\)</span> 2 annehmen kann, da dies die obere Grenze überschreitet. Die obere Grenze des <span class="math inline">\(CI\)</span> muss in diesem Fall beschnitten werden. Auf diese Weise entstehen <em>asymmetrische</em> CI (s. Beispiel oben) <span class="citation">(<a href="#ref-newstat2012" role="doc-biblioref">Cumming 2012</a>)</span>.<br />
+</li>
+<li>Die Verteilung von <span class="math inline">\(r\)</span> ist nicht normal. Mittels Transformation nach Fisher kann die Verteilung einer Stichprobenkorrelation annähernd in eine Normalverteilung umgewandelt werden <span class="citation">(<a href="#ref-newstat2012" role="doc-biblioref">Cumming 2012</a>, <a href="https://www.statskingdom.com/correlation-confidence-interval-calculator.html" role="doc-biblioref">Statistics Kingdom</a>)</span>.</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>Transformation der Stichprobenkorrelation mittels Fisher’s Transformation</li>
+</ol>
+<p><span class="math display" id="eq:r-trans">\[\begin{equation}
+  r&#39; = \frac{1}{2} \cdot ln(\frac{1 + r}{1 - r}) = arctanh(r)
+  \tag{8.3}
+\end{equation}\]</span></p>
+<ol start="2" style="list-style-type: decimal">
+<li>Standardabweichung der transformierten Korrelation berechnen</li>
+</ol>
+<p><span class="math display" id="eq:s-trans">\[\begin{equation}
+  s&#39; = \frac{1}{\sqrt{n - 3}}
+  \tag{8.4}
+\end{equation}\]</span></p>
+<ol start="3" style="list-style-type: decimal">
+<li>Konfidenzintervall mittels <span class="math inline">\(z\)</span>-Statistik berechnen</li>
+</ol>
+<p><span class="math display" id="eq:citrans-lo">\[\begin{equation}
+  CI&#39;_{lo} = r&#39; - z_{1-\alpha/2} \cdot s&#39;
+  \tag{8.5}
+\end{equation}\]</span></p>
+<p><span class="math display" id="eq:citrans-up">\[\begin{equation}
+  CI&#39;_{up} = r&#39; + z_{1-\alpha/2} \cdot s&#39;
+  \tag{8.6}
+\end{equation}\]</span></p>
+<ol start="4" style="list-style-type: decimal">
+<li>Rücktransformation der <span class="math inline">\(CI\)</span>-Grenzen in die Originalskala</li>
+</ol>
+<p><span class="math display" id="eq:cir-up">\[\begin{equation}
+  CI_{lo} = \frac{e^{2 \cdot CI`_{lo}}-1}{e^{2 \cdot CI`_{lo}}+1} = tanh(CI&#39;_{lo})
+  \tag{8.7}
+\end{equation}\]</span></p>
+<p><span class="math display" id="eq:cir-lo">\[\begin{equation}
+  CI_{up} = \frac{e^{2 \cdot CI`_{up}}-1}{e^{2 \cdot CI`_{up}}+1} = tanh(CI&#39;_{up})
+  \tag{8.8}
+\end{equation}\]</span></p>
+<ul>
+<li><span class="math inline">\(r\)</span>: Korrelationskoeffizient der Stichprobe<br />
+</li>
+<li><span class="math inline">\(r&#39;\)</span>: transformierter Korrelationskoeffizient nach Fisher<br />
+</li>
+<li><span class="math inline">\(s&#39;\)</span>: approximative Standardabweichung der transformierten Korrelation <span class="math inline">\(r&#39;\)</span><br />
+</li>
+<li><span class="math inline">\(n\)</span>: Stichprobenumfang<br />
+</li>
+<li><span class="math inline">\(\alpha\)</span>: Signifikanzniveau<br />
+</li>
+<li><span class="math inline">\(1 - \alpha\)</span>: Konfidenzniveau<br />
+</li>
+<li><span class="math inline">\(CI`_{lo}\)</span>: untere Grenze des Vertrauensintervalls für <span class="math inline">\(r&#39;\)</span><br />
+</li>
+<li><span class="math inline">\(CI`_{up}\)</span>: obere Grenze des Vertrauensintervalls für <span class="math inline">\(r&#39;\)</span><br />
+</li>
+<li><span class="math inline">\(CI_{lo}\)</span>: untere Grenze des Vertrauensintervalls für <span class="math inline">\(r\)</span><br />
+</li>
+<li><span class="math inline">\(CI_{up}\)</span>: obere Grenze des Vertrauensintervalls für <span class="math inline">\(r\)</span></li>
+</ul>
 <p><br/></p>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="korrelation-und-lineare-regression.html#cb148-1" aria-hidden="true" tabindex="-1"></a>confintr<span class="sc">::</span><span class="fu">ci_cor</span>(eis<span class="sc">$</span>temp, eis<span class="sc">$</span>verkauf, </span>
+<span id="cb148-2"><a href="korrelation-und-lineare-regression.html#cb148-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">probs =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">975</span>),</span>
+<span id="cb148-3"><a href="korrelation-und-lineare-regression.html#cb148-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;pearson&quot;</span>,</span>
+<span id="cb148-4"><a href="korrelation-und-lineare-regression.html#cb148-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">type =</span> <span class="st">&quot;normal&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+##  Two-sided 95% normal confidence interval for the true Pearson
+##  correlation coefficient
+## 
+## Sample estimate: 0.9721 
+## Confidence interval:
+##   2.5%  97.5% 
+## 0.7604 0.9971</code></pre>
 
 <p><strong>in Bearbeitung</strong></p>
 </div>
+</div>
+</div>
+<h3> Referenzen<a href="referenzen.html#referenzen" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-newstat2012" class="csl-entry">
+Cumming, Geoff. 2012. <em>Understanding the New Statistics. Effect Sizes, Confidence Intervalls, and Metaanalyses</em>. Routledge.
 </div>
 </div>
             </section>

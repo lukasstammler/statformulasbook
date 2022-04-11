@@ -30,5 +30,5 @@ Frühjahr 2022
 ```{r include=FALSE}
 # automatically create a bib database for R packages
 knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown', "tidyverse", "openintro", "ggplot2"), 'packages.bib')
+  .packages(), 'bookdown', 'knitr', 'rmarkdown', "tidyverse", "openintro", "ggplot2", "confintr"), 'packages.bib')
 ```

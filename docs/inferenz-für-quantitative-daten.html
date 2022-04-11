@@ -23,7 +23,7 @@
 <meta name="author" content="Lukas Stammler" />
 
 
-<meta name="date" content="2022-04-08" />
+<meta name="date" content="2022-04-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -240,7 +240,10 @@ div.csl-indent {
 <li class="chapter" data-level="6.2.2" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#wilcoxon-vorzeichenrangtest"><i class="fa fa-check"></i><b>6.2.2</b> Wilcoxon-Vorzeichenrangtest<span></span></a></li>
 <li class="chapter" data-level="6.2.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#mann-whitney-u-test"><i class="fa fa-check"></i><b>6.2.3</b> Mann-Whitney-U-Test<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="6.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrap-methode"><i class="fa fa-check"></i><b>6.3</b> Bootstrap-Methode<span></span></a></li>
+<li class="chapter" data-level="6.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrap-methode"><i class="fa fa-check"></i><b>6.3</b> Bootstrap-Methode<span></span></a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#vorgehen-2"><i class="fa fa-check"></i><b>6.3.1</b> Vorgehen<span></span></a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="inferenz-für-qualitative-daten.html"><a href="inferenz-für-qualitative-daten.html"><i class="fa fa-check"></i><b>7</b> Inferenz für qualitative Daten<span></span></a>
 <ul>
@@ -257,6 +260,7 @@ div.csl-indent {
 <li class="chapter" data-level="8.1.2" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#rangkorrelationskoeffizient-nach-spearman"><i class="fa fa-check"></i><b>8.1.2</b> Rangkorrelationskoeffizient nach Spearman<span></span></a></li>
 <li class="chapter" data-level="8.1.3" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#interpretation-korrelationskoeffizienten"><i class="fa fa-check"></i><b>8.1.3</b> Interpretation Korrelationskoeffizienten<span></span></a></li>
 <li class="chapter" data-level="8.1.4" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#hypothesentest-für-korrelationskoeffizienten"><i class="fa fa-check"></i><b>8.1.4</b> Hypothesentest für Korrelationskoeffizienten<span></span></a></li>
+<li class="chapter" data-level="8.1.5" data-path="korrelation-und-lineare-regression.html"><a href="korrelation-und-lineare-regression.html#vertrauensintervall-für-pearsons-r"><i class="fa fa-check"></i><b>8.1.5</b> Vertrauensintervall für Pearson’s r<span></span></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="varianzanalyse.html"><a href="varianzanalyse.html"><i class="fa fa-check"></i><b>9</b> Varianzanalyse<span></span></a>
@@ -659,22 +663,27 @@ Ist der <span class="math inline">\(p\)</span>-Wert kleiner als das Signifikanzn
 \end{equation}\]</span></p>
 <div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="inferenz-für-quantitative-daten.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="co"># t für Berechnung des CI in R berechnen</span></span>
 <span id="cb100-2"><a href="inferenz-für-quantitative-daten.html#cb100-2" aria-hidden="true" tabindex="-1"></a>t <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">qt</span>(alpha<span class="sc">/</span><span class="dv">2</span>), <span class="at">df =</span> n1 <span class="sc">+</span> n2 <span class="sc">-</span> <span class="dv">2</span>)</span></code></pre></div>
-<p><span class="math inline">\(SE\)</span> vereinfacht (für Berechnungen von Hand: entspricht <span class="math inline">\(SE_{\bar{x}_1} + SE_{\bar{x}_2}\)</span>)</p>
+<p><span class="math inline">\(SE\)</span> vereinfacht (für Berechnungen von Hand)</p>
 <p><span class="math display" id="eq:se-indep-simple">\[\begin{equation}
-  SE_{\bar{x}_1 - \bar{x}_2} = \sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}
+  SE_{\bar{x}_1 - \bar{x}_2} = \sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}} = \sqrt{SE^2_{\bar{x}_1} + SE^2_{\bar{x}_2}}
   \tag{6.12}
 \end{equation}\]</span></p>
-<p><span class="math inline">\(SE\)</span> vollständig</p>
-<p><span class="math display" id="eq:se-indep-compl">\[\begin{equation}
-  SE_{\bar{x}_1 - \bar{x}_2} = \sqrt{\frac{(n_1-1) \cdot s_1^2+(n_2-1) \cdot s_2^2}{n_1+n_2-2}\cdot \lgroup \frac{1}{n_1}+\frac{1}{n_2} \rgroup}
+<p>Gepoolte Standardabweichung</p>
+<p><span class="math display" id="eq:s-pooled">\[\begin{equation}
+  s_{pooled} = \sqrt{\frac{(n_1-1) \cdot s_1^2+(n_2-1) \cdot s_2^2}{n_1+n_2-2}}$
   \tag{6.13}
+\end{equation}\]</span></p>
+<p><span class="math inline">\(SE\)</span> für eine Mittelwertsdifferenz</p>
+<p><span class="math display" id="eq:se-indep-compl">\[\begin{equation}
+  SE_{\bar{x}_1 - \bar{x}_2} = s_{pooled} \cdot \sqrt{\frac{1}{n_1}+\frac{1}{n_2}}
+  \tag{6.14}
 \end{equation}\]</span></p>
 <ol start="5" style="list-style-type: decimal">
 <li>Teststatistik berechnen.</li>
 </ol>
 <p><span class="math display" id="eq:t-tindep">\[\begin{equation}
   t = \frac{\bar{x}_1 - \bar{x}_2}{SE_{\bar{x}_1 - \bar{x}_2}}
-  \tag{6.14}  
+  \tag{6.15}  
 \end{equation}\]</span></p>
 <ol start="6" style="list-style-type: decimal">
 <li><span class="math inline">\(p\)</span>-Wert für die Teststatisik berechnen.</li>
@@ -792,15 +801,15 @@ sd.B
 <p><span class="math inline">\(t\)</span>-Test für unabhängige Stichproben mit ungleichen Varianzen: Welch-Test</p>
 <p><span class="math display" id="eq:t-welch">\[\begin{equation}
   t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{\hat{\sigma}_1^2}{n_1} + \frac{\hat{\sigma}_2^2}{n_2}}}
-  \tag{6.15}
+  \tag{6.16}
 \end{equation}\]</span></p>
 <p><span class="math display" id="eq:df-welch">\[\begin{equation}
   df = \frac{(n_1-1) \cdot (n_2-1)}{(n_2-1) \cdot c^2 + (n_1-1) \cdot (1-c)^2}
-  \tag{6.16}
+  \tag{6.17}
 \end{equation}\]</span></p>
 <p><span class="math display" id="eq:c-welch">\[\begin{equation}
   c = \frac{\frac{\hat{\sigma}_1^2}{n_1}}{\frac{\hat{\sigma}_1^2}{n_1}+\frac{\hat{\sigma}_2^2}{n_2}}
-  \tag{6.17}
+  \tag{6.18}
 \end{equation}\]</span></p>
 <div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="inferenz-für-quantitative-daten.html#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># t-Test für gleiche Varianzen</span></span>
 <span id="cb108-2"><a href="inferenz-für-quantitative-daten.html#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(score<span class="sc">$</span>methode_B, score<span class="sc">$</span>methode_A, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
@@ -860,7 +869,7 @@ der Nullwert sind, schreibe ein <span class="math inline">\(+\)</span>, für Wer
 </ul>
 <p><span class="math display" id="eq:binom3">\[\begin{equation}
   p(k, n) =  {n \choose k}p^k(1-p)^{n-k}
-  \tag{6.18}
+  \tag{6.19}
 \end{equation}\]</span></p>
 <ol start="4" style="list-style-type: decimal">
 <li>Vergleiche den p-Wert mit dem Signifikanzniveau. Beachte: Für eine zweiseitige <span class="math inline">\(H_A\)</span> muss der p-Wert verdoppelt werden.</li>
@@ -1166,17 +1175,17 @@ p.Value
 </ul>
 <p><span class="math display" id="eq:mu-wilcox">\[\begin{equation}
   E(T) = \mu_T = \frac{n \times (n + 1)}{4}
-  \tag{6.19}
+  \tag{6.20}
 \end{equation}\]</span></p>
 <p><span class="math display" id="eq:var-wilcox">\[\begin{equation}
   \sigma_T^2 = \frac{n \times (n + 1) \times (2n + 1)}{24}
-  \tag{6.20}
+  \tag{6.21}
 \end{equation}\]</span></p>
 <p><strong>Korrektur für Bindungen</strong></p>
 <p>Wenn mehrere Bindungen vorliegen, ist ein besserer Schätzer für die Varianz</p>
 <p><span class="math display" id="eq:var-corr">\[\begin{equation}
   \sigma^2 = \frac{n \times (n + 1) \times (2n + 1)}{24} - \frac{1}{48} \sum_t(f_t^3 - f_t)
-  \tag{6.21}
+  \tag{6.22}
 \end{equation}\]</span></p>
 <p>wobei:</p>
 <ul>
@@ -1187,12 +1196,12 @@ p.Value
 <p><strong>Teststatistik</strong></p>
 <p><span class="math display" id="eq:z-wilcox">\[\begin{equation}
   z = \frac{T - \mu_T}{\sigma_T}
-  \tag{6.22}
+  \tag{6.23}
 \end{equation}\]</span></p>
 <p>Die Approximation einer diskreten Verteilung mittels einer kontinuierlichen Verteilung kann bei <span class="math inline">\(n\)</span> &lt; 60 durch eine Kontinuitätskorrektur bei der Berechnung von <span class="math inline">\(z\)</span> berücksichtigt werden:</p>
 <p><span class="math display" id="eq:z-wilcox-contcorr">\[\begin{equation}
   z = \frac{|T - \mu_T|-.5}{\sigma_T}
-  \tag{6.23}
+  \tag{6.24}
 \end{equation}\]</span></p>
 <p>Beispiel: Zur Überprüfung einer neuen Unterrichtsmethode wurde in einer abhängigen Stichprobe vor und nach einem Sommerlager die Leistung im Fach Statsitik erhoben. Während des Ferienaufenthalts fand ein integrierter Nachhilfekurs in Statistik statt. Die Messung der Statsitikleistung ist im Datensatz <code>prfg</code> gespeichert.</p>
 <div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="inferenz-für-quantitative-daten.html#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Für diesen Code müssen folgende Bibliotheken geladen werden ------------------</span></span>
@@ -1344,11 +1353,11 @@ p.Wert
 </ul>
 <p><span class="math display" id="eq:U1">\[\begin{equation}
   U_1 = n_1 \times n_2+\frac{n_1 \times (n_1+1)}{2} - T_1
-  \tag{6.24}
+  \tag{6.25}
 \end{equation}\]</span></p>
 <p><span class="math display" id="eq:U2">\[\begin{equation}
   U_2 = n_1 \times n_2+\frac{n_2 \times (n_2+1)}{2} - T_2
-  \tag{6.25}
+  \tag{6.26}
 \end{equation}\]</span></p>
 <p>wobei, <span class="math inline">\(n_1\)</span> und <span class="math inline">\(n_2\)</span> die jeweiligen Stichprobenumfänge und <span class="math inline">\(T_1\)</span> und <span class="math inline">\(T_2\)</span> die Rangsummen der Gruppen 1 und 2 sind.</p>
 <p>Für den Signifikanztest wird nun der kleinere der beiden bestimmten <span class="math inline">\(U\)</span>-Werte verwendet.</p>
@@ -1357,26 +1366,26 @@ p.Wert
 <p>Für grosse Stichprobenumfänge (<span class="math inline">\(n_1\)</span> oder <span class="math inline">\(n_2\)</span> &gt; 10) ist <span class="math inline">\(U\)</span> annähernd normal verteilt mit:</p>
 <p><span class="math display" id="eq:mu-U">\[\begin{equation}
   E(U) = \mu_U = \frac{n_1 \times n_2}{2}
-  \tag{6.26}
+  \tag{6.27}
 \end{equation}\]</span></p>
 <p><span class="math display" id="eq:var-U">\[\begin{equation}
   \sigma_U^2 = \frac{n_1 \times n_2 \times (n_1 + n_2 + 1)}{12}
-  \tag{6.27}
+  \tag{6.28}
 \end{equation}\]</span></p>
 <p><strong>Teststatistik</strong></p>
 <p><span class="math display" id="eq:z-U">\[\begin{equation}
   z = \frac{U - E(U)}{\sigma_U}
-  \tag{6.28}
+  \tag{6.29}
 \end{equation}\]</span></p>
 <p>Differieren die beiden Stichprobenumfänge <span class="math inline">\(n_1\)</span> und <span class="math inline">\(n_2\)</span> stark, so empfiehlt sich eine Kontinuitätskorrektur des <span class="math inline">\(U\)</span>-Werts.</p>
 <p><span class="math display" id="eq:z-U">\[\begin{equation}
   z = \frac{|U - E(U)|-0.5}{\sigma_U}
-  \tag{6.28}
+  \tag{6.29}
 \end{equation}\]</span></p>
 <p>Wenn eine grosse Zahn von verbundenen Rängen vorliegt (zwei Werte in einer Spalte belegen den selben Rang), wird die Standardabweichung von <span class="math inline">\(U\)</span> wie folgt korrigiert:</p>
 <p><span class="math display" id="eq:s-U-corr">\[\begin{equation}
   \sigma_{UCorr} = \sqrt{\frac{n_1 \times n_2}{n(n-1)}} \times \sqrt{\frac{n^3-n}{12}-\sum_{i=1}^k\frac{t_i^3-t_i}{12}}
-  \tag{6.29}
+  \tag{6.30}
 \end{equation}\]</span></p>
 <p>wobei</p>
 <ul>
@@ -1710,6 +1719,17 @@ p
 <div id="bootstrap-methode" class="section level2 hasAnchor" number="6.3">
 <h2><span class="header-section-number">6.3</span> Bootstrap-Methode<a href="inferenz-für-quantitative-daten.html#bootstrap-methode" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><strong>in Bearbeitung</strong></p>
+<p>Bootstrap-Methoden sind eine Alternative zu nichtparametrischen Tests, wenn die Voraussetzungen für parametrische Tests nicht erfüllt sind. Die Berechnung von Bootstrap-Intervallen und Permutationstests setzt erhebliche Rechenleistung voraus, weshalb diese Methoden erst in jüngerer Zeit Verbreitung finden.</p>
+<div id="vorgehen-2" class="section level3 hasAnchor" number="6.3.1">
+<h3><span class="header-section-number">6.3.1</span> Vorgehen<a href="inferenz-für-quantitative-daten.html#vorgehen-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Bootstrapping ist eine Möglichkeit, die Stichprobenverteilung aus einer einzigen Stichprobe annähernd zu ermitteln.</p>
+<ol style="list-style-type: decimal">
+<li>Zufallsstichprobe im Umfang <span class="math inline">\(n\)</span> aus der zu untersuchenden Population ziehen.<br />
+</li>
+<li>Resampling: <span class="math inline">\(B\)</span> Stichproben im Umfang <span class="math inline">\(n\)</span> aus der Zufallsstichprobe ziehen. Dabei wird nach jedem Zug wieder “zurückgelegt”, d.h. jede Beobachtungseinheit in der Stichprobe kann mehr als einmal gezogen werden. <span class="math inline">\(B\)</span> hat in der Regel einen Wert von &gt; 10’000.<br />
+</li>
+<li>Bootstrapvertreilung: Die Bootstrapverteilung einer Kennzahl, z.B. <span class="math inline">\(\bar{x}\)</span>, repräsentiert die Werte, welche die Kennzahl in allen möglichen Resamples angenommen hat, also die Stichprobenverteilung der Kennzahl.</li>
+</ol>
 <div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="inferenz-für-quantitative-daten.html#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
 <span id="cb129-2"><a href="inferenz-für-quantitative-daten.html#cb129-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb129-3"><a href="inferenz-für-quantitative-daten.html#cb129-3" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated data ---------------------------------------------------------------</span></span>
@@ -1808,6 +1828,7 @@ p
 <span id="cb130-38"><a href="inferenz-für-quantitative-daten.html#cb130-38" aria-hidden="true" tabindex="-1"></a>CI <span class="ot">&lt;-</span> M <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">abs</span>(<span class="fu">qnorm</span>(alpha<span class="sc">/</span><span class="dv">2</span>)) <span class="sc">*</span> SE</span>
 <span id="cb130-39"><a href="inferenz-für-quantitative-daten.html#cb130-39" aria-hidden="true" tabindex="-1"></a>CI</span></code></pre></div>
 
+</div>
 </div>
 </div>
 <h3> Referenzen<a href="referenzen.html#referenzen" class="anchor-section" aria-label="Anchor link to header"></a></h3>

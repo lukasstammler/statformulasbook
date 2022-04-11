@@ -59,6 +59,7 @@ eq:t-paired
 eq:ci-tindep
 eq:df-indep
 eq:se-indep-simple
+eq:s-pooled
 eq:se-indep-compl
 eq:t-tindep
 eq:t-welch
@@ -100,6 +101,12 @@ eq:fisherp
 eq:fisherOR
 eq:r
 eq:covarianz
+eq:r-trans
+eq:s-trans
+eq:citrans-lo
+eq:citrans-up
+eq:cir-up
+eq:cir-lo
 eq:ss-total
 vorbemerkung
 Deskriptive
@@ -158,6 +165,7 @@ vorzeichentest
 wilcoxon-vorzeichenrangtest
 mann-whitney-u-test
 bootstrap-methode
+vorgehen-2
 inferenz-für-qualitative-daten
 hypothesentest-für-eine-stichprobe
 vergleich-von-zwei-relativen-häufigkeiten
@@ -169,6 +177,7 @@ korrelationskoeffizient-nach-pearson-r
 rangkorrelationskoeffizient-nach-spearman
 interpretation-korrelationskoeffizienten
 hypothesentest-für-korrelationskoeffizienten
+vertrauensintervall-für-pearsons-r
 varianzanalyse
 einfaktorielle-varianzanalyse
 quadratsummenzerlegung

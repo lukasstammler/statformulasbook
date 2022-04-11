@@ -19,6 +19,7 @@ library(tidyverse)
 library(knitr)
 library(patchwork)
 library(kableExtra)
+library(confintr)   # calculates confidence intervalls
 
 ggred <- "#F8766D"
 ggblue <- "#00BFC4"
@@ -101,6 +102,66 @@ plot(eis$temp, eis$verkauf)
 cor.test(eis$temp, eis$verkauf)
 ```
 
+### Vertrauensintervall für Pearson's r
 
+* Da der Wertebereich für $r$ nicht über [-1, 1] hinausgehen kann, ist ein $CI$ z.B. .9 $\pm$ 2 annehmen kann, da dies die obere Grenze überschreitet. Die obere Grenze des $CI$ muss in diesem Fall beschnitten werden. Auf diese Weise entstehen *asymmetrische* CI (s. Beispiel oben) [@newstat2012].   
+* Die Verteilung von $r$ ist nicht normal. Mittels Transformation nach Fisher kann die Verteilung einer Stichprobenkorrelation annähernd in eine Normalverteilung umgewandelt werden [@newstat2012, [Statistics Kingdom](https://www.statskingdom.com/correlation-confidence-interval-calculator.html)].
+
+1. Transformation der Stichprobenkorrelation mittels Fisher's Transformation   
+
+\begin{equation}
+  r' = \frac{1}{2} \cdot ln(\frac{1 + r}{1 - r}) = arctanh(r)
+  (#eq:r-trans)
+\end{equation}
+
+2. Standardabweichung der transformierten Korrelation berechnen  
+
+\begin{equation}
+  s' = \frac{1}{\sqrt{n - 3}}
+  (#eq:s-trans)
+\end{equation}
+
+3. Konfidenzintervall mittels $z$-Statistik berechnen  
+
+\begin{equation}
+  CI'_{lo} = r' - z_{1-\alpha/2} \cdot s' 
+  (#eq:citrans-lo)
+\end{equation}
+
+\begin{equation}
+  CI'_{up} = r' + z_{1-\alpha/2} \cdot s'
+  (#eq:citrans-up)
+\end{equation}
+
+4. Rücktransformation der $CI$-Grenzen in die Originalskala  
+
+\begin{equation}
+  CI_{lo} = \frac{e^{2 \cdot CI`_{lo}}-1}{e^{2 \cdot CI`_{lo}}+1} = tanh(CI'_{lo})
+  (#eq:cir-up)
+\end{equation}
+
+\begin{equation}
+  CI_{up} = \frac{e^{2 \cdot CI`_{up}}-1}{e^{2 \cdot CI`_{up}}+1} = tanh(CI'_{up})
+  (#eq:cir-lo)
+\end{equation}
+
+* $r$: Korrelationskoeffizient der Stichprobe   
+* $r'$: transformierter Korrelationskoeffizient nach Fisher  
+* $s'$: approximative Standardabweichung der transformierten Korrelation $r'$   
+* $n$: Stichprobenumfang  
+* $\alpha$: Signifikanzniveau   
+* $1 - \alpha$: Konfidenzniveau   
+* $CI`_{lo}$: untere Grenze des Vertrauensintervalls für $r'$  
+* $CI`_{up}$: obere Grenze des Vertrauensintervalls für $r'$   
+* $CI_{lo}$: untere Grenze des Vertrauensintervalls für $r$  
+* $CI_{up}$: obere Grenze des Vertrauensintervalls für $r$   
 
 <br/>
+
+```{r ci-cor, echo=TRUE}
+confintr::ci_cor(eis$temp, eis$verkauf, 
+                 probs = c(.025, .975),
+                 method = "pearson",
+                 type = "normal")
+```
+
