@@ -80,6 +80,11 @@ eq:var-U
 eq:z-U
 eq:s-U-corr
 tab:data-statex
+eq:x-boot
+eq:se-boot
+eq:estbias
+eq:ci-boot
+eq:ci-boot2
 eq:p-hat
 eq:z-phat
 eq:se-hatp
@@ -166,6 +171,7 @@ wilcoxon-vorzeichenrangtest
 mann-whitney-u-test
 bootstrap-methode
 vorgehen-2
+bootstrapping-in-r
 inferenz-für-qualitative-daten
 hypothesentest-für-eine-stichprobe
 vergleich-von-zwei-relativen-häufigkeiten

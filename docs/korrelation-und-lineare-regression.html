@@ -243,6 +243,7 @@ div.csl-indent {
 <li class="chapter" data-level="6.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrap-methode"><i class="fa fa-check"></i><b>6.3</b> Bootstrap-Methode<span></span></a>
 <ul>
 <li class="chapter" data-level="6.3.1" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#vorgehen-2"><i class="fa fa-check"></i><b>6.3.1</b> Vorgehen<span></span></a></li>
+<li class="chapter" data-level="6.3.2" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrapping-in-r"><i class="fa fa-check"></i><b>6.3.2</b> Bootstrapping in <code>R</code><span></span></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="inferenz-für-qualitative-daten.html"><a href="inferenz-für-qualitative-daten.html"><i class="fa fa-check"></i><b>7</b> Inferenz für qualitative Daten<span></span></a>
@@ -338,11 +339,11 @@ div.csl-indent {
 <li>0.8 bis 1: starker Zusammenhang</li>
 </ul></li>
 </ul>
-<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="korrelation-und-lineare-regression.html#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Korrelationskoeffizient nach Pearson</span></span>
-<span id="cb143-2"><a href="korrelation-und-lineare-regression.html#cb143-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x, y)</span>
-<span id="cb143-3"><a href="korrelation-und-lineare-regression.html#cb143-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb143-4"><a href="korrelation-und-lineare-regression.html#cb143-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Rangkorrelationskoeffizient nach Spearman</span></span>
-<span id="cb143-5"><a href="korrelation-und-lineare-regression.html#cb143-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x, y, <span class="at">method =</span> <span class="st">&quot;spearman&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="korrelation-und-lineare-regression.html#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Korrelationskoeffizient nach Pearson</span></span>
+<span id="cb156-2"><a href="korrelation-und-lineare-regression.html#cb156-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x, y)</span>
+<span id="cb156-3"><a href="korrelation-und-lineare-regression.html#cb156-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb156-4"><a href="korrelation-und-lineare-regression.html#cb156-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Rangkorrelationskoeffizient nach Spearman</span></span>
+<span id="cb156-5"><a href="korrelation-und-lineare-regression.html#cb156-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x, y, <span class="at">method =</span> <span class="st">&quot;spearman&quot;</span>)</span></code></pre></div>
 </div>
 <div id="hypothesentest-für-korrelationskoeffizienten" class="section level3 hasAnchor" number="8.1.4">
 <h3><span class="header-section-number">8.1.4</span> Hypothesentest für Korrelationskoeffizienten<a href="korrelation-und-lineare-regression.html#hypothesentest-für-korrelationskoeffizienten" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -351,20 +352,20 @@ div.csl-indent {
 </li>
 <li><span class="math inline">\(H_A: \rho \neq 0\)</span>, es besteht ein linearer Zusammenhang zwischen zwei Variablen.</li>
 </ul>
-<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="korrelation-und-lineare-regression.html#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Korrelationskoeffizient nach Pearson</span></span>
-<span id="cb144-2"><a href="korrelation-und-lineare-regression.html#cb144-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(x, y)</span>
-<span id="cb144-3"><a href="korrelation-und-lineare-regression.html#cb144-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb144-4"><a href="korrelation-und-lineare-regression.html#cb144-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Rangkorrelationskoeffizient nach Spearman</span></span>
-<span id="cb144-5"><a href="korrelation-und-lineare-regression.html#cb144-5" aria-hidden="true" tabindex="-1"></a>cor.test</span></code></pre></div>
+<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="korrelation-und-lineare-regression.html#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Korrelationskoeffizient nach Pearson</span></span>
+<span id="cb157-2"><a href="korrelation-und-lineare-regression.html#cb157-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(x, y)</span>
+<span id="cb157-3"><a href="korrelation-und-lineare-regression.html#cb157-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb157-4"><a href="korrelation-und-lineare-regression.html#cb157-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Rangkorrelationskoeffizient nach Spearman</span></span>
+<span id="cb157-5"><a href="korrelation-und-lineare-regression.html#cb157-5" aria-hidden="true" tabindex="-1"></a>cor.test</span></code></pre></div>
 <p>Beispiel: Besteht ein Zusammenhang zwischen Temperatur und dem Verkauf von Eiscreme?</p>
-<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="korrelation-und-lineare-regression.html#cb145-1" aria-hidden="true" tabindex="-1"></a>eis <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb145-2"><a href="korrelation-und-lineare-regression.html#cb145-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp =</span> <span class="fu">c</span>(<span class="dv">9</span>, <span class="dv">15</span>, <span class="dv">18</span>, <span class="dv">22</span>, <span class="dv">28</span>, <span class="dv">30</span>),</span>
-<span id="cb145-3"><a href="korrelation-und-lineare-regression.html#cb145-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">verkauf =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">11</span>, <span class="dv">15</span>, <span class="dv">17</span>, <span class="dv">18</span>)</span>
-<span id="cb145-4"><a href="korrelation-und-lineare-regression.html#cb145-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb145-5"><a href="korrelation-und-lineare-regression.html#cb145-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb145-6"><a href="korrelation-und-lineare-regression.html#cb145-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(eis<span class="sc">$</span>temp, eis<span class="sc">$</span>verkauf)</span></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="korrelation-und-lineare-regression.html#cb158-1" aria-hidden="true" tabindex="-1"></a>eis <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb158-2"><a href="korrelation-und-lineare-regression.html#cb158-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp =</span> <span class="fu">c</span>(<span class="dv">9</span>, <span class="dv">15</span>, <span class="dv">18</span>, <span class="dv">22</span>, <span class="dv">28</span>, <span class="dv">30</span>),</span>
+<span id="cb158-3"><a href="korrelation-und-lineare-regression.html#cb158-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">verkauf =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">11</span>, <span class="dv">15</span>, <span class="dv">17</span>, <span class="dv">18</span>)</span>
+<span id="cb158-4"><a href="korrelation-und-lineare-regression.html#cb158-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb158-5"><a href="korrelation-und-lineare-regression.html#cb158-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb158-6"><a href="korrelation-und-lineare-regression.html#cb158-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(eis<span class="sc">$</span>temp, eis<span class="sc">$</span>verkauf)</span></code></pre></div>
 <p><img src="statformulasbook_files/figure-html/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="korrelation-und-lineare-regression.html#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(eis<span class="sc">$</span>temp, eis<span class="sc">$</span>verkauf)</span></code></pre></div>
+<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="korrelation-und-lineare-regression.html#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(eis<span class="sc">$</span>temp, eis<span class="sc">$</span>verkauf)</span></code></pre></div>
 <pre><code>## 
 ##  Pearson&#39;s product-moment correlation
 ## 
@@ -442,10 +443,10 @@ div.csl-indent {
 <li><span class="math inline">\(CI_{up}\)</span>: obere Grenze des Vertrauensintervalls für <span class="math inline">\(r\)</span></li>
 </ul>
 <p><br/></p>
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="korrelation-und-lineare-regression.html#cb148-1" aria-hidden="true" tabindex="-1"></a>confintr<span class="sc">::</span><span class="fu">ci_cor</span>(eis<span class="sc">$</span>temp, eis<span class="sc">$</span>verkauf, </span>
-<span id="cb148-2"><a href="korrelation-und-lineare-regression.html#cb148-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">probs =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">975</span>),</span>
-<span id="cb148-3"><a href="korrelation-und-lineare-regression.html#cb148-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;pearson&quot;</span>,</span>
-<span id="cb148-4"><a href="korrelation-und-lineare-regression.html#cb148-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">type =</span> <span class="st">&quot;normal&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="korrelation-und-lineare-regression.html#cb161-1" aria-hidden="true" tabindex="-1"></a>confintr<span class="sc">::</span><span class="fu">ci_cor</span>(eis<span class="sc">$</span>temp, eis<span class="sc">$</span>verkauf, </span>
+<span id="cb161-2"><a href="korrelation-und-lineare-regression.html#cb161-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">probs =</span> <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">975</span>),</span>
+<span id="cb161-3"><a href="korrelation-und-lineare-regression.html#cb161-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;pearson&quot;</span>,</span>
+<span id="cb161-4"><a href="korrelation-und-lineare-regression.html#cb161-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">type =</span> <span class="st">&quot;normal&quot;</span>)</span></code></pre></div>
 <pre><code>## 
 ##  Two-sided 95% normal confidence interval for the true Pearson
 ##  correlation coefficient

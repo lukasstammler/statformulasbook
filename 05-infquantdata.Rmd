@@ -970,8 +970,8 @@ Interpretation: Studierende, die während einer Woche täglich 30 Minunten Stati
 
 ## Bootstrap-Methode
 
-**in Bearbeitung**
- 
+Hauptquelle: @IPS10, Kap. 16
+
 Bootstrap-Methoden sind eine Alternative zu nichtparametrischen Tests, wenn die Voraussetzungen für parametrische Tests nicht erfüllt sind. Die Berechnung von Bootstrap-Intervallen und Permutationstests setzt erhebliche Rechenleistung voraus, weshalb diese Methoden erst in jüngerer Zeit Verbreitung finden. 
 
 ### Vorgehen  
@@ -980,10 +980,51 @@ Bootstrapping ist eine Möglichkeit, die Stichprobenverteilung aus einer einzige
 
 1. Zufallsstichprobe im Umfang $n$ aus der zu untersuchenden Population ziehen.  
 2. Resampling: $B$ Stichproben im Umfang $n$ aus der Zufallsstichprobe ziehen. Dabei wird nach jedem Zug wieder "zurückgelegt", d.h. jede Beobachtungseinheit in der Stichprobe kann mehr als einmal gezogen werden. $B$ hat in der Regel einen Wert von > 10'000.   
-3. Bootstrapvertreilung: Die Bootstrapverteilung einer Kennzahl, z.B. $\bar{x}$, repräsentiert die Werte, welche die Kennzahl in allen möglichen Resamples angenommen hat, also die Stichprobenverteilung der Kennzahl.  
+3. Bootstrapvertreilung: Die Bootstrapverteilung einer Kennzahl, z.B. $\bar{x}$, repräsentiert die Werte, welche die Kennzahl in allen $B$ Resamples angenommen hat, also die Stichprobenverteilung der Kennzahl.  
+
+\begin{equation}
+  \bar{x}_{boot} = \frac{1}{B}\sum{\bar{x}^*}
+  (#eq:x-boot)
+\end{equation}
+
+\begin{equation}
+  SE_{boot} = \sqrt{\frac{1}{B-1}\sum(\bar{x}^* - \bar{x}_{boot})^2}
+  (#eq:se-boot)
+\end{equation}
+
+* $B$: Anzahl Resampling-Stichproben  
+* $\bar{x}^*$: Mittelwerte von jeder Resampling-Stichprobe  
+* $\bar{x}_{boot}$: Mittelwert der Resampling-Mittelwerte 
+* $SE_{boot}$: Standardfehler für $\bar{x}_{boot}$; ist identisch mit der Standardabweichung der Verteilung von $\bar{x}^*$
+
+Konfidenzintervall für den Mittelwert berechnen
+
+\begin{equation}
+  Est.Bias = \bar{x}_{Stichprobe} - \bar{x}_{boot}
+  (#eq:estbias)
+\end{equation}
+
+* Bootstrap-z-CI: Wenn die Bootstrap-Verteilung annähernd normalverteilt und der Bias-Schätzer $Est.Bias$ klein sind:   
+
+\begin{equation}
+  CI_{boot} = \bar{x}_{boot} \pm z_{1-\frac{\alpha}{2}} \times SE_{boot}
+  (#eq:ci-boot)
+\end{equation}
+
+* Bootstrap-Perzentilen-CI: Wenn die Bootstrap-Verteilung schief und der Bias-Schätzer klein sind
+
+\begin{equation}
+  CI_{boot} = [P_{.025, \bar{x}^*}, P_{.975, \bar{x}^*}]
+  (#eq:ci-boot2)
+\end{equation}  
+
+* Bootstrap bias-corrected accelerated interval (BCa)  
+
+Das BCa ist eine Modifikation des Perzentilen-CI und sollte immer angewandt werden, wenn die Software dies erlaubt (siehe package `boot` unten)
 
 
-```{r, eval=FALSE}
+```{r}
+# Source: StatQuest https://youtu.be/N4ZQQqyIf6k
 set.seed(1234)
 
 # simulated data ---------------------------------------------------------------
@@ -1002,32 +1043,49 @@ bootstrap <- tibble(
 
 # plot histogram and mean ------------------------------------------------------
 ggplot(bootstrap, aes(x = m.samples)) +
-  geom_histogram(fill = "steelblue") +
-  ggtitle(paste("bootstrapped means, samples = 10000, M = ", 
+  geom_histogram(fill = "steelblue", color = "white") +
+  ggtitle(paste("bootstrapped means, samples = 10000, mean = ", 
                 round(mean(bootstrap$m.samples), 4)), 
-          subtitle = paste("original mean = ", round(mean(drug), 4)))
+          subtitle = paste("Sample mean = ", round(mean(drug), 4),
+                           ", Est. bootstrap bias = ", 
+                           round(mean(drug)-mean(bootstrap$m.samples), 3)))
 
 # calculate CI -----------------------------------------------------------------
+# Bootstrap-z-Intervall
 alpha <- 0.05
 M <- mean(bootstrap$m.samples)
 SE <- sd(bootstrap$m.samples)
-CI <- M + c(-1, 1) * abs(qnorm(alpha/2)) * SE
-CI
+CI.z <- M + c(-1, 1) * abs(qnorm(alpha/2)) * SE
+CI.z
 
-# normalise data to represent the nullhypothesis -------------------------------
-drug.norm <- drug - mean(drug)
+# Bootstrap-Perzentilen-Intervall
+CI.perc.lo <- qnorm(.025, 
+                    mean = mean(bootstrap$m.samples),
+                    sd = sd(bootstrap$m.samples))
+CI.perc.hi <- qnorm(.975, 
+                    mean = mean(bootstrap$m.samples),
+                    sd = sd(bootstrap$m.samples))
+CI.perc <- c(CI.perc.lo, CI.perc.hi)
+CI.perc
+
+# Hypothesis-Test --------------------------------------------------------------
+# if H0 was true, we would expect the mean value to be 0
+
+# shift data to represent the nullhypothesis -----------------------------------
+drug.h0 <- drug - mean(drug)
 
 # 1000 means from 1000 samples with replacement from normalised data -----------
+# show how the mean varies when H0 were true
 mean.samples <- vector()
 for (i in 1:10000){
-  sample <- sample(drug.norm, size = length(drug.norm), replace = TRUE)
+  sample <- sample(drug.h0, size = length(drug.h0), replace = TRUE)
   mean.samples[i] <- mean(sample)
 }
 bootstrap$m.samples.norm <- mean.samples
 
 # plot histogram and mean ------------------------------------------------------
 ggplot(bootstrap, aes(x = m.samples.norm)) +
-  geom_histogram(fill = "steelblue", binwidth = .2) +
+  geom_histogram(fill = "steelblue", color = "white", binwidth = .2) +
   geom_vline(xintercept = -.49, color = "red") +
   geom_vline(xintercept = .49, color = "red") +
   ggtitle(paste("bootstrapped means, samples = 10000, M = ", 
@@ -1035,57 +1093,32 @@ ggplot(bootstrap, aes(x = m.samples.norm)) +
           subtitle = paste("boundaries two.sided = ", round(mean(drug), 4)))
 
 # calculate p-value ------------------------------------------------------------
+# What is the probability for observing a mean Value of less than -.49 and more
+# than .49 under H0 
 M.drug <- mean(drug)
-pnorm(M.drug) - pnorm(-M.drug) # prob for finding a mean value between -.49 and .49
-pnorm(-M.drug) # prob for finding a mean value < -.49
-pnorm(M.drug, lower.tail = FALSE) # prob for finding a mean Value > .49
+# pnorm(M.drug) - pnorm(-M.drug) # prob for finding a mean value between -.49 and .49
+# pnorm(-M.drug) # prob for finding a mean value < -.49
+# pnorm(M.drug, lower.tail = FALSE) # prob for finding a mean Value > .49
 # prob finding a p-value of .49 or more extreme two.sided
-pnorm(-M.drug) + pnorm(M.drug, lower.tail = FALSE)
+p <- pnorm(-M.drug) + pnorm(M.drug, lower.tail = FALSE)
+paste("p =", round(p, 3))
 ```
 
+### Bootstrapping in `R` 
 
-Example from Frost Hypothesistesting
+Für Bootstrap-Methoden steht das package `boot` zur Verfügung.
 
-```{r, eval=FALSE}
-bodyfat <- read_csv("body_fat.csv")
-psych::describe(bodyfat$PercFat)
-hist(bodyfat$PercFat)
+```{r}
+# source: https://www.statmethods.net/advstats/bootstrapping.html
+# install.packages("boot")
+library(boot)
 
-# 1000 means and medians from 100000 samples with replacement ------------------
-mean.samples <- vector()
-median.samples <- vector()
-for (i in 1:100000){
-  sample <- sample(bodyfat$PercFat, size = length(bodyfat$PercFat), replace = TRUE)
-  mean.samples[i] <- mean(sample)
-  median.samples[i] <- median(sample)
+samplemean <- function(x, d) {
+  return(mean(x[d]))
 }
-bootstrap <- tibble(
-  m.samples = mean.samples,
-  median.samples = median.samples
-)
 
-# plot histogram and mean ------------------------------------------------------
-ggplot(bootstrap, aes(x = m.samples)) +
-  geom_histogram(fill = "steelblue") +
-  ggtitle(paste("bootstrapped means, samples = 100000, M = ", 
-                round(mean(bootstrap$m.samples), 4)), 
-          subtitle = paste("original mean = ", round(mean(bodyfat$PercFat), 4)))
-qqnorm(bootstrap$m.samples)
-
-# plot histogram and median ------------------------------------------------------
-ggplot(bootstrap, aes(x = median.samples)) +
-  geom_histogram(fill = "steelblue") +
-  ggtitle(paste("bootstrapped medians, samples = 100000, Median = ", 
-                round(mean(bootstrap$median.samples), 4)), 
-          subtitle = paste("original mean = ", round(median(bodyfat$PercFat), 4)))
-qqnorm(bootstrap$median.samples)
-
-# calculate CI -----------------------------------------------------------------
-alpha <- 0.05
-M <- mean(bootstrap$m.samples)
-SE <- sd(bootstrap$m.samples)
-CI <- M + c(-1, 1) * abs(qnorm(alpha/2)) * SE
-CI
-
+boot.drug <- boot(drug, statistic = samplemean, R = 10000)
+boot.drug
+plot(boot.drug, col = "blue")
+boot.ci(boot.drug)
 ```
-
