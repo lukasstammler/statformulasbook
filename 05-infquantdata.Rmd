@@ -19,6 +19,7 @@ library(tidyverse)
 library(knitr)
 library(patchwork)
 library(kableExtra)
+library(mosaic)
 
 ggred <- "#F8766D"
 ggblue <- "#00BFC4"
@@ -403,26 +404,40 @@ Der $t$-Test dient der Prüfung von Mittelwertsdifferenzen zweier unabhängiger 
 t <- abs(qt(alpha/2), df = n1 + n2 - 2)
 ```
 
-* $SE$ vereinfacht (für Berechnungen von Hand)   
+* **Standardfehler für eine Mittelwertsdifferenz $SE_{\bar{x}_1 - \bar{x}_2}$**    
 
 \begin{equation}
   SE_{\bar{x}_1 - \bar{x}_2} = \sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}} = \sqrt{SE^2_{\bar{x}_1} + SE^2_{\bar{x}_2}}
-  (#eq:se-indep-simple)
+  (#eq:se-meandiff)
 \end{equation}
 
-* Gepoolte Standardabweichung  
+* Anzahl Freiheitsgrade $df$
+
+\begin{equation}
+  df = min(n_1 - 1, n_2 - 1)$
+  (#eq:df-meandiff)
+\end{equation}
+
+* **Gepoolte Standardabweichung**  
 
 \begin{equation}
   s_{pooled} = \sqrt{\frac{(n_1-1) \cdot s_1^2+(n_2-1) \cdot s_2^2}{n_1+n_2-2}}$
   (#eq:s-pooled)
+\end{equation}   
+
+* Anzahl Freiheitsgrade $df$
+
+\begin{equation}
+  df = n_1 + n_2 - 2
+  (#eq:df-forspooled)
 \end{equation}
 
-* $SE$ für eine Mittelwertsdifferenz  
+* **$SE_{\bar{x}_1 - \bar{x}_2}$ für eine Mittelwertsdifferenz aus der gepoolten Standardabweichung**  
 
 \begin{equation}
   SE_{\bar{x}_1 - \bar{x}_2} = s_{pooled} \cdot \sqrt{\frac{1}{n_1}+\frac{1}{n_2}}
   (#eq:se-indep-compl)
-\end{equation}
+\end{equation}  
 
 5. Teststatistik berechnen.   
 
@@ -492,9 +507,10 @@ s.B <- sd(score$methode_B)
 n.B <- length(score$methode_B)
 
 SE <- sqrt(s.A^2/n.A + s.B^2/n.B)
-df <- n.A + n.B - 2
+df <- min(n.A - 1, n.B - 1)
+t <- abs(qt(alpha/2, df))
 
-CI <- (m.B - m.A) + c(-1, 1) * abs(qt(alpha/2, df)) * SE
+CI <- (m.B - m.A) + c(-1, 1) * t * SE
 CI <- round(CI, 2)
 CI.output <- paste((1 - alpha) * 100, "%-CI [", CI[1], ", ", CI[2], "]")
 CI.output
@@ -521,7 +537,6 @@ $t$-Test für unabhängige Stichproben mit ungleichen Varianzen: Welch-Test
   t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{\hat{\sigma}_1^2}{n_1} + \frac{\hat{\sigma}_2^2}{n_2}}}
   (#eq:t-welch)
 \end{equation}
-
 
 \begin{equation}
   df = \frac{(n_1-1) \cdot (n_2-1)}{(n_2-1) \cdot c^2 + (n_1-1) \cdot (1-c)^2}
@@ -968,13 +983,13 @@ Interpretation: Studierende, die während einer Woche täglich 30 Minunten Stati
 # `R` berechnet die Teststatistik etwas anders: Die Funktion `wilcox.test()` berechnet zwar die Teststatistik $W$ wie oben angegeben, zieht dann jedoch $\frac{n_1 (n_1 + 1)}{2}$ davon ab [@Hughes2012].  
 ```
 
-## Bootstrap-Methode
+## Bootstrap-Methoden
 
-Hauptquelle: @IPS10, Kap. 16
+Quelle: @IPS10, Kap. 16
 
 Bootstrap-Methoden sind eine Alternative zu nichtparametrischen Tests, wenn die Voraussetzungen für parametrische Tests nicht erfüllt sind. Die Berechnung von Bootstrap-Intervallen und Permutationstests setzt erhebliche Rechenleistung voraus, weshalb diese Methoden erst in jüngerer Zeit Verbreitung finden. 
 
-### Vorgehen  
+### Prinzip  
 
 Bootstrapping ist eine Möglichkeit, die Stichprobenverteilung aus einer einzigen Stichprobe annähernd zu ermitteln.
 
@@ -997,7 +1012,7 @@ Bootstrapping ist eine Möglichkeit, die Stichprobenverteilung aus einer einzige
 * $\bar{x}_{boot}$: Mittelwert der Resampling-Mittelwerte 
 * $SE_{boot}$: Standardfehler für $\bar{x}_{boot}$; ist identisch mit der Standardabweichung der Verteilung von $\bar{x}^*$
 
-Konfidenzintervall für den Mittelwert berechnen
+### Bootstrap-Konfidenzintervall für einen Mittelwert berechnen
 
 \begin{equation}
   Est.Bias = \bar{x}_{Stichprobe} - \bar{x}_{boot}
@@ -1018,107 +1033,175 @@ Konfidenzintervall für den Mittelwert berechnen
   (#eq:ci-boot2)
 \end{equation}  
 
-* Bootstrap bias-corrected accelerated interval (BCa)  
+* Bootstrap Bias-Corrected Accelerated Interval (BCa)  
 
-Das BCa ist eine Modifikation des Perzentilen-CI und sollte immer angewandt werden, wenn die Software dies erlaubt (siehe package `boot` unten)
+  * Das BCa ist eine Modifikation des Perzentilen-CI und sollte immer angewandt werden, wenn die Software dies erlaubt. Der mathematische Hintergrund ist komplex und wird hier nicht weiter erläutert.
 
+Für die Arbeit mit `R` stehen verschiedene packages zur Verfügung:
+
+```{r, eval=FALSE}
+install.packages("confintr")
+install.packages("boot")
+```
+
+Beispiel: Hat ein neues Medikament einen Effekt auf das Wohlbefinden? Diese Frage wurde an 8 Testpersonen überprüft. Der Effekt auf das Wohlbefinden ist in der Variablen `drug` gespeichert (neg. Werte: Verschlechterung des Wohlbefindens, pos. Werte: Verbesserung des Wohlbefindens)
 
 ```{r}
 # Source: StatQuest https://youtu.be/N4ZQQqyIf6k
-set.seed(1234)
+set.seed(123)
 
 # simulated data ---------------------------------------------------------------
 drug <- c(-3.6, -2.8, -1.5, 1.4, 1.8, 2.2, 2.8, 3.6)
 psych::describe(drug)
 
-# 1000 means and medians from 10000samples with replacement --------------------
-mean.samples <- vector()
+# 10000 means from 10000 samples with replacement ------------------------------
+means.boot <- vector()
 for (i in 1:10000){
   sample <- sample(drug, size = length(drug), replace = TRUE)
-  mean.samples[i] <- mean(sample)
+  means.boot[i] <- mean(sample)
 }
-bootstrap <- tibble(
-  m.samples = mean.samples
-)
+M.boot <- round(mean(means.boot), 4)  # Mean of bootstrapped means
+M.sample <- round(mean(drug), 4)      # Mean of original sample
+Bias <- M.boot - M.sample             # Est. bootstrap bias
 
 # plot histogram and mean ------------------------------------------------------
-ggplot(bootstrap, aes(x = m.samples)) +
-  geom_histogram(fill = "steelblue", color = "white") +
-  ggtitle(paste("bootstrapped means, samples = 10000, mean = ", 
-                round(mean(bootstrap$m.samples), 4)), 
-          subtitle = paste("Sample mean = ", round(mean(drug), 4),
-                           ", Est. bootstrap bias = ", 
-                           round(mean(drug)-mean(bootstrap$m.samples), 3)))
+ggplot() +
+  geom_histogram(aes(x = means.boot), fill = "steelblue", color = "white") +
+  ggtitle(paste("Distribution of bootstrapped means, samples = 10000, mean = ", 
+                M.boot), subtitle = paste("Sample mean = ", M.sample,
+                           ", Est. bootstrap bias = ",Bias))
 
 # calculate CI -----------------------------------------------------------------
 # Bootstrap-z-Intervall
 alpha <- 0.05
-M <- mean(bootstrap$m.samples)
-SE <- sd(bootstrap$m.samples)
-CI.z <- M + c(-1, 1) * abs(qnorm(alpha/2)) * SE
-CI.z
+SE.boot <- sd(means.boot)
+CI.z <- M.boot + c(-1, 1) * abs(qnorm(alpha/2)) * SE.boot
+CI.z <- round(CI.z, 4)
+paste("95%-CI (method norm): [", CI.z[1], ",", CI.z[2], "]")
 
 # Bootstrap-Perzentilen-Intervall
-CI.perc.lo <- qnorm(.025, 
-                    mean = mean(bootstrap$m.samples),
-                    sd = sd(bootstrap$m.samples))
-CI.perc.hi <- qnorm(.975, 
-                    mean = mean(bootstrap$m.samples),
-                    sd = sd(bootstrap$m.samples))
-CI.perc <- c(CI.perc.lo, CI.perc.hi)
-CI.perc
-
-# Hypothesis-Test --------------------------------------------------------------
-# if H0 was true, we would expect the mean value to be 0
-
-# shift data to represent the nullhypothesis -----------------------------------
-drug.h0 <- drug - mean(drug)
-
-# 1000 means from 1000 samples with replacement from normalised data -----------
-# show how the mean varies when H0 were true
-mean.samples <- vector()
-for (i in 1:10000){
-  sample <- sample(drug.h0, size = length(drug.h0), replace = TRUE)
-  mean.samples[i] <- mean(sample)
-}
-bootstrap$m.samples.norm <- mean.samples
-
-# plot histogram and mean ------------------------------------------------------
-ggplot(bootstrap, aes(x = m.samples.norm)) +
-  geom_histogram(fill = "steelblue", color = "white", binwidth = .2) +
-  geom_vline(xintercept = -.49, color = "red") +
-  geom_vline(xintercept = .49, color = "red") +
-  ggtitle(paste("bootstrapped means, samples = 10000, M = ", 
-                round(mean(bootstrap$m.samples.norm), 4)), 
-          subtitle = paste("boundaries two.sided = ", round(mean(drug), 4)))
-
-# calculate p-value ------------------------------------------------------------
-# What is the probability for observing a mean Value of less than -.49 and more
-# than .49 under H0 
-M.drug <- mean(drug)
-# pnorm(M.drug) - pnorm(-M.drug) # prob for finding a mean value between -.49 and .49
-# pnorm(-M.drug) # prob for finding a mean value < -.49
-# pnorm(M.drug, lower.tail = FALSE) # prob for finding a mean Value > .49
-# prob finding a p-value of .49 or more extreme two.sided
-p <- pnorm(-M.drug) + pnorm(M.drug, lower.tail = FALSE)
-paste("p =", round(p, 3))
+CI.perc <- qnorm(c(.025, .975), 
+                 mean = M.boot,
+                 sd = sd(means.boot))
+CI.perc <- round(CI.perc, 4)
+paste("95%-CI (method perc): [", CI.perc[1], ",", CI.perc[2], "]")
 ```
 
-### Bootstrapping in `R` 
-
-Für Bootstrap-Methoden steht das package `boot` zur Verfügung.
+mit `confintr::ci_mean()` und bca-Methode 
 
 ```{r}
-# source: https://www.statmethods.net/advstats/bootstrapping.html
-# install.packages("boot")
-library(boot)
+confintr::ci_mean(drug, type = "bootstrap", boot_type = "bca", R = 10000, seed = 123)
+```
 
-samplemean <- function(x, d) {
-  return(mean(x[d]))
+
+### Bootstrap-Konfidenzintervalle für Gruppenvergleiche   
+
+Prinzip: Gegeben sind unabhängige Zufallsstichproben vom Umfang $n_1$ und $n_2$ von zwei Populationen:  
+
+1. Ziehe ein Resample vom Umfang $n_1$ mit "Zurücklegen" von der ersten Stichprobe und ein separates Resample vom Umfang $n_2$ von der zweiten Stichprobe. Berechne eine Prüfgrösse für den Vergleich der beiden Gruppen (z.B. die Differenz der Mittelwerte).   
+2. Wiederhole diesen Vorgang mehrere tausend Male.   
+3. Erstelle die Bootstrap-Verteilung der Prüfgrösse. Beurteile die Form, den Bias und $SE_{boot}$ wie oben beschrieben. 
+
+Beispiel: Besteht ein Unterschied zwischen den Schulleistungen gemessen am GPA (Grade Point Average, entspricht dem Notendurchschnitt, Max = 4, Min = 0) von Schülerinnen und Schülern. 
+
+```{r, fig.width=c(5, 8)}
+# Source: Moore et al. 2021 ch16 example 16.4
+gpa <- read_csv("./eg16-05gpa.csv")
+gpa$Sex <- factor(gpa$Sex, levels = c(0,1), labels = c("m", "w"))
+
+# Descriptives  
+gpa %>% 
+  group_by(Sex) %>% 
+  summarise(
+    n = n(),
+    Min = min(GPA),
+    Max = max(GPA),
+    Median = median(GPA),
+    M = mean(GPA),
+    s = sd(GPA)
+  ) %>% 
+  kbl(digits = 3, caption = "GPA Kennzahlen") %>% 
+  kable_styling(full_width = FALSE)
+
+gpa1_plot <- ggplot2::ggplot(gpa, aes(x = GPA, color = Sex)) +
+  geom_density(size = 1) +
+  ggtitle("GPA-Scores nach Geschlecht")
+
+gpa2_plot <- ggplot2::ggplot(gpa, aes(sample = GPA, color = Sex)) +
+  stat_qq(size = 2, alpha = .6) +
+  stat_qq_line() +
+  ggtitle("Q-Q-Plot für GPA-Scores nach Geschlecht") +
+  xlab("Theoretische Quantile") +
+  ylab("GPA")
+
+(gpa1_plot | gpa2_plot)
+
+# Bootstrap Resampling
+GPA.m <- gpa %>% 
+  filter(Sex == "m") %>% 
+  pull(GPA)
+GPA.w <- gpa %>% 
+  filter(Sex == "w") %>% 
+  pull(GPA)
+
+mdiff.boot <- vector()
+n.m <- length(GPA.m)
+n.w <- length(GPA.w)
+Reps <- 3000
+
+set.seed(123)
+for (i in 1:Reps){
+  sample.m <- sample(GPA.m, size = n.m, replace = TRUE)
+  sample.w <- sample(GPA.w, size = n.w, replace = TRUE)
+  mdiff.boot[i] <- mean(sample.m) - mean(sample.w)
 }
 
-boot.drug <- boot(drug, statistic = samplemean, R = 10000)
-boot.drug
-plot(boot.drug, col = "blue")
-boot.ci(boot.drug)
+# Plot bootstrapped mean difference
+M.sample <- round(mean(GPA.m) - mean(GPA.w), 4)
+M.boot <- round(mean(mdiff.boot), 4)
+Bias <- round(M.boot - M.sample, 4)
+
+ggplot2::ggplot() +
+  geom_histogram(aes(x = mdiff.boot), fill = "steelblue", color = "white") +
+  ggtitle(paste("Bootstrapped GPA mean difference =", M.boot), 
+          subtitle = paste("Mean sample =", M.sample, 
+                           ", Est. bias = ", Bias))
+
+# Calculate 95%-CI Method norm
+z <- qnorm(.975)  
+SE.boot <- sd(mdiff.boot)
+CI.z <- M.boot + c(-1, 1) * abs(z) * SE.boot
+CI.z <- round(CI.z, 4)
+paste("95%-CI for mean difference (method norm): [", CI.z[1], ",", CI.z[2], "]")
+
+
+# Calculate 95%-Ci Method student
+df <- min(n.m, n.w) - 1
+t <- qt(.975, df = df)  
+CI.t <- M.boot + c(-1, 1) * abs(t) * SE.boot
+CI.t <- round(CI.t, 4)
+paste("95%-CI for mean difference (method student): [", CI.t[1], ",", CI.t[2], "]")
+
+# Calculate 95%-CI Method percentile
+CI.perc <- qnorm(c(.025, .975),
+                 mean = M.boot,
+                 sd = SE.boot)
+CI.perc <- round(CI.perc, 4)
+paste("95%-CI for mean difference (method perc): [", CI.perc[1], ",", CI.perc[2], "]")
+
+result <- tibble(
+  method = c("norm", "stud", "perc"),
+  CI.lo = c(CI.z[1], CI.t[1], CI.perc[1]),
+  CI.up = c(CI.z[2], CI.t[2], CI.perc[2])
+)
+result %>% 
+  kable(caption = "Bootstrapped CI for Mean difference") %>% 
+  kable_styling(full_width = FALSE)
 ```
+
+mit `confintr::ci_mean_diff()` und bca-Methode
+
+```{r}
+confintr::ci_mean_diff(GPA.m, GPA.w, type = "bootstrap", R = 3000, boot_type = "bca")
+```
+

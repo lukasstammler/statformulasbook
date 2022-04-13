@@ -23,7 +23,7 @@
 <meta name="author" content="Lukas Stammler" />
 
 
-<meta name="date" content="2022-04-11" />
+<meta name="date" content="2022-04-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -240,10 +240,11 @@ div.csl-indent {
 <li class="chapter" data-level="6.2.2" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#wilcoxon-vorzeichenrangtest"><i class="fa fa-check"></i><b>6.2.2</b> Wilcoxon-Vorzeichenrangtest<span></span></a></li>
 <li class="chapter" data-level="6.2.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#mann-whitney-u-test"><i class="fa fa-check"></i><b>6.2.3</b> Mann-Whitney-U-Test<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="6.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrap-methode"><i class="fa fa-check"></i><b>6.3</b> Bootstrap-Methode<span></span></a>
+<li class="chapter" data-level="6.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrap-methoden"><i class="fa fa-check"></i><b>6.3</b> Bootstrap-Methoden<span></span></a>
 <ul>
-<li class="chapter" data-level="6.3.1" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#vorgehen-2"><i class="fa fa-check"></i><b>6.3.1</b> Vorgehen<span></span></a></li>
-<li class="chapter" data-level="6.3.2" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrapping-in-r"><i class="fa fa-check"></i><b>6.3.2</b> Bootstrapping in <code>R</code><span></span></a></li>
+<li class="chapter" data-level="6.3.1" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#prinzip"><i class="fa fa-check"></i><b>6.3.1</b> Prinzip<span></span></a></li>
+<li class="chapter" data-level="6.3.2" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrap-konfidenzintervall-für-einen-mittelwert-berechnen"><i class="fa fa-check"></i><b>6.3.2</b> Bootstrap-Konfidenzintervall für einen Mittelwert berechnen<span></span></a></li>
+<li class="chapter" data-level="6.3.3" data-path="inferenz-für-quantitative-daten.html"><a href="inferenz-für-quantitative-daten.html#bootstrap-konfidenzintervalle-für-gruppenvergleiche"><i class="fa fa-check"></i><b>6.3.3</b> Bootstrap-Konfidenzintervalle für Gruppenvergleiche<span></span></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="inferenz-für-qualitative-daten.html"><a href="inferenz-für-qualitative-daten.html"><i class="fa fa-check"></i><b>7</b> Inferenz für qualitative Daten<span></span></a>
@@ -355,43 +356,43 @@ Alle diese Kennzahlen können Werte zwischen 0 und 1 annehmen.</p>
 </li>
 <li>Unterscheidet sich der wahre Anteil an Schüler:innen, die an dieser Schule rauchen von 18%?</li>
 </ol>
-<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="inferenz-für-qualitative-daten.html#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Für diesen Code müssen folgende Bibliotheken geladen werden ------------------</span></span>
-<span id="cb144-2"><a href="inferenz-für-qualitative-daten.html#cb144-2" aria-hidden="true" tabindex="-1"></a><span class="co"># library(dplyr)</span></span>
-<span id="cb144-3"><a href="inferenz-für-qualitative-daten.html#cb144-3" aria-hidden="true" tabindex="-1"></a><span class="co"># library(knitr)</span></span>
-<span id="cb144-4"><a href="inferenz-für-qualitative-daten.html#cb144-4" aria-hidden="true" tabindex="-1"></a><span class="co"># library(kableExtra)</span></span>
-<span id="cb144-5"><a href="inferenz-für-qualitative-daten.html#cb144-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb144-6"><a href="inferenz-für-qualitative-daten.html#cb144-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Variablen definieren ---------------------------------------------------------</span></span>
-<span id="cb144-7"><a href="inferenz-für-qualitative-daten.html#cb144-7" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span>                                 <span class="co"># Anzahl Schülerinnen</span></span>
-<span id="cb144-8"><a href="inferenz-für-qualitative-daten.html#cb144-8" aria-hidden="true" tabindex="-1"></a>raucher <span class="ot">&lt;-</span> <span class="dv">20</span>                            <span class="co"># Anzahl Raucherinnen</span></span>
-<span id="cb144-9"><a href="inferenz-für-qualitative-daten.html#cb144-9" aria-hidden="true" tabindex="-1"></a>p.hat <span class="ot">&lt;-</span> raucher<span class="sc">/</span>n                       <span class="co"># Schätzer für den Anteil Raucherinnen</span></span>
-<span id="cb144-10"><a href="inferenz-für-qualitative-daten.html#cb144-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb144-11"><a href="inferenz-für-qualitative-daten.html#cb144-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 95%-Konfidenzintervall berechnen ---------------------------------------------</span></span>
-<span id="cb144-12"><a href="inferenz-für-qualitative-daten.html#cb144-12" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">qnorm</span>(.<span class="dv">025</span>))                    <span class="co"># z-Wert für 95% CI</span></span>
-<span id="cb144-13"><a href="inferenz-für-qualitative-daten.html#cb144-13" aria-hidden="true" tabindex="-1"></a>SE <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((p.hat <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p.hat)) <span class="sc">/</span> n)    <span class="co"># SE für CI berechnen  </span></span>
-<span id="cb144-14"><a href="inferenz-für-qualitative-daten.html#cb144-14" aria-hidden="true" tabindex="-1"></a>CI <span class="ot">&lt;-</span> p.hat <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> z <span class="sc">*</span> SE          <span class="co"># Grenzen des 95%-CI berechnen</span></span>
-<span id="cb144-15"><a href="inferenz-für-qualitative-daten.html#cb144-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb144-16"><a href="inferenz-für-qualitative-daten.html#cb144-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Hypothesentest ---------------------------------------------------------------</span></span>
-<span id="cb144-17"><a href="inferenz-für-qualitative-daten.html#cb144-17" aria-hidden="true" tabindex="-1"></a>p0 <span class="ot">&lt;-</span> .<span class="dv">18</span>                                <span class="co"># Nullwert definieren</span></span>
-<span id="cb144-18"><a href="inferenz-für-qualitative-daten.html#cb144-18" aria-hidden="true" tabindex="-1"></a>SE.hyp <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((p0 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p0)) <span class="sc">/</span> n)      <span class="co"># SE für Hypothesentest berechnen</span></span>
-<span id="cb144-19"><a href="inferenz-für-qualitative-daten.html#cb144-19" aria-hidden="true" tabindex="-1"></a>z.p.hat <span class="ot">&lt;-</span> (p.hat <span class="sc">-</span> p0)<span class="sc">/</span>SE.hyp           <span class="co"># Teststatistik berechnen</span></span>
-<span id="cb144-20"><a href="inferenz-für-qualitative-daten.html#cb144-20" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(z.p.hat), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb144-21"><a href="inferenz-für-qualitative-daten.html#cb144-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb144-22"><a href="inferenz-für-qualitative-daten.html#cb144-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Tabelle erstellen ------------------------------------------------------------</span></span>
-<span id="cb144-23"><a href="inferenz-für-qualitative-daten.html#cb144-23" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb144-24"><a href="inferenz-für-qualitative-daten.html#cb144-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">p.hat =</span> p.hat,</span>
-<span id="cb144-25"><a href="inferenz-für-qualitative-daten.html#cb144-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE =</span> SE,</span>
-<span id="cb144-26"><a href="inferenz-für-qualitative-daten.html#cb144-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI.lo =</span> CI[<span class="dv">1</span>],</span>
-<span id="cb144-27"><a href="inferenz-für-qualitative-daten.html#cb144-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI.hi =</span> CI[<span class="dv">2</span>],</span>
-<span id="cb144-28"><a href="inferenz-für-qualitative-daten.html#cb144-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE.hyp =</span> SE.hyp,</span>
-<span id="cb144-29"><a href="inferenz-für-qualitative-daten.html#cb144-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">z =</span> z.p.hat,</span>
-<span id="cb144-30"><a href="inferenz-für-qualitative-daten.html#cb144-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> prob</span>
-<span id="cb144-31"><a href="inferenz-für-qualitative-daten.html#cb144-31" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb144-32"><a href="inferenz-für-qualitative-daten.html#cb144-32" aria-hidden="true" tabindex="-1"></a>result <span class="sc">%&gt;%</span> </span>
-<span id="cb144-33"><a href="inferenz-für-qualitative-daten.html#cb144-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">digits =</span> <span class="dv">5</span>, <span class="at">caption =</span> <span class="st">&quot;Anteil Raucher:innen&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb144-34"><a href="inferenz-für-qualitative-daten.html#cb144-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="inferenz-für-qualitative-daten.html#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Für diesen Code müssen folgende Bibliotheken geladen werden ------------------</span></span>
+<span id="cb151-2"><a href="inferenz-für-qualitative-daten.html#cb151-2" aria-hidden="true" tabindex="-1"></a><span class="co"># library(dplyr)</span></span>
+<span id="cb151-3"><a href="inferenz-für-qualitative-daten.html#cb151-3" aria-hidden="true" tabindex="-1"></a><span class="co"># library(knitr)</span></span>
+<span id="cb151-4"><a href="inferenz-für-qualitative-daten.html#cb151-4" aria-hidden="true" tabindex="-1"></a><span class="co"># library(kableExtra)</span></span>
+<span id="cb151-5"><a href="inferenz-für-qualitative-daten.html#cb151-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-6"><a href="inferenz-für-qualitative-daten.html#cb151-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Variablen definieren ---------------------------------------------------------</span></span>
+<span id="cb151-7"><a href="inferenz-für-qualitative-daten.html#cb151-7" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span>                                 <span class="co"># Anzahl Schülerinnen</span></span>
+<span id="cb151-8"><a href="inferenz-für-qualitative-daten.html#cb151-8" aria-hidden="true" tabindex="-1"></a>raucher <span class="ot">&lt;-</span> <span class="dv">20</span>                            <span class="co"># Anzahl Raucherinnen</span></span>
+<span id="cb151-9"><a href="inferenz-für-qualitative-daten.html#cb151-9" aria-hidden="true" tabindex="-1"></a>p.hat <span class="ot">&lt;-</span> raucher<span class="sc">/</span>n                       <span class="co"># Schätzer für den Anteil Raucherinnen</span></span>
+<span id="cb151-10"><a href="inferenz-für-qualitative-daten.html#cb151-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-11"><a href="inferenz-für-qualitative-daten.html#cb151-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 95%-Konfidenzintervall berechnen ---------------------------------------------</span></span>
+<span id="cb151-12"><a href="inferenz-für-qualitative-daten.html#cb151-12" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">qnorm</span>(.<span class="dv">025</span>))                    <span class="co"># z-Wert für 95% CI</span></span>
+<span id="cb151-13"><a href="inferenz-für-qualitative-daten.html#cb151-13" aria-hidden="true" tabindex="-1"></a>SE <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((p.hat <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p.hat)) <span class="sc">/</span> n)    <span class="co"># SE für CI berechnen  </span></span>
+<span id="cb151-14"><a href="inferenz-für-qualitative-daten.html#cb151-14" aria-hidden="true" tabindex="-1"></a>CI <span class="ot">&lt;-</span> p.hat <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> z <span class="sc">*</span> SE          <span class="co"># Grenzen des 95%-CI berechnen</span></span>
+<span id="cb151-15"><a href="inferenz-für-qualitative-daten.html#cb151-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-16"><a href="inferenz-für-qualitative-daten.html#cb151-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Hypothesentest ---------------------------------------------------------------</span></span>
+<span id="cb151-17"><a href="inferenz-für-qualitative-daten.html#cb151-17" aria-hidden="true" tabindex="-1"></a>p0 <span class="ot">&lt;-</span> .<span class="dv">18</span>                                <span class="co"># Nullwert definieren</span></span>
+<span id="cb151-18"><a href="inferenz-für-qualitative-daten.html#cb151-18" aria-hidden="true" tabindex="-1"></a>SE.hyp <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((p0 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p0)) <span class="sc">/</span> n)      <span class="co"># SE für Hypothesentest berechnen</span></span>
+<span id="cb151-19"><a href="inferenz-für-qualitative-daten.html#cb151-19" aria-hidden="true" tabindex="-1"></a>z.p.hat <span class="ot">&lt;-</span> (p.hat <span class="sc">-</span> p0)<span class="sc">/</span>SE.hyp           <span class="co"># Teststatistik berechnen</span></span>
+<span id="cb151-20"><a href="inferenz-für-qualitative-daten.html#cb151-20" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(z.p.hat), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb151-21"><a href="inferenz-für-qualitative-daten.html#cb151-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-22"><a href="inferenz-für-qualitative-daten.html#cb151-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Tabelle erstellen ------------------------------------------------------------</span></span>
+<span id="cb151-23"><a href="inferenz-für-qualitative-daten.html#cb151-23" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb151-24"><a href="inferenz-für-qualitative-daten.html#cb151-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">p.hat =</span> p.hat,</span>
+<span id="cb151-25"><a href="inferenz-für-qualitative-daten.html#cb151-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE =</span> SE,</span>
+<span id="cb151-26"><a href="inferenz-für-qualitative-daten.html#cb151-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI.lo =</span> CI[<span class="dv">1</span>],</span>
+<span id="cb151-27"><a href="inferenz-für-qualitative-daten.html#cb151-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI.hi =</span> CI[<span class="dv">2</span>],</span>
+<span id="cb151-28"><a href="inferenz-für-qualitative-daten.html#cb151-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE.hyp =</span> SE.hyp,</span>
+<span id="cb151-29"><a href="inferenz-für-qualitative-daten.html#cb151-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">z =</span> z.p.hat,</span>
+<span id="cb151-30"><a href="inferenz-für-qualitative-daten.html#cb151-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> prob</span>
+<span id="cb151-31"><a href="inferenz-für-qualitative-daten.html#cb151-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb151-32"><a href="inferenz-für-qualitative-daten.html#cb151-32" aria-hidden="true" tabindex="-1"></a>result <span class="sc">%&gt;%</span> </span>
+<span id="cb151-33"><a href="inferenz-für-qualitative-daten.html#cb151-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">digits =</span> <span class="dv">5</span>, <span class="at">caption =</span> <span class="st">&quot;Anteil Raucher:innen&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb151-34"><a href="inferenz-für-qualitative-daten.html#cb151-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:unnamed-chunk-39">Table 7.1: </span>Anteil Raucher:innen
+<span id="tab:unnamed-chunk-42">Table 7.1: </span>Anteil Raucher:innen
 </caption>
 <thead>
 <tr>
@@ -516,43 +517,43 @@ p
 </ol></li>
 </ol>
 <p>Beispiel: Wir vergleichen die Zahlen der Schule mit einer zweiten Schule: Dort wurde eine Zufallsstichprobe von 120 Schüler:innen erhoben, wovon 30 Raucher:innen waren.</p>
-<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="inferenz-für-qualitative-daten.html#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Für diesen Code müssen folgende Bibliotheken geladen werden ------------------</span></span>
-<span id="cb145-2"><a href="inferenz-für-qualitative-daten.html#cb145-2" aria-hidden="true" tabindex="-1"></a><span class="co"># library(dplyr)</span></span>
-<span id="cb145-3"><a href="inferenz-für-qualitative-daten.html#cb145-3" aria-hidden="true" tabindex="-1"></a><span class="co"># library(knitr)</span></span>
-<span id="cb145-4"><a href="inferenz-für-qualitative-daten.html#cb145-4" aria-hidden="true" tabindex="-1"></a><span class="co"># library(kableExtra)</span></span>
-<span id="cb145-5"><a href="inferenz-für-qualitative-daten.html#cb145-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb145-6"><a href="inferenz-für-qualitative-daten.html#cb145-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Variablen definieren ---------------------------------------------------------</span></span>
-<span id="cb145-7"><a href="inferenz-für-qualitative-daten.html#cb145-7" aria-hidden="true" tabindex="-1"></a>n1 <span class="ot">&lt;-</span> <span class="dv">100</span>   </span>
-<span id="cb145-8"><a href="inferenz-für-qualitative-daten.html#cb145-8" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="sc">/</span> <span class="dv">100</span></span>
-<span id="cb145-9"><a href="inferenz-für-qualitative-daten.html#cb145-9" aria-hidden="true" tabindex="-1"></a>n2 <span class="ot">&lt;-</span> <span class="dv">120</span></span>
-<span id="cb145-10"><a href="inferenz-für-qualitative-daten.html#cb145-10" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="dv">30</span> <span class="sc">/</span> <span class="dv">120</span></span>
-<span id="cb145-11"><a href="inferenz-für-qualitative-daten.html#cb145-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb145-12"><a href="inferenz-für-qualitative-daten.html#cb145-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 95%-Konfidenzintervall berechnen ---------------------------------------------</span></span>
-<span id="cb145-13"><a href="inferenz-für-qualitative-daten.html#cb145-13" aria-hidden="true" tabindex="-1"></a>SE <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((p1 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p1) <span class="sc">/</span> n1) <span class="sc">+</span> (p2 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p2) <span class="sc">/</span> n2))  </span>
-<span id="cb145-14"><a href="inferenz-für-qualitative-daten.html#cb145-14" aria-hidden="true" tabindex="-1"></a>z.CI <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">qnorm</span>(.<span class="dv">025</span>))</span>
-<span id="cb145-15"><a href="inferenz-für-qualitative-daten.html#cb145-15" aria-hidden="true" tabindex="-1"></a>CI <span class="ot">&lt;-</span> (p1 <span class="sc">-</span> p2) <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> z.CI <span class="sc">*</span> SE</span>
-<span id="cb145-16"><a href="inferenz-für-qualitative-daten.html#cb145-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb145-17"><a href="inferenz-für-qualitative-daten.html#cb145-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Hypothesentest ---------------------------------------------------------------</span></span>
-<span id="cb145-18"><a href="inferenz-für-qualitative-daten.html#cb145-18" aria-hidden="true" tabindex="-1"></a>p.pool <span class="ot">&lt;-</span> ((p1 <span class="sc">*</span> n1) <span class="sc">+</span> (p2 <span class="sc">*</span> n2))<span class="sc">/</span>(n1 <span class="sc">+</span> n2)</span>
-<span id="cb145-19"><a href="inferenz-für-qualitative-daten.html#cb145-19" aria-hidden="true" tabindex="-1"></a>SE.pool <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(p.pool <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p.pool)<span class="sc">/</span>n1 <span class="sc">+</span> p.pool <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p.pool)<span class="sc">/</span>n2)</span>
-<span id="cb145-20"><a href="inferenz-für-qualitative-daten.html#cb145-20" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> (p1 <span class="sc">-</span> p2)<span class="sc">/</span>SE.pool</span>
-<span id="cb145-21"><a href="inferenz-für-qualitative-daten.html#cb145-21" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(z), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb145-22"><a href="inferenz-für-qualitative-daten.html#cb145-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb145-23"><a href="inferenz-für-qualitative-daten.html#cb145-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Tabelle für Output -----------------------------------------------------------</span></span>
-<span id="cb145-24"><a href="inferenz-für-qualitative-daten.html#cb145-24" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb145-25"><a href="inferenz-für-qualitative-daten.html#cb145-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">M.diff =</span> p1 <span class="sc">-</span> p2,</span>
-<span id="cb145-26"><a href="inferenz-für-qualitative-daten.html#cb145-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI.lo =</span> CI[<span class="dv">1</span>],</span>
-<span id="cb145-27"><a href="inferenz-für-qualitative-daten.html#cb145-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI.up =</span> CI[<span class="dv">2</span>],</span>
-<span id="cb145-28"><a href="inferenz-für-qualitative-daten.html#cb145-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE.pooled =</span> SE.pool,</span>
-<span id="cb145-29"><a href="inferenz-für-qualitative-daten.html#cb145-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">z =</span> z,</span>
-<span id="cb145-30"><a href="inferenz-für-qualitative-daten.html#cb145-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> prob</span>
-<span id="cb145-31"><a href="inferenz-für-qualitative-daten.html#cb145-31" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb145-32"><a href="inferenz-für-qualitative-daten.html#cb145-32" aria-hidden="true" tabindex="-1"></a>result <span class="sc">%&gt;%</span> </span>
-<span id="cb145-33"><a href="inferenz-für-qualitative-daten.html#cb145-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">digits =</span> <span class="dv">4</span>, <span class="at">caption =</span> <span class="st">&quot;Vergleich der Raucheranteile an zwei Schulen&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb145-34"><a href="inferenz-für-qualitative-daten.html#cb145-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="inferenz-für-qualitative-daten.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Für diesen Code müssen folgende Bibliotheken geladen werden ------------------</span></span>
+<span id="cb152-2"><a href="inferenz-für-qualitative-daten.html#cb152-2" aria-hidden="true" tabindex="-1"></a><span class="co"># library(dplyr)</span></span>
+<span id="cb152-3"><a href="inferenz-für-qualitative-daten.html#cb152-3" aria-hidden="true" tabindex="-1"></a><span class="co"># library(knitr)</span></span>
+<span id="cb152-4"><a href="inferenz-für-qualitative-daten.html#cb152-4" aria-hidden="true" tabindex="-1"></a><span class="co"># library(kableExtra)</span></span>
+<span id="cb152-5"><a href="inferenz-für-qualitative-daten.html#cb152-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-6"><a href="inferenz-für-qualitative-daten.html#cb152-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Variablen definieren ---------------------------------------------------------</span></span>
+<span id="cb152-7"><a href="inferenz-für-qualitative-daten.html#cb152-7" aria-hidden="true" tabindex="-1"></a>n1 <span class="ot">&lt;-</span> <span class="dv">100</span>   </span>
+<span id="cb152-8"><a href="inferenz-für-qualitative-daten.html#cb152-8" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="sc">/</span> <span class="dv">100</span></span>
+<span id="cb152-9"><a href="inferenz-für-qualitative-daten.html#cb152-9" aria-hidden="true" tabindex="-1"></a>n2 <span class="ot">&lt;-</span> <span class="dv">120</span></span>
+<span id="cb152-10"><a href="inferenz-für-qualitative-daten.html#cb152-10" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="dv">30</span> <span class="sc">/</span> <span class="dv">120</span></span>
+<span id="cb152-11"><a href="inferenz-für-qualitative-daten.html#cb152-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-12"><a href="inferenz-für-qualitative-daten.html#cb152-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 95%-Konfidenzintervall berechnen ---------------------------------------------</span></span>
+<span id="cb152-13"><a href="inferenz-für-qualitative-daten.html#cb152-13" aria-hidden="true" tabindex="-1"></a>SE <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((p1 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p1) <span class="sc">/</span> n1) <span class="sc">+</span> (p2 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p2) <span class="sc">/</span> n2))  </span>
+<span id="cb152-14"><a href="inferenz-für-qualitative-daten.html#cb152-14" aria-hidden="true" tabindex="-1"></a>z.CI <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">qnorm</span>(.<span class="dv">025</span>))</span>
+<span id="cb152-15"><a href="inferenz-für-qualitative-daten.html#cb152-15" aria-hidden="true" tabindex="-1"></a>CI <span class="ot">&lt;-</span> (p1 <span class="sc">-</span> p2) <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> z.CI <span class="sc">*</span> SE</span>
+<span id="cb152-16"><a href="inferenz-für-qualitative-daten.html#cb152-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-17"><a href="inferenz-für-qualitative-daten.html#cb152-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Hypothesentest ---------------------------------------------------------------</span></span>
+<span id="cb152-18"><a href="inferenz-für-qualitative-daten.html#cb152-18" aria-hidden="true" tabindex="-1"></a>p.pool <span class="ot">&lt;-</span> ((p1 <span class="sc">*</span> n1) <span class="sc">+</span> (p2 <span class="sc">*</span> n2))<span class="sc">/</span>(n1 <span class="sc">+</span> n2)</span>
+<span id="cb152-19"><a href="inferenz-für-qualitative-daten.html#cb152-19" aria-hidden="true" tabindex="-1"></a>SE.pool <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(p.pool <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p.pool)<span class="sc">/</span>n1 <span class="sc">+</span> p.pool <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p.pool)<span class="sc">/</span>n2)</span>
+<span id="cb152-20"><a href="inferenz-für-qualitative-daten.html#cb152-20" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> (p1 <span class="sc">-</span> p2)<span class="sc">/</span>SE.pool</span>
+<span id="cb152-21"><a href="inferenz-für-qualitative-daten.html#cb152-21" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(z), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb152-22"><a href="inferenz-für-qualitative-daten.html#cb152-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-23"><a href="inferenz-für-qualitative-daten.html#cb152-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Tabelle für Output -----------------------------------------------------------</span></span>
+<span id="cb152-24"><a href="inferenz-für-qualitative-daten.html#cb152-24" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb152-25"><a href="inferenz-für-qualitative-daten.html#cb152-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">M.diff =</span> p1 <span class="sc">-</span> p2,</span>
+<span id="cb152-26"><a href="inferenz-für-qualitative-daten.html#cb152-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI.lo =</span> CI[<span class="dv">1</span>],</span>
+<span id="cb152-27"><a href="inferenz-für-qualitative-daten.html#cb152-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI.up =</span> CI[<span class="dv">2</span>],</span>
+<span id="cb152-28"><a href="inferenz-für-qualitative-daten.html#cb152-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE.pooled =</span> SE.pool,</span>
+<span id="cb152-29"><a href="inferenz-für-qualitative-daten.html#cb152-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">z =</span> z,</span>
+<span id="cb152-30"><a href="inferenz-für-qualitative-daten.html#cb152-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> prob</span>
+<span id="cb152-31"><a href="inferenz-für-qualitative-daten.html#cb152-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb152-32"><a href="inferenz-für-qualitative-daten.html#cb152-32" aria-hidden="true" tabindex="-1"></a>result <span class="sc">%&gt;%</span> </span>
+<span id="cb152-33"><a href="inferenz-für-qualitative-daten.html#cb152-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">digits =</span> <span class="dv">4</span>, <span class="at">caption =</span> <span class="st">&quot;Vergleich der Raucheranteile an zwei Schulen&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb152-34"><a href="inferenz-für-qualitative-daten.html#cb152-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:unnamed-chunk-40">Table 7.2: </span>Vergleich der Raucheranteile an zwei Schulen
+<span id="tab:unnamed-chunk-43">Table 7.2: </span>Vergleich der Raucheranteile an zwei Schulen
 </caption>
 <thead>
 <tr>
@@ -644,34 +645,34 @@ Hypothesen:</p>
 <p><span class="math inline">\(R:\)</span> Anzahl Zeilen<br />
 <span class="math inline">\(C:\)</span> Anzahl Spalten</p>
 <p>Der <span class="math inline">\(\chi^2\)</span>-Test kann in <code>R</code> einfach mit der Funktion <code>chisq.test()</code> durchgeführt werden.</p>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="inferenz-für-qualitative-daten.html#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="inferenz-für-qualitative-daten.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>()</span></code></pre></div>
 <p>Der kritische Wert für <span class="math inline">\(\chi^2\)</span> kann in einer Verteilungstabelle abgelesen werden. Bei einer Vierfeldertafel (2 Zeilen und 2 Spalten) ist der Zusammenhang zwischen der Zeilen- und der Kolonnenvariable statistisch signifikant auf dem Niveau von 5% wenn <span class="math inline">\(\chi^2\)</span> grösser als <span class="math inline">\(3.84~ (=1.96^2)\)</span> ist.</p>
 <p>Beispiel: Untersucht wurde bei 100 Schüler:innen, ob sie Tictoc verwenden.</p>
-<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="inferenz-für-qualitative-daten.html#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Beispielaten generieren</span></span>
-<span id="cb147-2"><a href="inferenz-für-qualitative-daten.html#cb147-2" aria-hidden="true" tabindex="-1"></a>tictoc_m <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&quot;ja&quot;</span>, <span class="dv">23</span>), <span class="fu">rep</span>(<span class="st">&quot;nein&quot;</span>, <span class="dv">29</span>))</span>
-<span id="cb147-3"><a href="inferenz-für-qualitative-daten.html#cb147-3" aria-hidden="true" tabindex="-1"></a>tictoc_w <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&quot;ja&quot;</span>, <span class="dv">38</span>), <span class="fu">rep</span>(<span class="st">&quot;nein&quot;</span>, <span class="dv">10</span>))</span>
-<span id="cb147-4"><a href="inferenz-für-qualitative-daten.html#cb147-4" aria-hidden="true" tabindex="-1"></a>geschlecht <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&quot;m&quot;</span>, <span class="fu">length</span>(tictoc_m)), <span class="fu">rep</span>(<span class="st">&quot;w&quot;</span>, <span class="fu">length</span>(tictoc_w)))</span>
-<span id="cb147-5"><a href="inferenz-für-qualitative-daten.html#cb147-5" aria-hidden="true" tabindex="-1"></a>tictoc <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Geschlecht =</span> geschlecht,</span>
-<span id="cb147-6"><a href="inferenz-für-qualitative-daten.html#cb147-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">tictoc =</span> <span class="fu">c</span>(tictoc_m, tictoc_w))</span>
-<span id="cb147-7"><a href="inferenz-für-qualitative-daten.html#cb147-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb147-8"><a href="inferenz-für-qualitative-daten.html#cb147-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Chi-Quadrat-Test, Ergebnis in chisq speichern</span></span>
-<span id="cb147-9"><a href="inferenz-für-qualitative-daten.html#cb147-9" aria-hidden="true" tabindex="-1"></a>chisq <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(<span class="fu">table</span>(tictoc))</span>
-<span id="cb147-10"><a href="inferenz-für-qualitative-daten.html#cb147-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb147-11"><a href="inferenz-für-qualitative-daten.html#cb147-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Testergebnis anzeigen</span></span>
-<span id="cb147-12"><a href="inferenz-für-qualitative-daten.html#cb147-12" aria-hidden="true" tabindex="-1"></a>chisq</span></code></pre></div>
+<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="inferenz-für-qualitative-daten.html#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Beispielaten generieren</span></span>
+<span id="cb154-2"><a href="inferenz-für-qualitative-daten.html#cb154-2" aria-hidden="true" tabindex="-1"></a>tictoc_m <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&quot;ja&quot;</span>, <span class="dv">23</span>), <span class="fu">rep</span>(<span class="st">&quot;nein&quot;</span>, <span class="dv">29</span>))</span>
+<span id="cb154-3"><a href="inferenz-für-qualitative-daten.html#cb154-3" aria-hidden="true" tabindex="-1"></a>tictoc_w <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&quot;ja&quot;</span>, <span class="dv">38</span>), <span class="fu">rep</span>(<span class="st">&quot;nein&quot;</span>, <span class="dv">10</span>))</span>
+<span id="cb154-4"><a href="inferenz-für-qualitative-daten.html#cb154-4" aria-hidden="true" tabindex="-1"></a>geschlecht <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&quot;m&quot;</span>, <span class="fu">length</span>(tictoc_m)), <span class="fu">rep</span>(<span class="st">&quot;w&quot;</span>, <span class="fu">length</span>(tictoc_w)))</span>
+<span id="cb154-5"><a href="inferenz-für-qualitative-daten.html#cb154-5" aria-hidden="true" tabindex="-1"></a>tictoc <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Geschlecht =</span> geschlecht,</span>
+<span id="cb154-6"><a href="inferenz-für-qualitative-daten.html#cb154-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">tictoc =</span> <span class="fu">c</span>(tictoc_m, tictoc_w))</span>
+<span id="cb154-7"><a href="inferenz-für-qualitative-daten.html#cb154-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb154-8"><a href="inferenz-für-qualitative-daten.html#cb154-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Chi-Quadrat-Test, Ergebnis in chisq speichern</span></span>
+<span id="cb154-9"><a href="inferenz-für-qualitative-daten.html#cb154-9" aria-hidden="true" tabindex="-1"></a>chisq <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(<span class="fu">table</span>(tictoc))</span>
+<span id="cb154-10"><a href="inferenz-für-qualitative-daten.html#cb154-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb154-11"><a href="inferenz-für-qualitative-daten.html#cb154-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Testergebnis anzeigen</span></span>
+<span id="cb154-12"><a href="inferenz-für-qualitative-daten.html#cb154-12" aria-hidden="true" tabindex="-1"></a>chisq</span></code></pre></div>
 <pre><code>## 
 ##  Pearson&#39;s Chi-squared test with Yates&#39; continuity correction
 ## 
 ## data:  table(tictoc)
 ## X-squared = 11, df = 1, p-value = 0.0007</code></pre>
-<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="inferenz-für-qualitative-daten.html#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Beobachtete Werte anzeigen</span></span>
-<span id="cb149-2"><a href="inferenz-für-qualitative-daten.html#cb149-2" aria-hidden="true" tabindex="-1"></a>chisq<span class="sc">$</span>observed</span></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="inferenz-für-qualitative-daten.html#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Beobachtete Werte anzeigen</span></span>
+<span id="cb156-2"><a href="inferenz-für-qualitative-daten.html#cb156-2" aria-hidden="true" tabindex="-1"></a>chisq<span class="sc">$</span>observed</span></code></pre></div>
 <pre><code>##           tictoc
 ## Geschlecht ja nein
 ##          m 23   29
 ##          w 38   10</code></pre>
-<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="inferenz-für-qualitative-daten.html#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="co"># erwartete Werte anzeigen</span></span>
-<span id="cb151-2"><a href="inferenz-für-qualitative-daten.html#cb151-2" aria-hidden="true" tabindex="-1"></a>chisq<span class="sc">$</span>expected</span></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="inferenz-für-qualitative-daten.html#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="co"># erwartete Werte anzeigen</span></span>
+<span id="cb158-2"><a href="inferenz-für-qualitative-daten.html#cb158-2" aria-hidden="true" tabindex="-1"></a>chisq<span class="sc">$</span>expected</span></code></pre></div>
 <pre><code>##           tictoc
 ## Geschlecht    ja  nein
 ##          m 31.72 20.28
@@ -683,7 +684,7 @@ Hypothesen:</p>
 <p>Wenn die Voraussetzungen des <span class="math inline">\(\chi^2\)</span>-Tests nicht erfüllt sind, ist der exakte Test nach Fisher durchzuführen. Der exakte Test nach Fisher verwendet die hypergeometrische Verteilung zur Berechnung der Resultate und verwendet keine Teststatistik.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:unnamed-chunk-43">Table 7.3: </span>2 x 2 Kontingenztabelle
+<span id="tab:unnamed-chunk-46">Table 7.3: </span>2 x 2 Kontingenztabelle
 </caption>
 <thead>
 <tr>
@@ -755,13 +756,13 @@ N=a+b+c+d
   OR = \frac{\frac{a}{b}}{\frac{c}{d}} = \frac{ad}{bc}
   \tag{7.16}
 \end{equation}\]</span></p>
-<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="inferenz-für-qualitative-daten.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Beispieldaten generieren -----------------------------------------------------</span></span>
-<span id="cb153-2"><a href="inferenz-für-qualitative-daten.html#cb153-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="st">&quot;cured&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">60</span>, <span class="dv">30</span>), </span>
-<span id="cb153-3"><a href="inferenz-für-qualitative-daten.html#cb153-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;noncured&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">25</span>), </span>
-<span id="cb153-4"><a href="inferenz-für-qualitative-daten.html#cb153-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">&quot;treated&quot;</span>, <span class="st">&quot;nontreated&quot;</span>))</span>
-<span id="cb153-5"><a href="inferenz-für-qualitative-daten.html#cb153-5" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
-<span id="cb153-6"><a href="inferenz-für-qualitative-daten.html#cb153-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb153-7"><a href="inferenz-für-qualitative-daten.html#cb153-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="inferenz-für-qualitative-daten.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Beispieldaten generieren -----------------------------------------------------</span></span>
+<span id="cb160-2"><a href="inferenz-für-qualitative-daten.html#cb160-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="st">&quot;cured&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">60</span>, <span class="dv">30</span>), </span>
+<span id="cb160-3"><a href="inferenz-für-qualitative-daten.html#cb160-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;noncured&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">25</span>), </span>
+<span id="cb160-4"><a href="inferenz-für-qualitative-daten.html#cb160-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">&quot;treated&quot;</span>, <span class="st">&quot;nontreated&quot;</span>))</span>
+<span id="cb160-5"><a href="inferenz-für-qualitative-daten.html#cb160-5" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb160-6"><a href="inferenz-für-qualitative-daten.html#cb160-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb160-7"><a href="inferenz-für-qualitative-daten.html#cb160-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -800,8 +801,8 @@ nontreated
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="inferenz-für-qualitative-daten.html#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exakten Test nach Fischer durchführen ----------------------------------------</span></span>
-<span id="cb154-2"><a href="inferenz-für-qualitative-daten.html#cb154-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher.test</span>(df)</span></code></pre></div>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="inferenz-für-qualitative-daten.html#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exakten Test nach Fischer durchführen ----------------------------------------</span></span>
+<span id="cb161-2"><a href="inferenz-für-qualitative-daten.html#cb161-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher.test</span>(df)</span></code></pre></div>
 <pre><code>## 
 ##  Fisher&#39;s Exact Test for Count Data
 ## 
